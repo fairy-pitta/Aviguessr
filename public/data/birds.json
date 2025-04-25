@@ -1,0 +1,52 @@
+[
+    {
+      "name": "Blue-tailed Bee-eater",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Blue-tailed_Bee-eater_(Merops_philippinus)_from_India.jpg",
+      "countries": ["India", "Thailand", "Malaysia", "Indonesia", "Vietnam"]
+    },
+    {
+      "name": "Japanese White-eye",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Zosterops_japonicus.jpg",
+      "countries": ["Japan", "Taiwan", "South Korea", "China"]
+    },
+    {
+      "name": "European Robin",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Erithacus_rubecula_with_cocked_head.jpg",
+      "countries": ["United Kingdom", "France", "Germany", "Italy", "Spain"]
+    },
+    {
+      "name": "Bali Myna",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Bali_Mynah_-_Bali.jpg",
+      "countries": ["Indonesia"]
+    },
+    {
+      "name": "American Goldfinch",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/American_goldfinch_male_summer.jpg",
+      "countries": ["United States", "Canada", "Mexico"]
+    },
+    {
+      "name": "Southern Cassowary",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Casuarius_casuarius_-Cleveland_Metroparks_Zoo.jpg",
+      "countries": ["Australia", "Papua New Guinea", "Indonesia"]
+    },
+    {
+      "name": "Secretarybird",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Sagittarius_serpentarius_-San_Diego_Zoo.jpg",
+      "countries": ["South Africa", "Kenya", "Namibia", "Botswana", "Tanzania"]
+    },
+    {
+      "name": "Hoatzin",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/03/Opisthocomus_hoazin_-Brazil-8.jpg",
+      "countries": ["Brazil", "Colombia", "Peru", "Ecuador", "Venezuela"]
+    },
+    {
+      "name": "Resplendent Quetzal",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Resplendent_Quetzal_%28Pharomachrus_mocinno%29_%2822150580400%29.jpg",
+      "countries": ["Costa Rica", "Guatemala", "Panama", "Nicaragua"]
+    },
+    {
+      "name": "Lilac-breasted Roller",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Lilac-breasted_Roller_in_Etosha_National_Park.jpg",
+      "countries": ["Kenya", "Tanzania", "Zimbabwe", "Botswana", "Namibia"]
+    }
+  ]
