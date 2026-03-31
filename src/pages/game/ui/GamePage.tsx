@@ -82,11 +82,12 @@ export function GamePage() {
     );
   }
 
-  if (game.phase === "showingResult" && game.lastResult) {
+  if (game.phase === "showingResult" && game.lastResult && game.currentBird) {
     return (
       <RoundResult
         result={game.lastResult}
         guessedCountry={selectedCountry ?? ""}
+        bird={game.currentBird}
         onNext={handleNext}
       />
     );

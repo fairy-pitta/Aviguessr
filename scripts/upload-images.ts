@@ -91,7 +91,7 @@ async function downloadImage(
 function uploadToR2(localPath: string, r2Key: string): boolean {
   try {
     execSync(
-      `npx wrangler r2 object put aviguessr-images/${r2Key} --file="${localPath}" --content-type="image/jpeg"`,
+      `npx wrangler r2 object put aviguessr-images/${r2Key} --file="${localPath}" --content-type="image/jpeg" --remote`,
       { stdio: "pipe", timeout: 30000 }
     );
     return true;
