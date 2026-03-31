@@ -33,6 +33,14 @@ const DATA_DIR = join(new URL(".", import.meta.url).pathname, "..", "data");
 const EBIRD_BASE = "https://api.ebird.org/v2";
 const RATE_LIMIT_MS = 200; // eBird API rate limit対策
 
+// Graceful shutdown — Ctrl+C でもチェックポイント保存
+let pendingCheckpoint: (() => void) | null = null;
+process.on("SIGINT", () => {
+  console.log("\n中断検知 — チェックポイント保存中...");
+  pendingCheckpoint?.();
+  process.exit(130);
+});
+
 // ---------------------------------------------------------------------------
 // Utilities
 // ---------------------------------------------------------------------------
@@ -262,6 +270,24 @@ type BirdData = {
   } | null;
 };
 
+const CHECKPOINT_INTERVAL = 50; // 50種ごとにチェックポイント保存
+
+type ImageCheckpoint = {
+  /** 処理済み speciesCode の Set（画像なしも含む） */
+  processed: string[];
+  /** 画像ありの結果 */
+  results: BirdData[];
+};
+
+function loadCheckpoint(): ImageCheckpoint {
+  const data = loadCache<ImageCheckpoint>("image_checkpoint");
+  return data ?? { processed: [], results: [] };
+}
+
+function saveCheckpoint(checkpoint: ImageCheckpoint): void {
+  saveCache("image_checkpoint", checkpoint);
+}
+
 async function enrichWithImages(
   birds: TaxonomyEntry[],
   speciesMap: SpeciesCountryMap
@@ -269,39 +295,85 @@ async function enrichWithImages(
   const cached = loadCache<BirdData[]>("birds_with_images");
   if (cached) return cached;
 
-  console.log("Step 4: Wikimedia Commons から画像取得中...");
-  const results: BirdData[] = [];
+  const checkpoint = loadCheckpoint();
+  const processedSet = new Set(checkpoint.processed);
+  const results: BirdData[] = [...checkpoint.results];
 
-  for (let i = 0; i < birds.length; i++) {
-    const bird = birds[i];
+  const remaining = birds.filter((b) => !processedSet.has(b.speciesCode));
+
+  if (checkpoint.processed.length > 0) {
+    console.log(
+      `Step 4: レジューム — ${checkpoint.processed.length}種処理済み, ${remaining.length}種残り (画像あり: ${results.length})`
+    );
+  } else {
+    console.log("Step 4: Wikimedia Commons から画像取得中...");
+  }
+
+  let sinceLastCheckpoint = 0;
+
+  // SIGINT 時に現在の進捗を保存
+  pendingCheckpoint = () => {
+    saveCheckpoint({ processed: [...processedSet], results });
+    console.log(
+      `  保存完了: ${processedSet.size}種処理済み, 画像あり ${results.length}`
+    );
+  };
+
+  for (let i = 0; i < remaining.length; i++) {
+    const bird = remaining[i];
     const countries = speciesMap[bird.speciesCode] ?? [];
     const countryCount = countries.length;
     const difficulty: BirdData["difficulty"] =
       countryCount <= 3 ? "hard" : countryCount <= 10 ? "medium" : "easy";
 
-    const image = await wikiCommonsImageSearch(bird.sciName);
-    if (image) {
-      results.push({
-        speciesCode: bird.speciesCode,
-        name: bird.comName,
-        scientificName: bird.sciName,
-        family: bird.familyComName,
-        countries,
-        difficulty,
-        image,
-      });
+    try {
+      const image = await wikiCommonsImageSearch(bird.sciName);
+      if (image) {
+        results.push({
+          speciesCode: bird.speciesCode,
+          name: bird.comName,
+          scientificName: bird.sciName,
+          family: bird.familyComName,
+          countries,
+          difficulty,
+          image,
+        });
+      }
+    } catch (e) {
+      console.warn(`  [skip] ${bird.speciesCode} (${bird.comName}): ${e}`);
     }
 
-    if ((i + 1) % 10 === 0) {
+    processedSet.add(bird.speciesCode);
+    sinceLastCheckpoint++;
+
+    const total = checkpoint.processed.length + i + 1;
+    if (total % 10 === 0) {
       console.log(
-        `  ${i + 1}/${birds.length} 完了 (画像あり: ${results.length})`
+        `  ${total}/${birds.length} 完了 (画像あり: ${results.length})`
       );
     }
+
+    // 定期チェックポイント保存
+    if (sinceLastCheckpoint >= CHECKPOINT_INTERVAL) {
+      saveCheckpoint({ processed: [...processedSet], results });
+      sinceLastCheckpoint = 0;
+    }
+
     await sleep(300); // Wikimedia rate limit
   }
 
+  pendingCheckpoint = null;
   console.log(`  画像付き: ${results.length}/${birds.length} 種`);
+
+  // 完了 — チェックポイント削除、最終キャッシュ保存
   saveCache("birds_with_images", results);
+  const cpPath = cachePath("image_checkpoint");
+  if (existsSync(cpPath)) {
+    const { unlinkSync } = await import("node:fs");
+    unlinkSync(cpPath);
+    console.log("  チェックポイント削除");
+  }
+
   return results;
 }
 
