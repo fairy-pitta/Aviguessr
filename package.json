@@ -1,29 +1,40 @@
 {
-  "name": "birdguessr",
+  "name": "aviguessr",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "dev:worker": "wrangler dev worker/index.ts --port 8787",
+    "build": "vite build",
+    "deploy": "wrangler deploy",
+    "generate:centroids": "npx tsx scripts/generate-centroids.ts",
+    "seed": "npx tsx scripts/seed.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "hono": "^4.7.0",
     "leaflet": "^1.9.4",
-    "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.5.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@cloudflare/workers-types": "^4.20250327.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/leaflet": "^1.9.16",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "jsdom": "^27.0.1",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.3.0",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.10.0"
   }
 }
