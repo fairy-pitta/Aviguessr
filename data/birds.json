@@ -1,0 +1,2519 @@
+[
+  {
+    "speciesCode": "whbmin2",
+    "name": "Jerdon's Minivet",
+    "scientificName": "Pericrocotus albifrons",
+    "family": "Cuckooshrikes",
+    "countries": [
+      "MM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Stray_feathers._Journal_of_ornithology_for_India_and_its_dependencies_%28IA_strayfeathersjou31875hume%29.pdf/page1-500px-Stray_feathers._Journal_of_ornithology_for_India_and_its_dependencies_%28IA_strayfeathersjou31875hume%29.pdf.jpg",
+      "license": "Public domain",
+      "artist": "Hume, Allan Octavian, 1829-1912"
+    }
+  },
+  {
+    "speciesCode": "blbbar5",
+    "name": "Black-browed Barbet",
+    "scientificName": "Psilopogon oorti",
+    "family": "Asian Barbets",
+    "countries": [
+      "ID",
+      "MY",
+      "TH"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Black-browed_Barbet.ogv/384px--Black-browed_Barbet.ogv.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Aviceda"
+    }
+  },
+  {
+    "speciesCode": "stbspi2",
+    "name": "Streaky-breasted Spiderhunter",
+    "scientificName": "Arachnothera affinis",
+    "family": "Sunbirds and Spiderhunters",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Grey-breasted_Spiderhunter.ogv/384px--Grey-breasted_Spiderhunter.ogv.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Aviceda"
+    }
+  },
+  {
+    "speciesCode": "indful1",
+    "name": "Indochinese Fulvetta",
+    "scientificName": "Fulvetta danisi",
+    "family": "Parrotbills",
+    "countries": [
+      "LA",
+      "VN"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Indochinese_Fulvetta_0A2A3624.jpg/960px-Indochinese_Fulvetta_0A2A3624.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "JJ Harrison (https://www.jjharrison.com.au/)"
+    }
+  },
+  {
+    "speciesCode": "sulgob3",
+    "name": "Sula Golden-Bulbul",
+    "scientificName": "Hypsipetes longirostris",
+    "family": "Bulbuls",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Thapsinillas_longirostris_platenae_1898.jpg/960px-Thapsinillas_longirostris_platenae_1898.jpg",
+      "license": "Public domain",
+      "artist": "Bruno Geisler"
+    }
+  },
+  {
+    "speciesCode": "timstu1",
+    "name": "Timor Stubtail",
+    "scientificName": "Urosphena subulata",
+    "family": "Bush Warblers and Allies",
+    "countries": [
+      "ID",
+      "TL"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Naturalis_Biodiversity_Center_-_RMNH.AVES.139460_1_-_Urosphena_subulata_everetti_%28Hartert%2C_1897%29_-_Sylviidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.139460_1_-_Urosphena_subulata_everetti_%28Hartert%2C_1897%29_-_Sylviidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Hartert, 1897"
+    }
+  },
+  {
+    "speciesCode": "sunfor1",
+    "name": "Sunda Forktail",
+    "scientificName": "Enicurus velatus",
+    "family": "Old World Flycatchers",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Sunda_forktail.jpg/960px-Sunda_forktail.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Lip Kee Yap from Singapore, Republic of Singapore"
+    }
+  },
+  {
+    "speciesCode": "rutfly5",
+    "name": "Rufous-throated Flycatcher",
+    "scientificName": "Ficedula rufigula",
+    "family": "Old World Flycatchers",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Naturalis_Biodiversity_Center_-_RMNH.AVES.61009_1_-_Ficedula_rufigula_%28Wallace%2C_1865%29_-_Muscicapidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.61009_1_-_Ficedula_rufigula_%28Wallace%2C_1865%29_-_Muscicapidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Wallace, 1865"
+    }
+  },
+  {
+    "speciesCode": "ritpig",
+    "name": "Ring-tailed Pigeon",
+    "scientificName": "Patagioenas caribaea",
+    "family": "Pigeons and Doves",
+    "countries": [
+      "JM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Zur_Ornithologie_von_Jamaica_%28IA_biostor-142164%29.pdf/page1-500px-Zur_Ornithologie_von_Jamaica_%28IA_biostor-142164%29.pdf.jpg",
+      "license": "Public domain",
+      "artist": "R. Albrecht"
+    }
+  },
+  {
+    "speciesCode": "timspa4",
+    "name": "Timor Sparrow",
+    "scientificName": "Padda fuscata",
+    "family": "Waxbills and Allies",
+    "countries": [
+      "ID",
+      "TL"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Naturalis_Biodiversity_Center_-_RMNH.AVES.161285_1_-_Padda_fuscata_Vieillot%2C_1807_-_Estrildidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.161285_1_-_Padda_fuscata_Vieillot%2C_1807_-_Estrildidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Vieillot, 1807"
+    }
+  },
+  {
+    "speciesCode": "shtbat1",
+    "name": "Short-tailed Batis",
+    "scientificName": "Batis mixta",
+    "family": "Wattle-eyes and Batises",
+    "countries": [
+      "KE",
+      "TZ"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/94/Flickr_-_Rainbirder_-_Short-tailed_Batis_%28Batis_mixta%29.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Steve Garvie from Dunfermline, Fife, Scotland"
+    }
+  },
+  {
+    "speciesCode": "jambla1",
+    "name": "Jamaican Blackbird",
+    "scientificName": "Nesopsar nigerrimus",
+    "family": "Troupials and Allies",
+    "countries": [
+      "JM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Books_from_the_Biodiversity_Heritage_Library_%28IA_catalogueofwesti01cory%29.pdf/page1-960px-Books_from_the_Biodiversity_Heritage_Library_%28IA_catalogueofwesti01cory%29.pdf.jpg",
+      "license": "Public domain",
+      "artist": "Cory, Charles B. (Charles Barney), 1857-1921"
+    }
+  },
+  {
+    "speciesCode": "yebwhe1",
+    "name": "Lemon-bellied White-eye",
+    "scientificName": "Zosterops chloris",
+    "family": "White-eyes, Yuhinas, and Allies",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Yellow-bellied_White-eye_%28Zosterops_chloris%29.jpg/960px-Yellow-bellied_White-eye_%28Zosterops_chloris%29.jpg",
+      "license": "CC BY 2.0",
+      "artist": "Lip Kee Yap from Singapore, Republic of Singapore"
+    }
+  },
+  {
+    "speciesCode": "jamcro1",
+    "name": "Jamaican Crow",
+    "scientificName": "Corvus jamaicensis",
+    "family": "Crows, Jays, and Magpies",
+    "countries": [
+      "JM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Illustrations_of_the_birds_of_Jamaica_%2819936288608%29.jpg/960px-Illustrations_of_the_birds_of_Jamaica_%2819936288608%29.jpg",
+      "license": "Public domain",
+      "artist": "Gosse, Philip Henry"
+    }
+  },
+  {
+    "speciesCode": "jampew1",
+    "name": "Jamaican Pewee",
+    "scientificName": "Contopus pallidus",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "JM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Jamaican_pewee_%28Contopus_pallidus%29.jpg/960px-Jamaican_pewee_%28Contopus_pallidus%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Charles J. Sharp"
+    }
+  },
+  {
+    "speciesCode": "molsta1",
+    "name": "Moluccan Starling",
+    "scientificName": "Aplonis mysolensis",
+    "family": "Starlings",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/The_birds_of_Celebes_and_the_neighbouring_islands_-_XXXVI.jpg/960px-The_birds_of_Celebes_and_the_neighbouring_islands_-_XXXVI.jpg",
+      "license": "Public domain",
+      "artist": "Bruno Geisler"
+    }
+  },
+  {
+    "speciesCode": "senlar1",
+    "name": "Sentinel Lark",
+    "scientificName": "Corypha athi",
+    "family": "Larks",
+    "countries": [
+      "KE",
+      "TZ"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/The_birds_of_Africa_%28Shelley%29_-_Plate_17%2C_1902_%2810575406334%29.jpg/960px-The_birds_of_Africa_%28Shelley%29_-_Plate_17%2C_1902_%2810575406334%29.jpg",
+      "license": "Public domain",
+      "artist": "Henrik Grønvold"
+    }
+  },
+  {
+    "speciesCode": "grkwhe1",
+    "name": "Kai Besar White-eye",
+    "scientificName": "Zosterops grayi",
+    "family": "White-eyes, Yuhinas, and Allies",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Naturalis_Biodiversity_Center_-_RMNH.AVES.133332_1_-_Zosterops_grayi_Wallace%2C_1864_-_Zosteropidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.133332_1_-_Zosterops_grayi_Wallace%2C_1864_-_Zosteropidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Wallace, 1864"
+    }
+  },
+  {
+    "speciesCode": "elesun1",
+    "name": "Elegant Sunbird",
+    "scientificName": "Aethopyga duyvenbodei",
+    "family": "Sunbirds and Spiderhunters",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Aethopyga_duyvenbodei_2012_Indonesia_stamp.jpg",
+      "license": "Public domain",
+      "artist": "Unknown authorUnknown author"
+    }
+  },
+  {
+    "speciesCode": "orbthr1",
+    "name": "Orange-banded Thrush",
+    "scientificName": "Geokichla peronii",
+    "family": "Thrushes and Allies",
+    "countries": [
+      "ID",
+      "TL"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Naturalis_Biodiversity_Center_-_RMNH.AVES.146036_1_-_Zoothera_peronii_peronii_%28Vieillot%2C_1818%29_-_Turdidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.146036_1_-_Zoothera_peronii_peronii_%28Vieillot%2C_1818%29_-_Turdidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Vieillot, 1818"
+    }
+  },
+  {
+    "speciesCode": "chcyuh1",
+    "name": "Chestnut-crested Yuhina",
+    "scientificName": "Staphida everetti",
+    "family": "White-eyes, Yuhinas, and Allies",
+    "countries": [
+      "ID",
+      "MY"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Naturalis_Biodiversity_Center_-_RMNH.AVES.9010_1_-_Yuhina_castaniceps_everetti_%28Sharpe%2C_1887%29_-_Timaliidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.9010_1_-_Yuhina_castaniceps_everetti_%28Sharpe%2C_1887%29_-_Timaliidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Sharpe, 1887"
+    }
+  },
+  {
+    "speciesCode": "jamwoo1",
+    "name": "Jamaican Woodpecker",
+    "scientificName": "Melanerpes radiolatus",
+    "family": "Woodpeckers",
+    "countries": [
+      "JM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Jamaican_woodpecker_%28Melanerpes_radiolatus%29_male.jpg/960px-Jamaican_woodpecker_%28Melanerpes_radiolatus%29_male.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Charles J. Sharp"
+    }
+  },
+  {
+    "speciesCode": "wynlau1",
+    "name": "Wayanad Laughingthrush",
+    "scientificName": "Pterorhinus delesserti",
+    "family": "Laughingthrushes and Allies",
+    "countries": [
+      "IN"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/GarrulaxDelessertiGould.jpg/960px-GarrulaxDelessertiGould.jpg",
+      "license": "Public domain",
+      "artist": "J Gould and H C Richter"
+    }
+  },
+  {
+    "speciesCode": "whcnut1",
+    "name": "White-cheeked Nuthatch",
+    "scientificName": "Sitta leucopsis",
+    "family": "Nuthatches",
+    "countries": [
+      "IN",
+      "NP",
+      "PK"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/White-cheeked_Nutthatch_I_IMG_7384.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "J.M.Garg"
+    }
+  },
+  {
+    "speciesCode": "jabwar1",
+    "name": "Javan Bush Warbler",
+    "scientificName": "Locustella montis",
+    "family": "Grassbirds and Allies",
+    "countries": [
+      "ID",
+      "TL"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Naturalis_Biodiversity_Center_-_RMNH.AVES.51327_1_-_Bradypterus_seebohmi_montis_%28Hartert%2C_1896%29_-_Sylviidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.51327_1_-_Bradypterus_seebohmi_montis_%28Hartert%2C_1896%29_-_Sylviidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Hartert, 1896"
+    }
+  },
+  {
+    "speciesCode": "islwar1",
+    "name": "Island Leaf Warbler",
+    "scientificName": "Phylloscopus poliocephalus",
+    "family": "Leaf Warblers",
+    "countries": [
+      "ID",
+      "PG",
+      "SB"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Naturalis_Biodiversity_Center_-_RMNH.AVES.138042_1_-_Phylloscopus_poliocephalus_waterstradti_%28Hartert%2C_1903%29_-_Sylviidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.138042_1_-_Phylloscopus_poliocephalus_waterstradti_%28Hartert%2C_1903%29_-_Sylviidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Hartert, 1903"
+    }
+  },
+  {
+    "speciesCode": "sohmyn1",
+    "name": "Southern Hill Myna",
+    "scientificName": "Gracula indica",
+    "family": "Starlings",
+    "countries": [
+      "IN",
+      "LK"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Starling_bird_%28India%2C_2012%29.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Subramanya C K"
+    }
+  },
+  {
+    "speciesCode": "reflor1",
+    "name": "Red-flanked Lorikeet",
+    "scientificName": "Hypocharmosyna placentis",
+    "family": "Old World Parrots",
+    "countries": [
+      "ID",
+      "PG"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Charmosyna_placentis_-Jurong_Bird_Park_-pair-6a.jpg/960px-Charmosyna_placentis_-Jurong_Bird_Park_-pair-6a.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Peter Tan"
+    }
+  },
+  {
+    "speciesCode": "chibub1",
+    "name": "Mount Victoria Babax",
+    "scientificName": "Pterorhinus woodi",
+    "family": "Laughingthrushes and Allies",
+    "countries": [
+      "IN",
+      "MM"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Mount_Victoria_Babax.jpg/960px-Mount_Victoria_Babax.jpg",
+      "license": "CC0",
+      "artist": "Lonelyshrimp"
+    }
+  },
+  {
+    "speciesCode": "olbtai1",
+    "name": "Olive-backed Tailorbird",
+    "scientificName": "Orthotomus sepium",
+    "family": "Cisticolas and Allies",
+    "countries": [
+      "ID"
+    ],
+    "difficulty": "hard",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/68/COLLECTIE_TROPENMUSEUM_Orthotomus_sepium_sepium_bij_het_nest_waarin_jong_van_Cacomantis_merulinus_lanceolatus_TMnr_10006539.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Unknown authorUnknown author"
+    }
+  },
+  {
+    "speciesCode": "whcsta3",
+    "name": "White-crowned Starling",
+    "scientificName": "Lamprotornis albicapillus",
+    "family": "Starlings",
+    "countries": [
+      "DJ",
+      "ET",
+      "KE",
+      "SO"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Birds_africa.jpg/960px-Birds_africa.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Thekiwimaster"
+    }
+  },
+  {
+    "speciesCode": "tattin1",
+    "name": "Tataupa Tinamou",
+    "scientificName": "Crypturellus tataupa",
+    "family": "Tinamous",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "EC",
+      "PY",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Crypturellus_tataupa_-Piraju%2C_Sao_Paulo%2C_Brasil-8.jpg/960px-Crypturellus_tataupa_-Piraju%2C_Sao_Paulo%2C_Brasil-8.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Dario Sanches from São Paulo, Brazil"
+    }
+  },
+  {
+    "speciesCode": "viotro3",
+    "name": "Amazonian Violaceous Trogon",
+    "scientificName": "Trogon ramonianus",
+    "family": "Trogons",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Niels Krabbe"
+    }
+  },
+  {
+    "speciesCode": "rngtyr1",
+    "name": "Rufous-naped Ground-Tyrant",
+    "scientificName": "Muscisaxicola rufivertex",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "AR",
+      "BO",
+      "CL",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/MuscisaxicolaRubricapillaSmit.jpg/960px-MuscisaxicolaRubricapillaSmit.jpg",
+      "license": "Public domain",
+      "artist": "Joseph Smit"
+    }
+  },
+  {
+    "speciesCode": "palhor3",
+    "name": "Pale-legged Hornero",
+    "scientificName": "Furnarius leucopus",
+    "family": "Ovenbirds and Woodcreepers",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "GY",
+      "PY",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Naturalis_Biodiversity_Center_-_RMNH.AVES.97005_1_-_Furnarius_leucopus_leucopus_Swainson%2C_1837_-_Furnariidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.97005_1_-_Furnarius_leucopus_leucopus_Swainson%2C_1837_-_Furnariidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Swainson, 1837"
+    }
+  },
+  {
+    "speciesCode": "wtqdov1",
+    "name": "White-throated Quail-Dove",
+    "scientificName": "Zentrygon frenata",
+    "family": "Pigeons and Doves",
+    "countries": [
+      "AR",
+      "BO",
+      "CO",
+      "EC",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/The_birds_of_South_America_%28Pl._17%29_%287822922552%29.jpg/960px-The_birds_of_South_America_%28Pl._17%29_%287822922552%29.jpg",
+      "license": "Public domain",
+      "artist": "Henrik Grønvold"
+    }
+  },
+  {
+    "speciesCode": "yevwar1",
+    "name": "Yellow-vented Warbler",
+    "scientificName": "Phylloscopus cantator",
+    "family": "Leaf Warblers",
+    "countries": [
+      "BD",
+      "BT",
+      "KH",
+      "CN",
+      "IN",
+      "LA",
+      "MM",
+      "NP",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Yellow_vented_warbler_Manas.JPG/960px-Yellow_vented_warbler_Manas.JPG",
+      "license": "CC0",
+      "artist": "Pkspks at English Wikipedia"
+    }
+  },
+  {
+    "speciesCode": "bhbeat1",
+    "name": "Black-headed Bee-eater",
+    "scientificName": "Merops breweri",
+    "family": "Bee-eaters",
+    "countries": [
+      "AO",
+      "CF",
+      "CG",
+      "CD",
+      "GA",
+      "GH"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/A_monograph_of_the_Meropidae%2C_or_family_of_the_bee-eaters_%28IA_monographmeropi00dres%29.pdf/page1-960px-A_monograph_of_the_Meropidae%2C_or_family_of_the_bee-eaters_%28IA_monographmeropi00dres%29.pdf.jpg",
+      "license": "Public domain",
+      "artist": "Dresser, H. E. (Henry Eeles), 1838-1915\nKeulemans, J. G. (John Gerrard), 1842-1912, lithographer\nHanhart, printer of plates"
+    }
+  },
+  {
+    "speciesCode": "fitsun1",
+    "name": "Fire-tailed Sunbird",
+    "scientificName": "Aethopyga ignicauda",
+    "family": "Sunbirds and Spiderhunters",
+    "countries": [
+      "BT",
+      "CN",
+      "IN",
+      "MM",
+      "NP",
+      "TH"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Fire-tailed_sunbird_-_female_%2841%29.jpg/960px-Fire-tailed_sunbird_-_female_%2841%29.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Krishna Prajapati"
+    }
+  },
+  {
+    "speciesCode": "plsfin1",
+    "name": "Plumbeous Sierra Finch",
+    "scientificName": "Geospizopsis unicolor",
+    "family": "Tanagers and Allies",
+    "countries": [
+      "AR",
+      "BO",
+      "CL",
+      "CO",
+      "EC",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Unknown_bird_in_Los_Andes%2C_Venezuela.JPG/960px-Unknown_bird_in_Los_Andes%2C_Venezuela.JPG",
+      "license": "CC BY-SA 3.0",
+      "artist": "Wilfredor"
+    }
+  },
+  {
+    "speciesCode": "rcweye1",
+    "name": "Red-cheeked Wattle-eye",
+    "scientificName": "Platysteira blissetti",
+    "family": "Wattle-eyes and Batises",
+    "countries": [
+      "BJ",
+      "CI",
+      "GH",
+      "GN",
+      "LR",
+      "SL",
+      "TG"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Naturalis_Biodiversity_Center_-_RMNH.AVES.137114_1_-_Platysteira_blissetti_%28Sharpe%2C_1872%29_-_Platysteiridae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.137114_1_-_Platysteira_blissetti_%28Sharpe%2C_1872%29_-_Platysteiridae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Sharpe, 1872"
+    }
+  },
+  {
+    "speciesCode": "schtur1",
+    "name": "Schalow's Turaco",
+    "scientificName": "Tauraco schalowi",
+    "family": "Turacos",
+    "countries": [
+      "AO",
+      "BW",
+      "CD",
+      "KE",
+      "MW",
+      "NA",
+      "TZ",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Tauraco_schalowi_-Lotherton_Hall-8a.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "John Puddephatt"
+    }
+  },
+  {
+    "speciesCode": "recbus1",
+    "name": "Red-crested Bustard",
+    "scientificName": "Lophotis ruficrista",
+    "family": "Bustards",
+    "countries": [
+      "AO",
+      "BW",
+      "SZ",
+      "MZ",
+      "NA",
+      "ZA",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Black-bellied_bustard_in_Kruger_National_Park_01.jpg/960px-Black-bellied_bustard_in_Kruger_National_Park_01.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Bernard Gagnon"
+    }
+  },
+  {
+    "speciesCode": "slchaw2",
+    "name": "Slate-colored Hawk",
+    "scientificName": "Buteogallus schistaceus",
+    "family": "Hawks, Eagles, and Kites",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "GF",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Slate-colored_hawk.jpg/960px-Slate-colored_hawk.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": ""
+    }
+  },
+  {
+    "speciesCode": "gyslau",
+    "name": "Gray-sided Laughingthrush",
+    "scientificName": "Pterorhinus caerulatus",
+    "family": "Laughingthrushes and Allies",
+    "countries": [
+      "BT",
+      "CN",
+      "IN",
+      "MM",
+      "NP"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Grey-sided_Laughingthrush_-_Eaglenest_-_Arunachal_Pradesh_--_India_FJ0A1067_%2833521162404%29.jpg/960px-Grey-sided_Laughingthrush_-_Eaglenest_-_Arunachal_Pradesh_--_India_FJ0A1067_%2833521162404%29.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Francesco Veronesi from Italy"
+    }
+  },
+  {
+    "speciesCode": "letara1",
+    "name": "Lettered Aracari",
+    "scientificName": "Pteroglossus inscriptus",
+    "family": "Toucans",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/PteroglossusDidymusKeulemans.jpg",
+      "license": "Public domain",
+      "artist": "John Gerrard Keulemans"
+    }
+  },
+  {
+    "speciesCode": "plcjay1",
+    "name": "Plush-crested Jay",
+    "scientificName": "Cyanocorax chrysops",
+    "family": "Crows, Jays, and Magpies",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "CL",
+      "PY",
+      "UY"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Bird_%288155827944%29.jpg/960px-Bird_%288155827944%29.jpg",
+      "license": "CC BY 2.0",
+      "artist": "Leandro Neumann Ciuffo"
+    }
+  },
+  {
+    "speciesCode": "bkttro6",
+    "name": "Amazonian Black-throated Trogon",
+    "scientificName": "Trogon rufus",
+    "family": "Trogons",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "GF",
+      "GY",
+      "PE",
+      "SR",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Oiseaux_brillans_du_Br%C3%A9sil_%2820740681225%29.jpg/960px-Oiseaux_brillans_du_Br%C3%A9sil_%2820740681225%29.jpg",
+      "license": "Public domain",
+      "artist": "Descourtilz, J. T."
+    }
+  },
+  {
+    "speciesCode": "smcpew1",
+    "name": "Smoke-colored Pewee",
+    "scientificName": "Contopus fumigatus",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "GY",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Naturalis_Biodiversity_Center_-_RMNH.AVES.120733_-_Contopus_fumigatus_ardosiacus_%28Lafresnaye%2C_1844%29_-_Tyrannidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.120733_-_Contopus_fumigatus_ardosiacus_%28Lafresnaye%2C_1844%29_-_Tyrannidae_-_bird_skin_specimen.jpeg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Lafresnaye, 1844"
+    }
+  },
+  {
+    "speciesCode": "yebbuw2",
+    "name": "Hume's Bush Warbler",
+    "scientificName": "Horornis brunnescens",
+    "family": "Bush Warblers and Allies",
+    "countries": [
+      "BT",
+      "CN",
+      "IN",
+      "MM",
+      "NP"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Horornis_brunnescens.JPG/960px-Horornis_brunnescens.JPG",
+      "license": "CC BY-SA 4.0",
+      "artist": "Pkspks"
+    }
+  },
+  {
+    "speciesCode": "damter2",
+    "name": "Damara Tern",
+    "scientificName": "Sternula balaenarum",
+    "family": "Gulls, Terns, and Skimmers",
+    "countries": [
+      "AO",
+      "BJ",
+      "CG",
+      "CD",
+      "GA",
+      "MZ",
+      "NA",
+      "ZA",
+      "TG"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Damara_Tern%2C_Cape_Recife%2C_Eastern_Cape%2C_South_Africa_2.jpg/960px-Damara_Tern%2C_Cape_Recife%2C_Eastern_Cape%2C_South_Africa_2.jpg",
+      "license": "CC0",
+      "artist": "baldcoot"
+    }
+  },
+  {
+    "speciesCode": "amegfi",
+    "name": "American Goldfinch",
+    "scientificName": "Spinus tristis",
+    "family": "Finches, Euphonias, and Allies",
+    "countries": [
+      "BS",
+      "CA",
+      "MX",
+      "PM",
+      "SG",
+      "GB",
+      "US"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Spinus_tristis_JRVdH_01.jpg/960px-Spinus_tristis_JRVdH_01.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Cephas"
+    }
+  },
+  {
+    "speciesCode": "blsant1",
+    "name": "Bluish-slate Antshrike",
+    "scientificName": "Thamnomanes schistogynus",
+    "family": "Typical Antbirds",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Thamnomanes_schistogynus_map.svg/960px-Thamnomanes_schistogynus_map.svg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Cephas"
+    }
+  },
+  {
+    "speciesCode": "chaear1",
+    "name": "Chaco Earthcreeper",
+    "scientificName": "Tarphonomus certhioides",
+    "family": "Ovenbirds and Woodcreepers",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "PY"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Tarphonomus_certhioides_map.svg/960px-Tarphonomus_certhioides_map.svg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Cephas"
+    }
+  },
+  {
+    "speciesCode": "cingrt1",
+    "name": "Cinereous Ground-Tyrant",
+    "scientificName": "Muscisaxicola cinereus",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "AR",
+      "BO",
+      "CL",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Muscisaxicola_cinereus_map.svg/960px-Muscisaxicola_cinereus_map.svg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Cephas"
+    }
+  },
+  {
+    "speciesCode": "bbbtyr1",
+    "name": "Blue-billed Black-Tyrant",
+    "scientificName": "Knipolegus cyanirostris",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "AR",
+      "BR",
+      "PY",
+      "UY"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Knipolegus_cyanirostris_-Reserva_Guainumbi%2C_Sao_Luis_do_Paraitinga%2C_Sao_Paulo%2C_Brasil-8.jpg/960px-Knipolegus_cyanirostris_-Reserva_Guainumbi%2C_Sao_Luis_do_Paraitinga%2C_Sao_Paulo%2C_Brasil-8.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Dario Sanches from São Paulo, Brazil"
+    }
+  },
+  {
+    "speciesCode": "snopet1",
+    "name": "Snow Petrel",
+    "scientificName": "Pagodroma nivea",
+    "family": "Shearwaters and Petrels",
+    "countries": [
+      "AQ",
+      "AU",
+      "BV",
+      "CL",
+      "FK",
+      "XX",
+      "GS"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/P%C3%A9trel_des_neiges_avec_poussin.jpg/960px-P%C3%A9trel_des_neiges_avec_poussin.jpg",
+      "license": "Public domain",
+      "artist": "This illustration is part of Matthieu Weber's travels. If you see a media on his website that you're eager to see on Wikimedia Commons, send an e-mail to the author, he will upload it if possible."
+    }
+  },
+  {
+    "speciesCode": "yefpar5",
+    "name": "Yellow-faced Parrot",
+    "scientificName": "Alipiopsitta xanthops",
+    "family": "New World and African Parrots",
+    "countries": [
+      "BO",
+      "BR",
+      "KW",
+      "PY",
+      "SG",
+      "GB"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Alipiopsitta_xanthops_-in_tree-3-4sq.jpg",
+      "license": "CC BY 2.0",
+      "artist": "derivative work: Snowmanradio (talk)\nAlipiopsitta_xanthops_-in_tree-3.jpg: Rodrigo Jesus Melo"
+    }
+  },
+  {
+    "speciesCode": "tatlea1",
+    "name": "Middle American Leaftosser",
+    "scientificName": "Sclerurus mexicanus",
+    "family": "Ovenbirds and Woodcreepers",
+    "countries": [
+      "BZ",
+      "BR",
+      "CR",
+      "SV",
+      "GT",
+      "HN",
+      "MX",
+      "NI",
+      "PA"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Naturalis_Biodiversity_Center_-_RMNH.AVES.120405_-_Sclerurus_mexicanus_subsp._-_Furnariidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.120405_-_Sclerurus_mexicanus_subsp._-_Furnariidae_-_bird_skin_specimen.jpeg",
+      "license": "CC BY-SA 3.0",
+      "artist": ""
+    }
+  },
+  {
+    "speciesCode": "credor1",
+    "name": "Crested Doradito",
+    "scientificName": "Pseudocolopteryx sclateri",
+    "family": "Tyrant Flycatchers",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "GY",
+      "PY",
+      "TT",
+      "UY",
+      "VE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Pseudocolopteryx_sclateri.jpg/960px-Pseudocolopteryx_sclateri.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Cláudio Dias Timm from Rio Grande do Sul"
+    }
+  },
+  {
+    "speciesCode": "grepar1",
+    "name": "Great Parrotbill",
+    "scientificName": "Paradoxornis aemodius",
+    "family": "Parrotbills",
+    "countries": [
+      "BT",
+      "CN",
+      "IN",
+      "NP"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Great_Parrotbill.jpg",
+      "license": "CC BY 2.0",
+      "artist": "Ron Knight"
+    }
+  },
+  {
+    "speciesCode": "leaant1",
+    "name": "Leaden Antwren",
+    "scientificName": "Myrmotherula assimilis",
+    "family": "Typical Antbirds",
+    "countries": [
+      "BO",
+      "BR",
+      "CO",
+      "PE"
+    ],
+    "difficulty": "medium",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Myrmotherula_assimilis_map.svg/960px-Myrmotherula_assimilis_map.svg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Cephas"
+    }
+  },
+  {
+    "speciesCode": "ruftre2",
+    "name": "Rufous Treepie",
+    "scientificName": "Dendrocitta vagabunda",
+    "family": "Crows, Jays, and Magpies",
+    "countries": [
+      "BD",
+      "BT",
+      "KH",
+      "CN",
+      "IN",
+      "LA",
+      "MM",
+      "NP",
+      "PK",
+      "SG",
+      "TH",
+      "TR",
+      "AE",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Kidoor_Bird_Village_2019_list_birds.pdf/page1-960px-Kidoor_Bird_Village_2019_list_birds.pdf.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Vijayanrajapuram"
+    }
+  },
+  {
+    "speciesCode": "indrol3",
+    "name": "Indochinese Roller",
+    "scientificName": "Coracias affinis",
+    "family": "Rollers",
+    "countries": [
+      "BD",
+      "BT",
+      "KH",
+      "CN",
+      "IN",
+      "LA",
+      "MY",
+      "MM",
+      "NP",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Coracias_affinis_-_Kaeng_Krachan.jpg/960px-Coracias_affinis_-_Kaeng_Krachan.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "JJ Harrison (https://www.jjharrison.com.au/)"
+    }
+  },
+  {
+    "speciesCode": "malsun1",
+    "name": "Malachite Sunbird",
+    "scientificName": "Nectarinia famosa",
+    "family": "Sunbirds and Spiderhunters",
+    "countries": [
+      "BI",
+      "CD",
+      "SZ",
+      "ET",
+      "KE",
+      "LS",
+      "MW",
+      "MZ",
+      "NA",
+      "RW",
+      "ZA",
+      "SS",
+      "TZ",
+      "UG",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Nectarinia_famosa_%28Malachite_Sunbird%29.jpg/960px-Nectarinia_famosa_%28Malachite_Sunbird%29.jpg",
+      "license": "CC BY 2.0",
+      "artist": "Steve Garvie from Dunfermline, Fife, Scotland"
+    }
+  },
+  {
+    "speciesCode": "colowl1",
+    "name": "Collared Owlet",
+    "scientificName": "Taenioptynx brodiei",
+    "family": "Owls",
+    "countries": [
+      "BD",
+      "BT",
+      "KH",
+      "CN",
+      "HK",
+      "IN",
+      "LA",
+      "MY",
+      "MM",
+      "NP",
+      "PK",
+      "TW",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Collared_Owlet_-_Bajoon%2C_Uttarakhand%2C_India_%2815143482586%29.jpg/960px-Collared_Owlet_-_Bajoon%2C_Uttarakhand%2C_India_%2815143482586%29.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "soumyajit nandy from Kolkata, India"
+    }
+  },
+  {
+    "speciesCode": "eapwhy1",
+    "name": "Eastern Paradise-Whydah",
+    "scientificName": "Vidua paradisaea",
+    "family": "Whydahs and Indigobirds",
+    "countries": [
+      "AO",
+      "BW",
+      "CA",
+      "CN",
+      "CD",
+      "SZ",
+      "ET",
+      "KE",
+      "MW",
+      "MZ",
+      "NA",
+      "RW",
+      "SO",
+      "ZA",
+      "SS",
+      "ES",
+      "SD",
+      "TZ",
+      "UG",
+      "US",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/A_book_of_birds_%28Plate_XXVIII%29_%286021714589%29.jpg/960px-A_book_of_birds_%28Plate_XXVIII%29_%286021714589%29.jpg",
+      "license": "Public domain",
+      "artist": "Pycraft, W. P."
+    }
+  },
+  {
+    "speciesCode": "orabis1",
+    "name": "Northern Red Bishop",
+    "scientificName": "Euplectes franciscanus",
+    "family": "Weavers and Allies",
+    "countries": [
+      "BH",
+      "BJ",
+      "BM",
+      "BF",
+      "CM",
+      "CA",
+      "KY",
+      "CF",
+      "TD",
+      "CI",
+      "CD",
+      "ER",
+      "ET",
+      "GM",
+      "GH",
+      "GR",
+      "GP",
+      "GN",
+      "GW",
+      "HK",
+      "IT",
+      "JM",
+      "KE",
+      "KW",
+      "LR",
+      "ML",
+      "MQ",
+      "MR",
+      "NE",
+      "NG",
+      "OM",
+      "PT",
+      "PR",
+      "QA",
+      "SN",
+      "SL",
+      "SG",
+      "SO",
+      "SS",
+      "ES",
+      "SD",
+      "TG",
+      "UG",
+      "AE",
+      "GB",
+      "US",
+      "VI"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bird_in_Gambia_0001.jpg/960px-Bird_in_Gambia_0001.jpg",
+      "license": "CC BY 2.0",
+      "artist": "N3ddo! from MILAN, ITALY"
+    }
+  },
+  {
+    "speciesCode": "whimbr3",
+    "name": "Hudsonian Whimbrel",
+    "scientificName": "Numenius hudsonicus",
+    "family": "Sandpipers and Allies",
+    "countries": [
+      "AI",
+      "AG",
+      "AR",
+      "AW",
+      "AU",
+      "BS",
+      "BB",
+      "BZ",
+      "BM",
+      "BO",
+      "BR",
+      "CA",
+      "CV",
+      "BQ",
+      "KY",
+      "CL",
+      "CP",
+      "CO",
+      "CR",
+      "CU",
+      "CW",
+      "DM",
+      "DO",
+      "EC",
+      "SV",
+      "FK",
+      "FR",
+      "GF",
+      "GL",
+      "GD",
+      "GP",
+      "GT",
+      "GY",
+      "HT",
+      "XX",
+      "HN",
+      "IE",
+      "IL",
+      "JM",
+      "MQ",
+      "MX",
+      "MS",
+      "NZ",
+      "NI",
+      "OM",
+      "PA",
+      "PY",
+      "PE",
+      "PT",
+      "PR",
+      "BL",
+      "KN",
+      "LC",
+      "MF",
+      "PM",
+      "VC",
+      "SX",
+      "ES",
+      "SR",
+      "TW",
+      "TT",
+      "TC",
+      "GB",
+      "US",
+      "UM",
+      "UY",
+      "VE",
+      "VG",
+      "VI",
+      "EH"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Sea_Bird_at_Acapulco_Beach.jpg/960px-Sea_Bird_at_Acapulco_Beach.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Arturo Mann"
+    }
+  },
+  {
+    "speciesCode": "plaxen2",
+    "name": "Northern Plain-Xenops",
+    "scientificName": "Xenops mexicanus",
+    "family": "Ovenbirds and Woodcreepers",
+    "countries": [
+      "BZ",
+      "CO",
+      "CR",
+      "EC",
+      "GT",
+      "HN",
+      "MX",
+      "NI",
+      "PA",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Systematisches_Verzeichniss_der_Wirbelthiere_Mexicos_%28IA_systematischesve00ml%29.pdf/page1-500px-Systematisches_Verzeichniss_der_Wirbelthiere_Mexicos_%28IA_systematischesve00ml%29.pdf.jpg",
+      "license": "Public domain",
+      "artist": "Müller, Johann Wilhelm, Freiherr von, 1824-1866"
+    }
+  },
+  {
+    "speciesCode": "chcsta1",
+    "name": "Chestnut-cheeked Starling",
+    "scientificName": "Agropsar philippensis",
+    "family": "Starlings",
+    "countries": [
+      "AC",
+      "BD",
+      "BN",
+      "KH",
+      "CN",
+      "HK",
+      "IN",
+      "ID",
+      "JP",
+      "LA",
+      "MY",
+      "MN",
+      "MM",
+      "KP",
+      "PW",
+      "PH",
+      "RU",
+      "SG",
+      "KR",
+      "TW",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Naturalis_Biodiversity_Center_-_RMNH.AVES.144320_2_-_Sturnus_philippensis_%28J.R._Forster%2C_1781%29_-_Sturnidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.144320_2_-_Sturnus_philippensis_%28J.R._Forster%2C_1781%29_-_Sturnidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "J.R. Forster, 1781"
+    }
+  },
+  {
+    "speciesCode": "armbab1",
+    "name": "Arrow-marked Babbler",
+    "scientificName": "Turdoides jardineii",
+    "family": "Laughingthrushes and Allies",
+    "countries": [
+      "AO",
+      "BW",
+      "BI",
+      "CG",
+      "CD",
+      "SZ",
+      "GA",
+      "KE",
+      "MW",
+      "MZ",
+      "NA",
+      "RW",
+      "ZA",
+      "TZ",
+      "UG",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Naturalis_Biodiversity_Center_-_RMNH.AVES.37509_1_-_Turdoides_jardineii_kirkii_%28Sharpe%2C_1876%29_-_Timaliidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.37509_1_-_Turdoides_jardineii_kirkii_%28Sharpe%2C_1876%29_-_Timaliidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "Sharpe, 1876"
+    }
+  },
+  {
+    "speciesCode": "slaant1",
+    "name": "Slaty Antwren",
+    "scientificName": "Myrmotherula schisticolor",
+    "family": "Typical Antbirds",
+    "countries": [
+      "BZ",
+      "CO",
+      "CR",
+      "EC",
+      "GT",
+      "HN",
+      "MX",
+      "NI",
+      "PA",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Niels Krabbe"
+    }
+  },
+  {
+    "speciesCode": "rubcra1",
+    "name": "Ruddy-breasted Crake",
+    "scientificName": "Zapornia fusca",
+    "family": "Rails, Gallinules, and Coots",
+    "countries": [
+      "BD",
+      "BT",
+      "BN",
+      "KH",
+      "CN",
+      "HK",
+      "IN",
+      "ID",
+      "JP",
+      "LA",
+      "MO",
+      "MY",
+      "MN",
+      "MM",
+      "NP",
+      "KP",
+      "OM",
+      "PK",
+      "PH",
+      "RU",
+      "SG",
+      "KR",
+      "LK",
+      "TW",
+      "TH",
+      "TL",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Ruddy-breasted_Crake_%28Porzana_fusca%29_in_Kolkata_I_IMG_2677.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "J.M.Garg"
+    }
+  },
+  {
+    "speciesCode": "mabeat1",
+    "name": "Olive Bee-eater",
+    "scientificName": "Merops superciliosus",
+    "family": "Bee-eaters",
+    "countries": [
+      "AO",
+      "BW",
+      "KM",
+      "CD",
+      "ET",
+      "KE",
+      "MG",
+      "MW",
+      "YT",
+      "MZ",
+      "NA",
+      "RW",
+      "SO",
+      "ZA",
+      "SS",
+      "TZ",
+      "UG",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Madagascar_bee_eater.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Alextelford at English Wikipedia"
+    }
+  },
+  {
+    "speciesCode": "brtcur",
+    "name": "Bristle-thighed Curlew",
+    "scientificName": "Numenius tahitiensis",
+    "family": "Sandpipers and Allies",
+    "countries": [
+      "AS",
+      "CA",
+      "CL",
+      "CK",
+      "FJ",
+      "PF",
+      "GU",
+      "JP",
+      "KI",
+      "MH",
+      "FM",
+      "NU",
+      "MP",
+      "PG",
+      "PN",
+      "WS",
+      "SB",
+      "TK",
+      "TO",
+      "US",
+      "UM",
+      "WF"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Curlew_%28PSF%29.png/960px-Curlew_%28PSF%29.png",
+      "license": "Public domain",
+      "artist": "Pearson Scott Foresman"
+    }
+  },
+  {
+    "speciesCode": "bncrai1",
+    "name": "Brown-cheeked Rail",
+    "scientificName": "Rallus indicus",
+    "family": "Rails, Gallinules, and Coots",
+    "countries": [
+      "BD",
+      "KH",
+      "CN",
+      "HK",
+      "IN",
+      "JP",
+      "LA",
+      "MO",
+      "MN",
+      "MM",
+      "NP",
+      "RU",
+      "KR",
+      "TW",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/The_brown-cheeked_rail_or_eastern_water_rail.jpg/960px-The_brown-cheeked_rail_or_eastern_water_rail.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Tareq's Photography"
+    }
+  },
+  {
+    "speciesCode": "pipplo",
+    "name": "Piping Plover",
+    "scientificName": "Charadrius melodus",
+    "family": "Plovers and Lapwings",
+    "countries": [
+      "AI",
+      "BS",
+      "BB",
+      "BM",
+      "CA",
+      "BQ",
+      "CO",
+      "CR",
+      "CU",
+      "DO",
+      "GP",
+      "HN",
+      "JM",
+      "MX",
+      "NI",
+      "PR",
+      "KN",
+      "MF",
+      "PM",
+      "TC",
+      "US",
+      "VE",
+      "VG",
+      "VI"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Charadrius-melodus-004.jpg/960px-Charadrius-melodus-004.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "Mdf"
+    }
+  },
+  {
+    "speciesCode": "spaspa1",
+    "name": "Spanish Sparrow",
+    "scientificName": "Passer hispaniolensis",
+    "family": "Old World Sparrows",
+    "countries": [
+      "AF",
+      "AL",
+      "DZ",
+      "AM",
+      "AZ",
+      "BH",
+      "BA",
+      "BG",
+      "CV",
+      "CN",
+      "HR",
+      "CY",
+      "EG",
+      "FR",
+      "GE",
+      "DE",
+      "GR",
+      "HK",
+      "HU",
+      "IN",
+      "IR",
+      "IQ",
+      "IL",
+      "IT",
+      "JO",
+      "KZ",
+      "XK",
+      "KW",
+      "KG",
+      "LB",
+      "LY",
+      "MT",
+      "MD",
+      "ME",
+      "MA",
+      "NP",
+      "NL",
+      "MK",
+      "OM",
+      "PK",
+      "PS",
+      "PT",
+      "QA",
+      "RO",
+      "RU",
+      "SA",
+      "RS",
+      "SI",
+      "ES",
+      "SE",
+      "CH",
+      "SY",
+      "TJ",
+      "TN",
+      "TR",
+      "TM",
+      "UA",
+      "AE",
+      "GB",
+      "UZ",
+      "EH"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Passer_Hispaniolensis_Male.JPG/960px-Passer_Hispaniolensis_Male.JPG",
+      "license": "CC BY-SA 3.0",
+      "artist": "Francesco Canu"
+    }
+  },
+  {
+    "speciesCode": "bcbeat1",
+    "name": "Blue-cheeked Bee-eater",
+    "scientificName": "Merops persicus",
+    "family": "Bee-eaters",
+    "countries": [
+      "AF",
+      "DZ",
+      "AO",
+      "AM",
+      "AT",
+      "AZ",
+      "BH",
+      "BE",
+      "BW",
+      "IO",
+      "BG",
+      "BF",
+      "BI",
+      "CM",
+      "CV",
+      "CF",
+      "TD",
+      "CN",
+      "CG",
+      "CI",
+      "CY",
+      "DJ",
+      "CD",
+      "EG",
+      "ER",
+      "SZ",
+      "ET",
+      "FI",
+      "GA",
+      "GM",
+      "GE",
+      "GH",
+      "GR",
+      "GN",
+      "GW",
+      "XX",
+      "HU",
+      "IN",
+      "IR",
+      "IQ",
+      "IL",
+      "IT",
+      "JO",
+      "KZ",
+      "KE",
+      "KW",
+      "KG",
+      "LR",
+      "MW",
+      "MV",
+      "ML",
+      "MR",
+      "MA",
+      "MZ",
+      "NA",
+      "NL",
+      "OM",
+      "PK",
+      "PS",
+      "PT",
+      "QA",
+      "RU",
+      "RW",
+      "SA",
+      "SN",
+      "SC",
+      "SL",
+      "SO",
+      "ZA",
+      "SS",
+      "ES",
+      "LK",
+      "SD",
+      "SE",
+      "CH",
+      "SY",
+      "TW",
+      "TJ",
+      "TZ",
+      "TN",
+      "TR",
+      "TM",
+      "UG",
+      "UA",
+      "AE",
+      "GB",
+      "UZ",
+      "EH",
+      "YE",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Marathi_Bird_Names_BNHS_and_Maharashtra_Pakshimitra_2016.pdf/page1-500px-Marathi_Bird_Names_BNHS_and_Maharashtra_Pakshimitra_2016.pdf.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Dr. Raju Kasambe"
+    }
+  },
+  {
+    "speciesCode": "capher1",
+    "name": "Capped Heron",
+    "scientificName": "Pilherodius pileatus",
+    "family": "Herons, Egrets, and Bitterns",
+    "countries": [
+      "AR",
+      "BO",
+      "BR",
+      "CO",
+      "EC",
+      "GF",
+      "GY",
+      "PA",
+      "PY",
+      "PE",
+      "SR",
+      "TT",
+      "VE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Zoologico_de_Cali_%2815171783442%29.jpg/960px-Zoologico_de_Cali_%2815171783442%29.jpg",
+      "license": "CC BY 2.0",
+      "artist": "Martha Rivero"
+    }
+  },
+  {
+    "speciesCode": "sonspa",
+    "name": "Song Sparrow",
+    "scientificName": "Melospiza melodia",
+    "family": "New World Sparrows",
+    "countries": [
+      "BE",
+      "BM",
+      "CA",
+      "DE",
+      "GL",
+      "IE",
+      "MX",
+      "NL",
+      "NO",
+      "RU",
+      "PM",
+      "SE",
+      "CH",
+      "GB",
+      "US",
+      "VI"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Song_Sparrow%2C_from_the_Birds_of_America_series_%28N4%29_for_Allen_%26_Ginter_Cigarettes_Brands_MET_DP828722.jpg/960px-Song_Sparrow%2C_from_the_Birds_of_America_series_%28N4%29_for_Allen_%26_Ginter_Cigarettes_Brands_MET_DP828722.jpg",
+      "license": "CC0",
+      "artist": "Allen &amp; Ginter"
+    }
+  },
+  {
+    "speciesCode": "isashr1",
+    "name": "Isabelline Shrike",
+    "scientificName": "Lanius isabellinus",
+    "family": "Shrikes",
+    "countries": [
+      "AF",
+      "AZ",
+      "BH",
+      "BD",
+      "BE",
+      "BG",
+      "BF",
+      "BI",
+      "CM",
+      "TD",
+      "CN",
+      "CY",
+      "DJ",
+      "CD",
+      "EG",
+      "ER",
+      "EE",
+      "ET",
+      "FO",
+      "FI",
+      "FR",
+      "GE",
+      "DE",
+      "GR",
+      "IN",
+      "IR",
+      "IQ",
+      "IE",
+      "IL",
+      "IT",
+      "JP",
+      "JO",
+      "KZ",
+      "KE",
+      "KW",
+      "KG",
+      "LB",
+      "MR",
+      "MN",
+      "MA",
+      "NP",
+      "NL",
+      "NO",
+      "OM",
+      "PK",
+      "PS",
+      "PL",
+      "PT",
+      "QA",
+      "RU",
+      "RW",
+      "SA",
+      "SO",
+      "KR",
+      "SS",
+      "ES",
+      "SD",
+      "SE",
+      "CH",
+      "SY",
+      "TW",
+      "TJ",
+      "TZ",
+      "TR",
+      "TM",
+      "UG",
+      "AE",
+      "GB",
+      "UZ",
+      "YE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Lanius_phoenicuroides_MHNT.ZOO.2010.11.213.Turkm%C3%A9nistan.jpg/960px-Lanius_phoenicuroides_MHNT.ZOO.2010.11.213.Turkm%C3%A9nistan.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Didier Descouens"
+    }
+  },
+  {
+    "speciesCode": "redkit1",
+    "name": "Red Kite",
+    "scientificName": "Milvus milvus",
+    "family": "Hawks, Eagles, and Kites",
+    "countries": [
+      "AL",
+      "DZ",
+      "AD",
+      "AM",
+      "AT",
+      "AZ",
+      "BY",
+      "BE",
+      "BA",
+      "BG",
+      "CV",
+      "TD",
+      "HR",
+      "CZ",
+      "DK",
+      "EE",
+      "FO",
+      "FI",
+      "FR",
+      "DE",
+      "GI",
+      "GR",
+      "GG",
+      "HU",
+      "IS",
+      "IN",
+      "IE",
+      "IM",
+      "IL",
+      "IT",
+      "JE",
+      "LV",
+      "LI",
+      "LT",
+      "LU",
+      "MT",
+      "MR",
+      "ME",
+      "MA",
+      "NL",
+      "NO",
+      "PL",
+      "PT",
+      "RO",
+      "RU",
+      "SM",
+      "RS",
+      "SK",
+      "SI",
+      "ES",
+      "SE",
+      "CH",
+      "TN",
+      "TR",
+      "UA",
+      "GB"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Obernberg_am_Inn_Adlerwarte_Rotmilan-0136.jpg/960px-Obernberg_am_Inn_Adlerwarte_Rotmilan-0136.jpg",
+      "license": "CC BY-SA 4.0",
+      "artist": "Isiwal"
+    }
+  },
+  {
+    "speciesCode": "killde",
+    "name": "Killdeer",
+    "scientificName": "Charadrius vociferus",
+    "family": "Plovers and Lapwings",
+    "countries": [
+      "AI",
+      "AG",
+      "AR",
+      "AW",
+      "BS",
+      "BB",
+      "BZ",
+      "BM",
+      "BR",
+      "CA",
+      "BQ",
+      "KY",
+      "CL",
+      "CO",
+      "CR",
+      "CU",
+      "CW",
+      "DM",
+      "DO",
+      "EC",
+      "SV",
+      "FR",
+      "GD",
+      "GP",
+      "GT",
+      "HT",
+      "HN",
+      "HU",
+      "IS",
+      "IE",
+      "JM",
+      "MQ",
+      "MX",
+      "MS",
+      "NL",
+      "NI",
+      "PA",
+      "PE",
+      "PT",
+      "PR",
+      "BL",
+      "KN",
+      "MF",
+      "PM",
+      "VC",
+      "SX",
+      "ES",
+      "CH",
+      "TT",
+      "TC",
+      "GB",
+      "US",
+      "VE",
+      "VG",
+      "VI"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Killdeer_%28PSF%29.png/960px-Killdeer_%28PSF%29.png",
+      "license": "Public domain",
+      "artist": "Pearson Scott Foresman"
+    }
+  },
+  {
+    "speciesCode": "woosto",
+    "name": "Wood Stork",
+    "scientificName": "Mycteria americana",
+    "family": "Storks",
+    "countries": [
+      "AR",
+      "AW",
+      "BS",
+      "BZ",
+      "BO",
+      "BR",
+      "CA",
+      "CL",
+      "CO",
+      "CR",
+      "CU",
+      "DO",
+      "EC",
+      "SV",
+      "GF",
+      "GT",
+      "GY",
+      "HN",
+      "MX",
+      "NI",
+      "PA",
+      "PY",
+      "PE",
+      "PR",
+      "SR",
+      "TT",
+      "US",
+      "UY",
+      "VE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Ibis_2_%28PSF%29.png/960px-Ibis_2_%28PSF%29.png",
+      "license": "Public domain",
+      "artist": "Pearson Scott Foresman"
+    }
+  },
+  {
+    "speciesCode": "afrbro1",
+    "name": "African Broadbill",
+    "scientificName": "Smithornis capensis",
+    "family": "African and Green Broadbills",
+    "countries": [
+      "AO",
+      "BW",
+      "BI",
+      "CM",
+      "CF",
+      "CG",
+      "CI",
+      "CD",
+      "SZ",
+      "GA",
+      "GH",
+      "GN",
+      "GW",
+      "KE",
+      "LR",
+      "MW",
+      "MZ",
+      "NA",
+      "RW",
+      "ZA",
+      "TZ",
+      "UG",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Naturalis_Biodiversity_Center_-_RMNH.AVES.37485_1_-_Smithornis_capensis_capensis_%28A._Smith%2C_1840%29_-_Eurylaimidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.37485_1_-_Smithornis_capensis_capensis_%28A._Smith%2C_1840%29_-_Eurylaimidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": "A. Smith,  1840"
+    }
+  },
+  {
+    "speciesCode": "meypar1",
+    "name": "Meyer's Parrot",
+    "scientificName": "Poicephalus meyeri",
+    "family": "New World and African Parrots",
+    "countries": [
+      "AO",
+      "BW",
+      "BI",
+      "CF",
+      "TD",
+      "CD",
+      "ER",
+      "ET",
+      "KE",
+      "MW",
+      "MZ",
+      "NA",
+      "RW",
+      "ZA",
+      "SS",
+      "SD",
+      "TZ",
+      "UG",
+      "GB",
+      "US",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Poicephalus_meyeri_-Rwanda-8.jpg",
+      "license": "CC BY-SA 2.0",
+      "artist": "Lip Kee Yap"
+    }
+  },
+  {
+    "speciesCode": "baepoc1",
+    "name": "Baer's Pochard",
+    "scientificName": "Aythya baeri",
+    "family": "Ducks, Geese, and Waterfowl",
+    "countries": [
+      "BD",
+      "CN",
+      "HK",
+      "IN",
+      "JP",
+      "MN",
+      "MM",
+      "NP",
+      "MP",
+      "KP",
+      "PK",
+      "PH",
+      "RU",
+      "KR",
+      "CH",
+      "TW",
+      "TH",
+      "GB",
+      "US",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/04059jfFields_Bird_Sanctuary_Roads_Baliuag_Paligui_Candaba_Pampangafvf_02.JPG/960px-04059jfFields_Bird_Sanctuary_Roads_Baliuag_Paligui_Candaba_Pampangafvf_02.JPG",
+      "license": "Public domain",
+      "artist": "Judgefloro"
+    }
+  },
+  {
+    "speciesCode": "baywea1",
+    "name": "Baya Weaver",
+    "scientificName": "Ploceus philippinus",
+    "family": "Weavers and Allies",
+    "countries": [
+      "BD",
+      "BT",
+      "KH",
+      "CN",
+      "HK",
+      "IN",
+      "ID",
+      "KW",
+      "LA",
+      "MY",
+      "MM",
+      "NP",
+      "OM",
+      "PK",
+      "QA",
+      "SG",
+      "LK",
+      "TH",
+      "AE",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Hanging_bird_nest_02.jpg/960px-Hanging_bird_nest_02.jpg",
+      "license": "CC BY 4.0",
+      "artist": "Zaheed Sarwer Khan"
+    }
+  },
+  {
+    "speciesCode": "stbwoo1",
+    "name": "Strong-billed Woodcreeper",
+    "scientificName": "Xiphocolaptes promeropirhynchus",
+    "family": "Ovenbirds and Woodcreepers",
+    "countries": [
+      "BZ",
+      "BO",
+      "BR",
+      "CO",
+      "CR",
+      "EC",
+      "SV",
+      "GT",
+      "GY",
+      "HN",
+      "MX",
+      "NI",
+      "PA",
+      "PE",
+      "VE"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://commons.wikimedia.org/w/resources/assets/file-type-icons/fileicon-ogg.png",
+      "license": "CC BY-SA 4.0",
+      "artist": "Niels Krabbe"
+    }
+  },
+  {
+    "speciesCode": "laudov1",
+    "name": "Laughing Dove",
+    "scientificName": "Spilopelia senegalensis",
+    "family": "Pigeons and Doves",
+    "countries": [
+      "AF",
+      "DZ",
+      "AO",
+      "AM",
+      "AU",
+      "AZ",
+      "BH",
+      "BD",
+      "BJ",
+      "BW",
+      "BG",
+      "BF",
+      "BI",
+      "CM",
+      "CA",
+      "CV",
+      "CF",
+      "TD",
+      "CN",
+      "CG",
+      "CI",
+      "HR",
+      "CY",
+      "DJ",
+      "CD",
+      "EG",
+      "GQ",
+      "ER",
+      "SZ",
+      "ET",
+      "FJ",
+      "FI",
+      "GA",
+      "GM",
+      "GE",
+      "GH",
+      "GR",
+      "GN",
+      "GW",
+      "IN",
+      "IR",
+      "IQ",
+      "IL",
+      "IT",
+      "JO",
+      "KZ",
+      "KE",
+      "KW",
+      "KG",
+      "LB",
+      "LS",
+      "LR",
+      "LY",
+      "MW",
+      "ML",
+      "MT",
+      "MQ",
+      "MR",
+      "MU",
+      "MN",
+      "MA",
+      "MZ",
+      "NA",
+      "NP",
+      "NE",
+      "NG",
+      "OM",
+      "PK",
+      "PS",
+      "PT",
+      "QA",
+      "RU",
+      "RW",
+      "ST",
+      "SA",
+      "SN",
+      "SL",
+      "SO",
+      "ZA",
+      "SS",
+      "ES",
+      "LK",
+      "SD",
+      "SY",
+      "TJ",
+      "TZ",
+      "TG",
+      "TN",
+      "TR",
+      "TM",
+      "UG",
+      "AE",
+      "GB",
+      "US",
+      "UZ",
+      "EH",
+      "YE",
+      "ZM",
+      "ZW"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/64/Laughing_Dive_at_Sultanpur-_Cooing_I_Picture_097.jpg",
+      "license": "CC BY-SA 3.0",
+      "artist": "J.M.Garg"
+    }
+  },
+  {
+    "speciesCode": "orblea1",
+    "name": "Orange-bellied Leafbird",
+    "scientificName": "Chloropsis hardwickii",
+    "family": "Leafbirds",
+    "countries": [
+      "BD",
+      "BT",
+      "CN",
+      "HK",
+      "IN",
+      "ID",
+      "LA",
+      "MO",
+      "MY",
+      "MM",
+      "NP",
+      "SG",
+      "TW",
+      "TH",
+      "VN"
+    ],
+    "difficulty": "easy",
+    "image": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Naturalis_Biodiversity_Center_-_RMNH.AVES.27192_2_-_Chloropsis_hardwickei_subsp._-_Irenidae_-_bird_skin_specimen.jpeg/960px-Naturalis_Biodiversity_Center_-_RMNH.AVES.27192_2_-_Chloropsis_hardwickei_subsp._-_Irenidae_-_bird_skin_specimen.jpeg",
+      "license": "CC0",
+      "artist": ""
+    }
+  }
+]
