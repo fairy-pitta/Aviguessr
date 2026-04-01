@@ -3,6 +3,7 @@ import type { Bird } from "../../bird/model/types";
 export type GameRound = {
   round: number;
   bird: Bird;
+  choices?: string[];
   result: RoundResult | null;
 };
 
@@ -19,6 +20,7 @@ export type GameState = {
   totalScore: number;
   currentRound: number;
   status: "playing" | "finished";
+  mode?: "classic" | "multiple_choice";
   rounds: GameRound[];
 };
 

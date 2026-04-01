@@ -1,12 +1,14 @@
 import { Hono } from "hono";
 import type { Bindings } from "../types";
 import { createGame, getGameState, submitGuess } from "../services/game";
+import type { GameMode } from "../services/game";
 import { getHintsForBird } from "../services/hints";
 
 export const gameRoutes = new Hono<{ Bindings: Bindings }>();
 
 gameRoutes.get("/new", async (c) => {
-  const result = await createGame(c.env.DB);
+  const mode = (c.req.query("mode") ?? "classic") as GameMode;
+  const result = await createGame(c.env.DB, mode);
   return c.json(result);
 });
 

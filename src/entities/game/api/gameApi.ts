@@ -3,6 +3,7 @@ import type { GameState, GuessResponse } from "../model/types";
 
 type CreateGameResponse = {
   gameId: string;
+  mode: "classic" | "multiple_choice";
   rounds: {
     round: number;
     bird: {
@@ -14,11 +15,15 @@ type CreateGameResponse = {
       biome?: string;
       imageUrl: string;
     };
+    choices?: string[];
   }[];
 };
 
-export function createGame(): Promise<CreateGameResponse> {
-  return apiFetch<CreateGameResponse>("/game/new");
+export function createGame(
+  mode?: "classic" | "multiple_choice"
+): Promise<CreateGameResponse> {
+  const query = mode ? `?mode=${mode}` : "";
+  return apiFetch<CreateGameResponse>(`/game/new${query}`);
 }
 
 export function getGameState(id: string): Promise<GameState> {

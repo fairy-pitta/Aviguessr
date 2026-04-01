@@ -4,6 +4,7 @@ import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
 import { GameBoard } from "@/widgets/game-board";
+import { ChoiceBoard } from "@/widgets/choice-board";
 import { RoundResult } from "@/widgets/round-result";
 import { GameSummary } from "@/widgets/game-summary";
 import { TIME_LIMIT_MS } from "@/shared/config/constants";
@@ -26,12 +27,27 @@ export function GamePage() {
   // Initialize game from navigation state
   useEffect(() => {
     if (id && game.phase === "idle") {
-      const state = location.state as { rounds?: GameRound[] } | null;
+      const state = location.state as {
+        rounds?: GameRound[];
+        mode?: "classic" | "multiple_choice";
+      } | null;
       if (state?.rounds) {
-        game.startGame(id, state.rounds);
+        game.startGame(id, state.rounds, state.mode ?? "classic");
       }
     }
   }, [id, game.phase, location.state, game.startGame]);
+
+  const handleChoiceSelect = useCallback(
+    async (countryCode: string) => {
+      const timeMs = Date.now() - game.roundStartTime;
+      const result = await guess(game.currentRound, countryCode, timeMs, 0);
+      if (result) {
+        setSelectedCountry(countryCode);
+        game.showResult(result);
+      }
+    },
+    [game.roundStartTime, game.currentRound, guess, game.showResult]
+  );
 
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
@@ -73,6 +89,21 @@ export function GamePage() {
   }
 
   if (game.phase === "playing" && game.currentBird) {
+    if (game.mode === "multiple_choice" && game.currentChoices) {
+      return (
+        <ChoiceBoard
+          bird={game.currentBird}
+          currentRound={game.currentRound}
+          totalScore={game.totalScore}
+          choices={game.currentChoices}
+          roundStartTime={game.roundStartTime}
+          guessLoading={guessLoading}
+          onChoiceSelect={handleChoiceSelect}
+          onTimeout={handleTimeout}
+        />
+      );
+    }
+
     return (
       <GameBoard
         bird={game.currentBird}
