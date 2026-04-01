@@ -22,3 +22,6 @@ npm-debug.log*
 # data cache
 data/_cache_*
 data/seed.sql
+worker/node_modules/
+data/images/
+data/update-metadata.sql
