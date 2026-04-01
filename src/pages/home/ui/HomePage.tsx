@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { StartButton, useStartGame } from "@/features/start-game";
+import { Button } from "@/shared/ui";
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -20,7 +21,15 @@ export function HomePage() {
       <p className="text-xl text-gray-600 mb-8">
         Guess where the bird lives!
       </p>
-      <StartButton loading={loading} onStart={handleStart} />
+      <div className="flex flex-col gap-4">
+        <StartButton loading={loading} onStart={handleStart} />
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/daily")}
+        >
+          Daily Challenge
+        </Button>
+      </div>
     </div>
   );
 }
