@@ -3,33 +3,46 @@ type HintPanelProps = {
   loading: boolean;
 };
 
-const HINT_LABELS = ["Continent (5s)", "Subregion (15s)", "Country (25s)"];
+const HINT_LEVELS = [
+  { label: "Continent", time: "5s" },
+  { label: "Region", time: "15s" },
+  { label: "Country", time: "25s" },
+];
 
 export function HintPanel({ hints, loading }: HintPanelProps) {
   return (
-    <div className="bg-white/90 backdrop-blur rounded-lg shadow-md p-3 w-64">
-      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+    <div className="glass rounded-xl p-3 w-64 animate-fade-up">
+      <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-2">
         Hints
       </h3>
-      <div className="flex flex-col gap-1.5">
-        {HINT_LABELS.map((label, i) => {
+      <div className="flex flex-col gap-2">
+        {HINT_LEVELS.map((level, i) => {
           const unlocked = hints[i] != null;
           return (
-            <div key={i} className="flex items-start gap-2 text-sm">
+            <div
+              key={i}
+              className={`flex items-center gap-2 text-sm transition-opacity duration-300 ${
+                unlocked ? "" : "opacity-40"
+              }`}
+            >
               <span
-                className={`mt-0.5 w-4 h-4 flex-shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                className={`w-6 h-6 flex-shrink-0 rounded-lg flex items-center justify-center text-[10px] font-bold ${
                   unlocked
-                    ? "bg-emerald-500 text-white"
-                    : "bg-gray-200 text-gray-400"
+                    ? "bg-teal-500/20 text-teal-300 border border-teal-500/40"
+                    : "bg-white/5 text-slate-600 border border-white/5"
                 }`}
               >
                 {i + 1}
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 {unlocked ? (
-                  <span className="text-gray-800">{hints[i]}</span>
+                  <span className="text-white font-medium text-sm">
+                    {hints[i]}
+                  </span>
                 ) : (
-                  <span className="text-gray-400 italic">{label}</span>
+                  <span className="text-slate-500 text-xs">
+                    {level.label} — {level.time}
+                  </span>
                 )}
               </div>
             </div>
@@ -37,7 +50,10 @@ export function HintPanel({ hints, loading }: HintPanelProps) {
         })}
       </div>
       {loading && (
-        <p className="text-xs text-gray-400 mt-1">Loading hint...</p>
+        <div className="mt-2 flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+          <span className="text-[10px] text-slate-500">Loading...</span>
+        </div>
       )}
     </div>
   );

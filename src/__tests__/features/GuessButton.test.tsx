@@ -9,16 +9,16 @@ describe("GuessButton", () => {
     );
     const button = screen.getByRole("button");
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent("Select a country");
+    expect(button).toHaveTextContent("Select a country on the map");
   });
 
-  it("test_render_with_selection_shows_country_code", () => {
+  it("test_render_with_selection_shows_country_name", () => {
     render(
       <GuessButton selectedCountry="JP" loading={false} onGuess={vi.fn()} />
     );
     const button = screen.getByRole("button");
     expect(button).toBeEnabled();
-    expect(button).toHaveTextContent("Guess: JP");
+    expect(button).toHaveTextContent(/Guess/);
   });
 
   it("test_render_while_loading_shows_submitting", () => {

@@ -31,76 +31,98 @@ export function RoundResult({
         }}
       />
 
-      {/* Right panel — same position as BirdCard during play */}
-      <div className="absolute top-4 right-4 z-10 w-72">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
-          <img
-            src={bird.imageUrl}
-            alt={bird.name}
-            className="w-full h-48 object-cover"
-          />
-          <div className="p-4">
-            <h3 className="font-semibold text-gray-900">{bird.name}</h3>
+      {/* Result panel — right side, same position as BirdCard */}
+      <div className="absolute top-4 right-4 z-10 w-72 animate-slide-in-right">
+        <div
+          className={`glass rounded-xl overflow-hidden ${
+            result.isCorrect ? "glow-accent" : "glow-hot"
+          }`}
+        >
+          {/* Bird image with result overlay */}
+          <div className="relative">
+            <img
+              src={bird.imageUrl}
+              alt={bird.name}
+              className="w-full h-44 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" />
 
-            <h2
-              className={`text-2xl font-bold mt-2 ${
-                result.isCorrect ? "text-emerald-600" : "text-red-600"
+            {/* Result badge */}
+            <div
+              className={`absolute bottom-3 left-3 px-3 py-1 rounded-lg text-sm font-black tracking-wide ${
+                result.isCorrect
+                  ? "bg-teal-500/90 text-white animate-score-pop"
+                  : "bg-rose-500/90 text-white animate-shake"
               }`}
             >
-              {result.isCorrect ? "Correct!" : "Wrong!"}
-            </h2>
+              {result.isCorrect ? "CORRECT" : "WRONG"}
+            </div>
+          </div>
+
+          <div className="p-4">
+            <h3 className="font-bold text-white text-sm">{bird.name}</h3>
 
             {!result.isCorrect && (
-              <p className="text-sm text-gray-600 mt-1">
-                Distance: {result.distanceKm.toLocaleString()} km
+              <p className="text-xs text-slate-400 mt-1">
+                {result.distanceKm.toLocaleString()} km away
               </p>
             )}
 
-            <p className="text-xs text-gray-500 mt-1">
-              Correct: {result.correctCountries.map(countryName).join(", ")}
+            <p className="text-[11px] text-slate-500 mt-1">
+              {result.correctCountries.map(countryName).join(", ")}
             </p>
 
-            <div className="flex gap-4 mt-3 text-center">
-              <div className="flex-1">
-                <div className="text-xl font-bold text-emerald-700">
+            {/* Score breakdown */}
+            <div className="flex gap-2 mt-3 text-center stagger">
+              <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
+                <div className="font-mono font-bold text-base text-teal-300">
                   {result.score.toLocaleString()}
                 </div>
-                <div className="text-xs text-gray-500">Distance Score</div>
+                <div className="text-[9px] text-slate-500 uppercase tracking-wider">
+                  Distance
+                </div>
               </div>
-              <div className="flex-1">
-                <div className="text-xl font-bold text-blue-600">
+              <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
+                <div className="font-mono font-bold text-base text-cyan-300">
                   +{result.timeBonus.toLocaleString()}
                 </div>
-                <div className="text-xs text-gray-500">Time Bonus</div>
+                <div className="text-[9px] text-slate-500 uppercase tracking-wider">
+                  Time
+                </div>
               </div>
               {result.streakLength > 0 && (
-                <div className="flex-1">
-                  <div className="text-xl font-bold text-orange-500">
+                <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
+                  <div className="font-mono font-bold text-base text-streak animate-streak-fire">
                     +{result.streakBonus.toLocaleString()}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    Streak x{result.streakLength}
+                  <div className="text-[9px] text-slate-500 uppercase tracking-wider">
+                    x{result.streakLength}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="text-center mt-2 text-sm font-semibold">
-              Total: {result.totalScore.toLocaleString()}
+            {/* Total */}
+            <div className="text-center mt-3">
+              <span className="font-mono font-bold text-lg text-white animate-score-pop inline-block">
+                {result.totalScore.toLocaleString()}
+              </span>
+              <span className="text-xs text-slate-500 ml-1">total</span>
             </div>
 
+            {/* Learning section */}
             {(result.rangeDescription || result.funFact) && (
-              <div className="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-md">
-                <p className="text-xs font-semibold text-amber-800 mb-1">
+              <div className="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">
                   Did you know?
                 </p>
                 {result.rangeDescription && (
-                  <p className="text-xs text-amber-900 leading-relaxed">
+                  <p className="text-xs text-slate-300 leading-relaxed">
                     {result.rangeDescription}
                   </p>
                 )}
                 {result.funFact && (
-                  <p className="text-xs text-amber-900 leading-relaxed mt-1 italic">
+                  <p className="text-xs text-slate-400 leading-relaxed mt-1 italic">
                     {result.funFact}
                   </p>
                 )}
@@ -108,8 +130,8 @@ export function RoundResult({
             )}
 
             <div className="mt-3">
-              <Button onClick={onNext} className="w-full">
-                {result.gameFinished ? "See Results" : "Next Round"}
+              <Button onClick={onNext} className="w-full" size="md">
+                {result.gameFinished ? "See Results" : "Next Round →"}
               </Button>
             </div>
           </div>

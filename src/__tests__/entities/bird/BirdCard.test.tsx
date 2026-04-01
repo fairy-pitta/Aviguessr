@@ -20,7 +20,7 @@ describe("BirdCard", () => {
 
   it("test_render_with_difficulty_shows_badge", () => {
     render(<BirdCard bird={mockBird} />);
-    expect(screen.getByText("hard")).toBeInTheDocument();
+    expect(screen.getByText("HARD")).toBeInTheDocument();
   });
 
   it("test_render_with_null_family_hides_family", () => {

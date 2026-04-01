@@ -13,6 +13,14 @@ function countryName(code: string): string {
   return COUNTRY_NAMES[code] || code;
 }
 
+function getGrade(percentage: number): { label: string; color: string } {
+  if (percentage >= 90) return { label: "S", color: "text-gradient-gold" };
+  if (percentage >= 75) return { label: "A", color: "text-gradient-accent" };
+  if (percentage >= 60) return { label: "B", color: "text-teal-400" };
+  if (percentage >= 40) return { label: "C", color: "text-amber-400" };
+  return { label: "D", color: "text-slate-400" };
+}
+
 export function GameSummary({
   rounds,
   totalScore,
@@ -20,43 +28,76 @@ export function GameSummary({
 }: GameSummaryProps) {
   const maxPossible = MAX_ROUNDS * (MAX_SCORE_PER_ROUND + 1000);
   const percentage = Math.round((totalScore / maxPossible) * 100);
+  const grade = getGrade(percentage);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
-        <h1 className="text-3xl font-bold text-center mb-2">Game Over</h1>
-        <div className="text-center mb-6">
-          <div className="text-5xl font-bold text-emerald-600">
-            {totalScore.toLocaleString()}
+    <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-teal-500/5 blur-[120px]" />
+
+      <div className="glass rounded-2xl p-8 max-w-lg w-full relative animate-fade-up">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-sm font-mono font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">
+            Game Complete
+          </h1>
+
+          {/* Grade + Score */}
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <span className={`text-6xl font-black ${grade.color}`}>
+              {grade.label}
+            </span>
+            <div className="text-left">
+              <div className="font-mono font-bold text-3xl text-white animate-score-pop">
+                {totalScore.toLocaleString()}
+              </div>
+              <div className="text-xs text-slate-500">
+                / {maxPossible.toLocaleString()} ({percentage}%)
+              </div>
+            </div>
           </div>
-          <div className="text-gray-500">
-            / {maxPossible.toLocaleString()} ({percentage}%)
+
+          {/* Progress bar */}
+          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mt-4">
+            <div
+              className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-1000"
+              style={{ width: `${percentage}%` }}
+            />
           </div>
         </div>
 
-        <div className="space-y-3 mb-8">
+        {/* Round breakdown */}
+        <div className="space-y-2 mb-8 stagger">
           {rounds.map((round) => (
             <div
               key={round.round}
-              className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+              className="flex items-center justify-between p-3 rounded-lg bg-white/3 border border-white/5 hover:bg-white/5 transition-colors animate-fade-up"
             >
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-gray-400">
-                  R{round.round}
+                <div
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
+                    round.result?.isCorrect
+                      ? "bg-teal-500/20 text-teal-300"
+                      : "bg-rose-500/20 text-rose-300"
+                  }`}
+                >
+                  {round.round}
+                </div>
+                <span className="font-medium text-sm text-slate-200">
+                  {round.bird.name}
                 </span>
-                <span className="font-medium">{round.bird.name}</span>
               </div>
               <div className="flex items-center gap-3">
                 {round.result && (
                   <>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {countryName(round.result.guessedCountry)}
                     </span>
                     <span
-                      className={`font-semibold ${
+                      className={`font-mono font-bold text-sm ${
                         round.result.isCorrect
-                          ? "text-emerald-600"
-                          : "text-red-600"
+                          ? "text-teal-300"
+                          : "text-rose-400"
                       }`}
                     >
                       {round.result.score.toLocaleString()}
@@ -68,8 +109,11 @@ export function GameSummary({
           ))}
         </div>
 
+        {/* Action */}
         <div className="text-center">
-          <Button onClick={onPlayAgain}>Play Again</Button>
+          <Button onClick={onPlayAgain} size="lg" className="w-full">
+            Play Again
+          </Button>
         </div>
       </div>
     </div>

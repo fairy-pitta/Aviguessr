@@ -41,7 +41,7 @@ describe("GameSummary", () => {
       />
     );
     expect(screen.getByText("21,400")).toBeInTheDocument();
-    expect(screen.getByText("Game Over")).toBeInTheDocument();
+    expect(screen.getByText("Game Complete")).toBeInTheDocument();
   });
 
   it("test_render_shows_all_bird_names", () => {
