@@ -11,6 +11,7 @@ type GameHookState = {
   rounds: GameRound[];
   currentRound: number;
   totalScore: number;
+  currentStreak: number;
   lastResult: (GuessResponse & { round: number }) | null;
   roundStartTime: number;
 };
@@ -21,6 +22,7 @@ const initialState: GameHookState = {
   rounds: [],
   currentRound: 1,
   totalScore: 0,
+  currentStreak: 0,
   lastResult: null,
   roundStartTime: 0,
 };
@@ -36,6 +38,7 @@ export function useGame() {
         rounds,
         currentRound: 1,
         totalScore: 0,
+        currentStreak: 0,
         lastResult: null,
         roundStartTime: Date.now(),
       });
@@ -48,6 +51,7 @@ export function useGame() {
       ...prev,
       phase: result.gameFinished ? "finished" : "showingResult",
       totalScore: result.totalScore,
+      currentStreak: result.isCorrect ? result.streakLength + 1 : 0,
       lastResult: { ...result, round: prev.currentRound },
     }));
   }, []);

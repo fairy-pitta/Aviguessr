@@ -9,6 +9,7 @@ type GameBoardProps = {
   bird: Bird;
   currentRound: number;
   totalScore: number;
+  currentStreak: number;
   selectedCountry: string | null;
   roundStartTime: number;
   guessLoading: boolean;
@@ -21,6 +22,7 @@ export function GameBoard({
   bird,
   currentRound,
   totalScore,
+  currentStreak,
   selectedCountry,
   roundStartTime,
   guessLoading,
@@ -37,7 +39,7 @@ export function GameBoard({
 
       {/* Top bar */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-3">
-        <ScorePanel currentRound={currentRound} totalScore={totalScore} />
+        <ScorePanel currentRound={currentRound} totalScore={totalScore} currentStreak={currentStreak} />
         <div className="w-64">
           <Timer
             startTime={roundStartTime}

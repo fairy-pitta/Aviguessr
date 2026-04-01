@@ -72,6 +72,7 @@ export function GamePage() {
         bird={game.currentBird}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
+        currentStreak={game.currentStreak}
         selectedCountry={selectedCountry}
         roundStartTime={game.roundStartTime}
         guessLoading={guessLoading}

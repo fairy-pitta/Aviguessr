@@ -28,6 +28,8 @@ export type GuessResponse = {
   distanceKm: number;
   score: number;
   timeBonus: number;
+  streakLength: number;
+  streakBonus: number;
   totalScore: number;
   gameFinished: boolean;
 };

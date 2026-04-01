@@ -40,6 +40,8 @@ describe("useGame", () => {
       distanceKm: 0,
       score: 5000,
       timeBonus: 800,
+      streakLength: 0,
+      streakBonus: 0,
       totalScore: 5800,
       gameFinished: false,
     };
@@ -59,6 +61,8 @@ describe("useGame", () => {
       distanceKm: 5000,
       score: 410,
       timeBonus: 200,
+      streakLength: 0,
+      streakBonus: 0,
       totalScore: 610,
       gameFinished: true,
     };
@@ -78,6 +82,8 @@ describe("useGame", () => {
         distanceKm: 0,
         score: 5000,
         timeBonus: 800,
+        streakLength: 0,
+        streakBonus: 0,
         totalScore: 5800,
         gameFinished: false,
       })

@@ -65,7 +65,7 @@ export function RoundResult({
                 <div className="text-xl font-bold text-emerald-700">
                   {result.score.toLocaleString()}
                 </div>
-                <div className="text-xs text-gray-500">Score</div>
+                <div className="text-xs text-gray-500">Distance Score</div>
               </div>
               <div className="flex-1">
                 <div className="text-xl font-bold text-blue-600">
@@ -73,6 +73,16 @@ export function RoundResult({
                 </div>
                 <div className="text-xs text-gray-500">Time Bonus</div>
               </div>
+              {result.streakLength > 0 && (
+                <div className="flex-1">
+                  <div className="text-xl font-bold text-orange-500">
+                    +{result.streakBonus.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Streak x{result.streakLength}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="text-center mt-2 text-sm font-semibold">

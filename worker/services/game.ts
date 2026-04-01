@@ -1,4 +1,5 @@
 import { CENTROIDS } from "../data/centroids";
+import { REGIONS } from "../data/regions";
 import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
 
 const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
@@ -93,6 +94,8 @@ export async function createGame(db: D1Database) {
         name: bird.name,
         family: bird.family,
         difficulty: bird.difficulty,
+        habitat: bird.habitat,
+        biome: bird.biome,
         imageUrl: `/api/birds/${bird.id}/image`,
       },
     })),
@@ -116,7 +119,7 @@ export async function getGameState(db: D1Database, gameId: string) {
     .prepare(
       `SELECT gr.round, gr.bird_id, gr.difficulty, gr.guessed_country,
               gr.is_correct, gr.distance_km, gr.score, gr.time_ms,
-              b.name, b.family, b.image_key
+              b.name, b.family, b.image_key, b.habitat, b.biome, b.range_description
        FROM game_rounds gr
        JOIN birds b ON b.id = gr.bird_id
        WHERE gr.game_id = ?
@@ -137,6 +140,9 @@ export async function getGameState(db: D1Database, gameId: string) {
         name: r.name as string,
         family: r.family as string | null,
         difficulty: r.difficulty as string,
+        habitat: r.habitat as string | null,
+        biome: r.biome as string | null,
+        rangeDescription: r.range_description as string | null,
         imageUrl: `/api/birds/${r.bird_id}/image`,
       },
       result: r.guessed_country
@@ -157,7 +163,8 @@ export async function submitGuess(
   gameId: string,
   round: number,
   countryCode: string,
-  timeMs: number
+  timeMs: number,
+  hintsUsed: number = 0
 ) {
   const game = await db
     .prepare("SELECT * FROM games WHERE id = ? AND status = 'playing'")
@@ -183,9 +190,37 @@ export async function submitGuess(
     birdData.countries
   );
 
-  const score = isCorrect ? 5000 : calculateScore(distance);
+  const hintPenalty = Math.max(0, 1 - hintsUsed * 0.15);
+  const maxDistanceScore = Math.round(5000 * hintPenalty);
+  const rawScore = isCorrect ? 5000 : calculateScore(distance);
+  const score = Math.min(rawScore, maxDistanceScore);
   const timeBonus = calculateTimeBonus(timeMs);
-  const totalRoundScore = score + timeBonus;
+
+  // Calculate streak from previous consecutive correct answers
+  const prevRounds = await db
+    .prepare(
+      "SELECT is_correct FROM game_rounds WHERE game_id = ? AND round < ? ORDER BY round DESC"
+    )
+    .bind(gameId, round)
+    .all<{ is_correct: number }>();
+
+  let streakLength = 0;
+  if (isCorrect) {
+    for (const r of prevRounds.results) {
+      if (r.is_correct === 1) {
+        streakLength++;
+      } else {
+        break;
+      }
+    }
+  }
+
+  const streakMultiplier = Math.min(1.0 + streakLength * 0.1, 1.5);
+  const baseRoundScore = score + timeBonus;
+  const streakBonus = isCorrect
+    ? Math.round(baseRoundScore * streakMultiplier) - baseRoundScore
+    : 0;
+  const totalRoundScore = baseRoundScore + streakBonus;
   const newTotalScore = game.total_score + totalRoundScore;
   const isLastRound = round >= 5;
 
@@ -193,7 +228,7 @@ export async function submitGuess(
     db
       .prepare(
         `UPDATE game_rounds
-         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?
+         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?, hints_used = ?
          WHERE game_id = ? AND round = ?`
       )
       .bind(
@@ -202,6 +237,7 @@ export async function submitGuess(
         Math.round(distance),
         totalRoundScore,
         timeMs,
+        hintsUsed,
         gameId,
         round
       ),
@@ -223,7 +259,11 @@ export async function submitGuess(
     distanceKm: Math.round(distance),
     score,
     timeBonus,
+    streakLength,
+    streakBonus,
     totalScore: newTotalScore,
     gameFinished: isLastRound,
+    rangeDescription: birdData.bird.range_description ?? null,
+    funFact: birdData.bird.fun_fact ?? null,
   };
 }
