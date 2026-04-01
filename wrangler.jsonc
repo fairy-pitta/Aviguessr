@@ -1,0 +1,21 @@
+{
+  "name": "aviguessr",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-03-31",
+  "assets": {
+    "directory": "dist"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aviguessr-db",
+      "database_id": "41cf992b-e7e8-4282-921f-16278f667b37"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "aviguessr-images"
+    }
+  ]
+}
