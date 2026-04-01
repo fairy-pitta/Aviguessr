@@ -89,6 +89,24 @@ export function RoundResult({
               Total: {result.totalScore.toLocaleString()}
             </div>
 
+            {(result.rangeDescription || result.funFact) && (
+              <div className="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-md">
+                <p className="text-xs font-semibold text-amber-800 mb-1">
+                  Did you know?
+                </p>
+                {result.rangeDescription && (
+                  <p className="text-xs text-amber-900 leading-relaxed">
+                    {result.rangeDescription}
+                  </p>
+                )}
+                {result.funFact && (
+                  <p className="text-xs text-amber-900 leading-relaxed mt-1 italic">
+                    {result.funFact}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div className="mt-3">
               <Button onClick={onNext} className="w-full">
                 {result.gameFinished ? "See Results" : "Next Round"}

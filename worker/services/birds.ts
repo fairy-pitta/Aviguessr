@@ -8,6 +8,10 @@ type BirdRow = {
   image_key: string;
   image_license: string | null;
   image_artist: string | null;
+  habitat: string | null;
+  biome: string | null;
+  fun_fact: string | null;
+  range_description: string | null;
 };
 
 export async function getRandomBirdsByDifficulty(

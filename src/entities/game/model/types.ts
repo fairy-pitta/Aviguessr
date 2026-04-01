@@ -32,6 +32,8 @@ export type GuessResponse = {
   streakBonus: number;
   totalScore: number;
   gameFinished: boolean;
+  rangeDescription?: string;
+  funFact?: string;
 };
 
 export type GamePhase = "idle" | "playing" | "showingResult" | "finished";
