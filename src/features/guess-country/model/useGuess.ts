@@ -9,12 +9,13 @@ export function useGuess(gameId: string | null) {
     async (
       round: number,
       countryCode: string,
-      timeMs: number
+      timeMs: number,
+      hintsUsed: number = 0
     ): Promise<GuessResponse | null> => {
       if (!gameId) return null;
       setLoading(true);
       try {
-        return await submitGuess(gameId, round, countryCode, timeMs);
+        return await submitGuess(gameId, round, countryCode, timeMs, hintsUsed);
       } finally {
         setLoading(false);
       }

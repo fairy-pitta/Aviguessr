@@ -3,6 +3,7 @@ import { BirdCard } from "@/entities/bird";
 import { ScorePanel } from "@/entities/game";
 import { Timer } from "@/shared/ui";
 import { GuessButton } from "@/features/guess-country";
+import { HintPanel } from "@/features/hint-system";
 import type { Bird } from "@/entities/bird";
 
 type GameBoardProps = {
@@ -13,6 +14,8 @@ type GameBoardProps = {
   selectedCountry: string | null;
   roundStartTime: number;
   guessLoading: boolean;
+  hints: string[];
+  hintsLoading: boolean;
   onCountrySelect: (code: string) => void;
   onGuess: () => void;
   onTimeout: () => void;
@@ -26,6 +29,8 @@ export function GameBoard({
   selectedCountry,
   roundStartTime,
   guessLoading,
+  hints,
+  hintsLoading,
   onCountrySelect,
   onGuess,
   onTimeout,
@@ -51,6 +56,11 @@ export function GameBoard({
       {/* Bird card */}
       <div className="absolute top-4 right-4 z-10">
         <BirdCard bird={bird} />
+      </div>
+
+      {/* Hint panel */}
+      <div className="absolute bottom-28 left-4 z-10">
+        <HintPanel hints={hints} loading={hintsLoading} />
       </div>
 
       {/* Guess button */}

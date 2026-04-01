@@ -27,10 +27,26 @@ export function submitGuess(
   gameId: string,
   round: number,
   countryCode: string,
-  timeMs: number
+  timeMs: number,
+  hintsUsed: number = 0
 ): Promise<GuessResponse> {
   return apiFetch<GuessResponse>(`/game/${gameId}/guess`, {
     method: "POST",
-    body: JSON.stringify({ round, countryCode, timeMs }),
+    body: JSON.stringify({ round, countryCode, timeMs, hintsUsed }),
   });
+}
+
+type HintResponse = {
+  level: number;
+  hint: string;
+};
+
+export function getHint(
+  gameId: string,
+  round: number,
+  level: number
+): Promise<HintResponse> {
+  return apiFetch<HintResponse>(
+    `/game/${gameId}/hint?round=${round}&level=${level}`
+  );
 }

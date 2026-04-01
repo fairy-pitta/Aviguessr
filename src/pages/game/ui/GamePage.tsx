@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
+import { useHints } from "@/features/hint-system";
 import { GameBoard } from "@/widgets/game-board";
 import { RoundResult } from "@/widgets/round-result";
 import { GameSummary } from "@/widgets/game-summary";
@@ -15,6 +16,11 @@ export function GamePage() {
   const navigate = useNavigate();
   const game = useGame();
   const { guess, loading: guessLoading } = useGuess(id ?? null);
+  const { hints, hintsUsed, loading: hintsLoading } = useHints(
+    id ?? null,
+    game.currentRound,
+    game.roundStartTime
+  );
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   // Initialize game from navigation state
@@ -30,19 +36,19 @@ export function GamePage() {
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
     const timeMs = Date.now() - game.roundStartTime;
-    const result = await guess(game.currentRound, selectedCountry, timeMs);
+    const result = await guess(game.currentRound, selectedCountry, timeMs, hintsUsed);
     if (result) {
       game.showResult(result);
     }
-  }, [selectedCountry, game.roundStartTime, game.currentRound, guess, game.showResult]);
+  }, [selectedCountry, game.roundStartTime, game.currentRound, guess, game.showResult, hintsUsed]);
 
   const handleTimeout = useCallback(async () => {
     // Auto-submit with no country on timeout
-    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__", TIME_LIMIT_MS);
+    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__", TIME_LIMIT_MS, hintsUsed);
     if (result) {
       game.showResult(result);
     }
-  }, [game.currentRound, selectedCountry, guess, game.showResult]);
+  }, [game.currentRound, selectedCountry, guess, game.showResult, hintsUsed]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);
@@ -76,6 +82,8 @@ export function GamePage() {
         selectedCountry={selectedCountry}
         roundStartTime={game.roundStartTime}
         guessLoading={guessLoading}
+        hints={hints}
+        hintsLoading={hintsLoading}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
         onTimeout={handleTimeout}
