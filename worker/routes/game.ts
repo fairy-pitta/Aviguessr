@@ -1,6 +1,11 @@
 import { Hono } from "hono";
 import type { Bindings } from "../types";
-import { createGame, getGameState, submitGuess } from "../services/game";
+import {
+  createGame,
+  getGameState,
+  submitGuess,
+  hintsUnlockedQuery,
+} from "../services/game";
 import type { GameMode } from "../services/game";
 import { getHintsForBird } from "../services/hints";
 
@@ -8,7 +13,8 @@ export const gameRoutes = new Hono<{ Bindings: Bindings }>();
 
 gameRoutes.get("/new", async (c) => {
   const mode = (c.req.query("mode") ?? "classic") as GameMode;
-  const result = await createGame(c.env.DB, mode);
+  const playerId = c.req.header("X-Player-Id") ?? null;
+  const result = await createGame(c.env.DB, mode, playerId);
   return c.json(result);
 });
 
@@ -51,24 +57,24 @@ gameRoutes.get("/:id/hint", async (c) => {
   }
 
   const hint = await getHintsForBird(c.env.DB, roundRow.bird_id, level);
+
+  // Record that the hint was handed over, so the penalty cannot be waived by
+  // simply not reporting it. MAX keeps a repeat request from counting twice.
+  await c.env.DB.prepare(hintsUnlockedQuery()).bind(level, gameId, round).run();
+
   return c.json({ level, hint });
 });
 
 gameRoutes.post("/:id/guess", async (c) => {
   const gameId = c.req.param("id");
-  const body = await c.req.json<{
-    round: number;
-    countryCode: string;
-    timeMs: number;
-    hintsUsed?: number;
-  }>();
+  // timeMs and hintsUsed are deliberately not accepted: the server derives
+  // both from game_rounds so they cannot be self-reported.
+  const body = await c.req.json<{ round: number; countryCode: string }>();
   const result = await submitGuess(
     c.env.DB,
     gameId,
     body.round,
-    body.countryCode,
-    body.timeMs,
-    body.hintsUsed ?? 0
+    body.countryCode
   );
   if (!result) {
     return c.json({ error: "Invalid game or round" }, 400);

@@ -29,8 +29,39 @@ function calculateScore(distanceKm: number): number {
   return Math.round(5000 * Math.exp(-distanceKm / 2000));
 }
 
-function calculateTimeBonus(timeMs: number): number {
-  return Math.max(0, Math.round(1000 * (1 - timeMs / 30000)));
+const TIME_LIMIT_MS = 30000;
+
+export function calculateTimeBonus(timeMs: number): number {
+  return Math.max(0, Math.round(1000 * (1 - timeMs / TIME_LIMIT_MS)));
+}
+
+/**
+ * How long the player actually had the round in front of them, from the
+ * server's own clock. The client used to send this, which let it claim the
+ * full time bonus every round.
+ *
+ * A missing start time yields the full limit (no bonus) rather than zero,
+ * so a row written before this was recorded cannot be turned into points.
+ */
+export function elapsedMs(startedAt: string | null, nowIso: string): number {
+  if (!startedAt) return TIME_LIMIT_MS;
+
+  // SQLite's datetime('now') is UTC but carries no timezone suffix
+  const start = Date.parse(
+    startedAt.includes("T") ? startedAt : `${startedAt.replace(" ", "T")}Z`
+  );
+  const now = Date.parse(nowIso);
+  if (Number.isNaN(start) || Number.isNaN(now)) return TIME_LIMIT_MS;
+
+  return Math.min(TIME_LIMIT_MS, Math.max(0, now - start));
+}
+
+/**
+ * Records that a hint level was reached. Uses MAX so re-requesting the same
+ * level cannot inflate the penalty, and so the count cannot be lowered.
+ */
+export function hintsUnlockedQuery(): string {
+  return "UPDATE game_rounds SET hints_used = MAX(hints_used, ?) WHERE game_id = ? AND round = ?";
 }
 
 function getMinDistanceToCorrectCountry(
@@ -118,7 +149,8 @@ function generateChoices(correctCodes: string[]): string[] {
 
 export async function createGame(
   db: D1Database,
-  mode: GameMode = "classic"
+  mode: GameMode = "classic",
+  playerId: string | null = null
 ) {
   const gameId = generateId();
   const birds = await getRandomBirdsByDifficulty(db, ROUND_DIFFICULTIES);
@@ -128,8 +160,8 @@ export async function createGame(
   }
 
   await db
-    .prepare("INSERT INTO games (id, mode) VALUES (?, ?)")
-    .bind(gameId, mode)
+    .prepare("INSERT INTO games (id, mode, player_id) VALUES (?, ?, ?)")
+    .bind(gameId, mode, playerId)
     .run();
 
   // For multiple choice, we need country data per bird to generate choices
@@ -147,14 +179,16 @@ export async function createGame(
   const stmts = birds.map((bird, i) =>
     db
       .prepare(
-        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, choices) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, choices, started_at) VALUES (?, ?, ?, ?, ?, ?)"
       )
       .bind(
         gameId,
         i + 1,
         bird.id,
         bird.difficulty,
-        roundChoices[i] ? JSON.stringify(roundChoices[i]) : null
+        roundChoices[i] ? JSON.stringify(roundChoices[i]) : null,
+        // Round 1 is on screen as soon as the game is handed over
+        i === 0 ? new Date().toISOString() : null
       )
   );
   await db.batch(stmts);
@@ -244,9 +278,7 @@ export async function submitGuess(
   db: D1Database,
   gameId: string,
   round: number,
-  countryCode: string,
-  timeMs: number,
-  hintsUsed: number = 0
+  countryCode: string
 ) {
   const game = await db
     .prepare("SELECT * FROM games WHERE id = ? AND status = 'playing'")
@@ -257,12 +289,17 @@ export async function submitGuess(
 
   const roundRow = await db
     .prepare(
-      "SELECT bird_id FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
+      "SELECT bird_id, started_at, hints_used FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
     )
     .bind(gameId, round)
-    .first<{ bird_id: number }>();
+    .first<{ bird_id: number; started_at: string | null; hints_used: number | null }>();
 
   if (!roundRow) return null;
+
+  // Both of these used to come from the request body, which let the client
+  // award itself the full time bonus and waive the hint penalty.
+  const timeMs = elapsedMs(roundRow.started_at, new Date().toISOString());
+  const hintsUsed = roundRow.hints_used ?? 0;
 
   const birdData = await getBirdWithCountries(db, roundRow.bird_id);
   if (!birdData) return null;
@@ -316,7 +353,7 @@ export async function submitGuess(
     db
       .prepare(
         `UPDATE game_rounds
-         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?, hints_used = ?
+         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?
          WHERE game_id = ? AND round = ?`
       )
       .bind(
@@ -325,7 +362,6 @@ export async function submitGuess(
         Math.round(distance),
         totalRoundScore,
         timeMs,
-        hintsUsed,
         gameId,
         round
       ),
@@ -339,6 +375,12 @@ export async function submitGuess(
         isLastRound ? "finished" : "playing",
         gameId
       ),
+    // The next round goes in front of the player now, so its clock starts here
+    db
+      .prepare(
+        "UPDATE game_rounds SET started_at = datetime('now') WHERE game_id = ? AND round = ?"
+      )
+      .bind(gameId, round + 1),
   ]);
 
   return {
