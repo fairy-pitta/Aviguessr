@@ -248,7 +248,7 @@ export const CENTROIDS: Record<string, { lat: number; lng: number }> = {
     "lat": 7.631,
     "lng": 80.864
   },
-  "CN-TW": {
+  "TW": {
     "lat": 23.861,
     "lng": 121.105
   },
@@ -508,6 +508,10 @@ export const CENTROIDS: Record<string, { lat: number; lng: number }> = {
     "lat": -17.971,
     "lng": 46.989
   },
+  "FR": {
+    "lat": 35.395,
+    "lng": -10.712
+  },
   "UA": {
     "lat": 48.687,
     "lng": 30.451
@@ -540,6 +544,10 @@ export const CENTROIDS: Record<string, { lat: number; lng: number }> = {
     "lat": 56.858,
     "lng": 24.94
   },
+  "NO": {
+    "lat": 71.736,
+    "lng": 18.597
+  },
   "SE": {
     "lat": 62.739,
     "lng": 16.563
@@ -563,6 +571,10 @@ export const CENTROIDS: Record<string, { lat: number; lng: number }> = {
   "AL": {
     "lat": 41.28,
     "lng": 20.117
+  },
+  "XK": {
+    "lat": 42.546,
+    "lng": 20.957
   },
   "ES": {
     "lat": 40.175,
@@ -687,5 +699,45 @@ export const CENTROIDS: Record<string, { lat: number; lng: number }> = {
   "TF": {
     "lat": -49.119,
     "lng": 69.461
+  },
+  "BM": {
+    "lat": 32.307,
+    "lng": -64.751
+  },
+  "CC": {
+    "lat": -12.174,
+    "lng": 96.871
+  },
+  "CX": {
+    "lat": -10.447,
+    "lng": 105.69
+  },
+  "GF": {
+    "lat": 3.934,
+    "lng": -53.126
+  },
+  "HK": {
+    "lat": 22.352,
+    "lng": 114.14
+  },
+  "KY": {
+    "lat": 19.313,
+    "lng": -81.255
+  },
+  "MO": {
+    "lat": 22.199,
+    "lng": 113.544
+  },
+  "PM": {
+    "lat": 46.941,
+    "lng": -56.271
+  },
+  "SG": {
+    "lat": 1.352,
+    "lng": 103.82
+  },
+  "VI": {
+    "lat": 18.336,
+    "lng": -64.896
   }
 };
