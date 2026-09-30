@@ -1,7 +1,12 @@
 /**
  * birds.json の画像URLからダウンロードし、wrangler r2 object put で R2 にアップロード
  *
- * Usage: npx tsx scripts/upload-images.ts
+ * Usage: npx tsx scripts/upload-images.ts [--force]
+ *
+ * --force ignores the upload checkpoint and re-downloads every image, for when
+ * the URLs in birds.json have changed (e.g. the switch to iNaturalist photos).
+ * Without it, a cached local file is reused even if the URL now points
+ * somewhere else, which would silently re-upload the previous image.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
@@ -108,11 +113,14 @@ async function main() {
     mkdirSync(IMAGES_DIR, { recursive: true });
   }
 
-  const uploaded = loadCheckpoint();
+  const force = process.argv.slice(2).includes("--force");
+  const uploaded = force ? new Set<string>() : loadCheckpoint();
   const remaining = birds.filter((b) => !uploaded.has(b.speciesCode));
 
   console.log(
-    `画像アップロード: ${birds.length}件中 ${uploaded.size}件済み, ${remaining.length}件残り`
+    force
+      ? `画像アップロード(--force): ${birds.length}件すべて再取得`
+      : `画像アップロード: ${birds.length}件中 ${uploaded.size}件済み, ${remaining.length}件残り`
   );
 
   let done = 0;
@@ -123,8 +131,9 @@ async function main() {
     const r2Key = `birds/${bird.speciesCode}.jpg`;
     const localPath = resolve(IMAGES_DIR, `${bird.speciesCode}.jpg`);
 
-    // Download if not cached locally
-    let downloadOk = existsSync(localPath);
+    // Download if not cached locally (--force always re-fetches, since a
+    // cached file may predate a URL change)
+    let downloadOk = !force && existsSync(localPath);
     if (!downloadOk) {
       downloadOk = await downloadImage(bird.image.url, localPath);
       await sleep(DOWNLOAD_DELAY_MS);

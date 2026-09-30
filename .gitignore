@@ -24,5 +24,6 @@ data/_cache_*
 data/seed.sql
 worker/node_modules/
 data/images/
+data/images-commons-backup/
 data/update-metadata.sql
 data/update-fun-facts.sql
