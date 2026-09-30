@@ -4,41 +4,32 @@ import { apiFetch } from "@/shared/api/client";
 type HintResponse = {
   level: number;
   hint: string;
+  penalty: number;
 };
 
-const HINT_THRESHOLDS_MS = [5000, 15000, 25000];
-/** A failing hint used to be retried twice a second for the rest of the round. */
-const MAX_ATTEMPTS_PER_LEVEL = 3;
-
-export function useHints(
-  gameId: string | null,
-  currentRound: number,
-  roundStartTime: number
-) {
+/**
+ * Hints are revealed only when the player asks for one.
+ *
+ * They used to unlock on a timer, so the score was docked for help nobody
+ * requested — and the old third level named a correct country, which is the
+ * answer to the game. That level is gone; these two narrow the search.
+ */
+export function useHints(gameId: string | null, currentRound: number) {
   const [hints, setHints] = useState<string[]>([]);
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const fetchedLevels = useRef(new Set<number>());
-  const attempts = useRef(new Map<number, number>());
+  const [loading, setLoading] = useState<number | null>(null);
+  const revealed = useRef(new Set<number>());
 
-  // Reset when round changes
   useEffect(() => {
     setHints([]);
-    setHintsUsed(0);
-    fetchedLevels.current = new Set();
-    attempts.current = new Map();
+    setLoading(null);
+    revealed.current = new Set();
   }, [currentRound, gameId]);
 
-  const fetchHint = useCallback(
-    async (level: number) => {
-      if (!gameId || fetchedLevels.current.has(level)) return;
-
-      const tried = attempts.current.get(level) ?? 0;
-      if (tried >= MAX_ATTEMPTS_PER_LEVEL) return;
-      attempts.current.set(level, tried + 1);
-
-      fetchedLevels.current.add(level);
-      setLoading(true);
+  const revealHint = useCallback(
+    async (level: number): Promise<void> => {
+      if (!gameId || revealed.current.has(level)) return;
+      revealed.current.add(level);
+      setLoading(level);
       try {
         const data = await apiFetch<HintResponse>(
           `/game/${gameId}/hint?round=${currentRound}&level=${level}`
@@ -48,35 +39,15 @@ export function useHints(
           next[level - 1] = data.hint;
           return next;
         });
-        setHintsUsed((prev) => Math.max(prev, level));
       } catch {
-        // Allow another attempt, but only up to MAX_ATTEMPTS_PER_LEVEL
-        fetchedLevels.current.delete(level);
+        // Let the player try again; nothing was charged
+        revealed.current.delete(level);
       } finally {
-        setLoading(false);
+        setLoading(null);
       }
     },
     [gameId, currentRound]
   );
 
-  // Auto-fetch hints at time thresholds
-  useEffect(() => {
-    if (!gameId || roundStartTime === 0) return;
-
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - roundStartTime;
-      for (let i = 0; i < HINT_THRESHOLDS_MS.length; i++) {
-        if (
-          elapsed >= HINT_THRESHOLDS_MS[i] &&
-          !fetchedLevels.current.has(i + 1)
-        ) {
-          fetchHint(i + 1);
-        }
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [gameId, roundStartTime, fetchHint]);
-
-  return { hints, hintsUsed, loading };
+  return { hints, revealHint, loading };
 }

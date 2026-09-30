@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  elapsedMs,
-  calculateTimeBonus,
-  hintsUnlockedQuery,
-} from "../services/game";
+import { elapsedMs, calculateTimeBonus } from "../services/game";
 
 describe("elapsedMs", () => {
   const now = "2026-10-01T12:00:30Z"; // 30s after the start below
@@ -47,14 +43,5 @@ describe("calculateTimeBonus", () => {
 
   it("test_calculate_time_bonus_at_half_the_limit_returns_half", () => {
     expect(calculateTimeBonus(15000)).toBe(500);
-  });
-});
-
-describe("hintsUnlockedQuery", () => {
-  it("test_hints_unlocked_query_records_the_highest_level_reached", () => {
-    // Re-requesting the same hint must not count twice
-    const sql = hintsUnlockedQuery();
-    expect(sql).toContain("MAX(hints_used, ?)");
-    expect(sql).toContain("WHERE game_id = ? AND round = ?");
   });
 });

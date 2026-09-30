@@ -16,10 +16,9 @@ export function GamePage() {
   const navigate = useNavigate();
   const game = useGame();
   const { guess, loading: guessLoading } = useGuess(id ?? null);
-  const { hints, loading: hintsLoading } = useHints(
+  const { hints, revealHint, loading: hintsLoading } = useHints(
     id ?? null,
-    game.currentRound,
-    game.roundStartTime
+    game.currentRound
   );
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
@@ -112,6 +111,7 @@ export function GamePage() {
         guessLoading={guessLoading}
         hints={hints}
         hintsLoading={hintsLoading}
+        onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
         onTimeout={handleTimeout}

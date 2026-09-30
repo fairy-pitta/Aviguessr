@@ -46,10 +46,9 @@ export function DailyPage() {
   const game = useGame();
   const [gameId, setGameId] = useState<string | null>(null);
   const { guess, loading: guessLoading } = useGuess(gameId);
-  const { hints, loading: hintsLoading } = useHints(
+  const { hints, revealHint, loading: hintsLoading } = useHints(
     gameId,
-    game.currentRound,
-    game.roundStartTime
+    game.currentRound
   );
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [dailyDate, setDailyDate] = useState<string>("");
@@ -284,6 +283,7 @@ export function DailyPage() {
         guessLoading={guessLoading}
         hints={hints}
         hintsLoading={hintsLoading}
+        onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
         onTimeout={handleTimeout}

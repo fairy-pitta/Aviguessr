@@ -3,16 +3,13 @@ import { renderHook, act } from "@testing-library/react";
 import { useHints } from "@/features/hint-system";
 
 describe("useHints", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
+  beforeEach(() => vi.useFakeTimers());
   afterEach(() => {
     vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
   function stubFetch(impl: () => Promise<Response>) {
-    // Typed with fetch's parameters so the recorded URL can be read back
     const spy = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
       impl()
     );
@@ -25,7 +22,7 @@ describe("useHints", () => {
       ok: true,
       status: 200,
       statusText: "OK",
-      json: () => Promise.resolve({ level: 1, hint }),
+      json: () => Promise.resolve({ level: 1, hint, penalty: 0.15 }),
     } as Response);
 
   const badRequest = () =>
@@ -36,63 +33,68 @@ describe("useHints", () => {
       json: () => Promise.resolve({}),
     } as Response);
 
-  /**
-   * Advance the clock in poll-sized steps, flushing promises between them.
-   * Advancing in one jump runs every tick before the rejection is handled,
-   * which hides the retry entirely.
-   */
-  async function tick(totalMs: number) {
-    for (let elapsed = 0; elapsed < totalMs; elapsed += 500) {
-      await act(async () => {
-        vi.advanceTimersByTime(500);
-        await Promise.resolve();
-        await Promise.resolve();
-      });
-    }
-  }
-
-  it("test_use_hints_stops_requesting_a_level_the_server_keeps_rejecting", async () => {
-    // A rejected hint was put back in the queue, so the poller retried it
-    // twice a second for the rest of the round.
-    const spy = stubFetch(badRequest);
-    renderHook(() => useHints("game-1", 1, Date.now()));
-
-    await tick(20000);
-
-    // 3 thresholds pass in 20s; anything beyond a couple of attempts each is
-    // the retry loop
-    expect(spy.mock.calls.length).toBeLessThanOrEqual(6);
-  });
-
-  it("test_use_hints_never_requests_the_same_level_twice", async () => {
+  it("test_use_hints_requests_nothing_until_a_hint_is_asked_for", async () => {
+    // Hints used to unlock on a timer, which handed them over unasked
     const spy = stubFetch(() => ok("This bird lives in: Asia"));
-    renderHook(() => useHints("game-1", 1, Date.now()));
+    renderHook(() => useHints("game-1", 1));
 
-    await tick(30000);
-
-    const urls = spy.mock.calls.map((c) => String(c[0]));
-    expect(urls.length).toBeGreaterThan(0);
-    expect(new Set(urls).size).toBe(urls.length);
-  });
-
-  it("test_use_hints_gives_up_on_a_level_after_a_few_failures", async () => {
-    const spy = stubFetch(badRequest);
-    renderHook(() => useHints("game-1", 1, Date.now()));
-
-    await tick(30000);
-
-    const level1 = spy.mock.calls.filter((c) =>
-      String(c[0]).includes("level=1")
-    );
-    expect(level1.length).toBeLessThanOrEqual(3);
-  });
-
-  it("test_use_hints_with_no_game_makes_no_requests", async () => {
-    const spy = stubFetch(() => ok("x"));
-    renderHook(() => useHints(null, 1, Date.now()));
-
-    await tick(30000);
+    await act(async () => {
+      vi.advanceTimersByTime(60000);
+      await Promise.resolve();
+    });
 
     expect(spy).not.toHaveBeenCalled();
   });
-});
+
+  it("test_reveal_hint_fetches_the_requested_level", async () => {
+    const spy = stubFetch(() => ok("This bird lives in: Asia"));
+    const { result } = renderHook(() => useHints("game-1", 1));
+
+    await act(async () => {
+      await result.current.revealHint(2);
+    });
+
+    expect(String(spy.mock.calls[0][0])).toContain("level=2");
+    expect(result.current.hints[1]).toBe("This bird lives in: Asia");
+  });
+
+  it("test_reveal_hint_twice_for_the_same_level_fetches_once", async () => {
+    const spy = stubFetch(() => ok("This bird lives in: Asia"));
+    const { result } = renderHook(() => useHints("game-1", 1));
+
+    await act(async () => {
+      await result.current.revealHint(1);
+    });
+    await act(async () => {
+      await result.current.revealHint(1);
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("test_reveal_hint_that_fails_can_be_asked_for_again", async () => {
+    const spy = stubFetch(badRequest);
+    const { result } = renderHook(() => useHints("game-1", 1));
+
+    await act(async () => {
+      await result.current.revealHint(1);
+    });
+    expect(result.current.hints[0]).toBeUndefined();
+
+    await act(async () => {
+      await result.current.revealHint(1);
+    });
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it("test_use_hints_with_no_game_makes_no_request", async () => {
+    const spy = stubFetch(() => ok("x"));
+    const { result } = renderHook(() => useHints(null, 1));
+
+    await act(async () => {
+      await result.current.revealHint(1);
+    });
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+})

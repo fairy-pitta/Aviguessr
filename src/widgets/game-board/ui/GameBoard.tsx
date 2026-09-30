@@ -15,7 +15,8 @@ type GameBoardProps = {
   roundStartTime: number;
   guessLoading: boolean;
   hints: string[];
-  hintsLoading: boolean;
+  hintsLoading: number | null;
+  onRevealHint: (level: number) => void;
   onCountrySelect: (code: string) => void;
   onGuess: () => void;
   onTimeout: () => void;
@@ -31,6 +32,7 @@ export function GameBoard({
   guessLoading,
   hints,
   hintsLoading,
+  onRevealHint,
   onCountrySelect,
   onGuess,
   onTimeout,
@@ -61,7 +63,7 @@ export function GameBoard({
 
       {/* Hint panel */}
       <div className="absolute bottom-28 left-4 z-10">
-        <HintPanel hints={hints} loading={hintsLoading} />
+        <HintPanel hints={hints} loading={hintsLoading} onReveal={onRevealHint} />
       </div>
 
       {/* Guess button */}

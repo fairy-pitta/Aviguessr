@@ -57,11 +57,36 @@ export function elapsedMs(startedAt: string | null, nowIso: string): number {
 }
 
 /**
- * Records that a hint level was reached. Uses MAX so re-requesting the same
- * level cannot inflate the penalty, and so the count cannot be lowered.
+ * Fraction of the round's score each hint costs, by level.
+ * Hints are opt-in, so the price is shown before the player commits.
  */
-export function hintsUnlockedQuery(): string {
-  return "UPDATE game_rounds SET hints_used = MAX(hints_used, ?) WHERE game_id = ? AND round = ?";
+export const HINT_PENALTIES = [0.15, 0.3];
+
+/** Which hints were taken, as a bit per level (bit 0 = level 1). */
+export function maskWithLevel(mask: number, level: number): number {
+  return mask | (1 << (level - 1));
+}
+
+/**
+ * Total penalty for the hints taken. Charging per level matters because hints
+ * are opt-in: taking only the second one should cost its own price, not the
+ * price of working up to it.
+ */
+export function hintPenaltyFromMask(mask: number): number {
+  let penalty = 0;
+  for (let i = 0; i < HINT_PENALTIES.length; i++) {
+    if (mask & (1 << i)) penalty += HINT_PENALTIES[i];
+  }
+  return Math.min(1, penalty);
+}
+
+/** How many hints were taken, for the record kept on the round. */
+export function hintCountFromMask(mask: number): number {
+  let count = 0;
+  for (let i = 0; i < HINT_PENALTIES.length; i++) {
+    if (mask & (1 << i)) count++;
+  }
+  return count;
 }
 
 function getMinDistanceToCorrectCountry(
@@ -289,17 +314,17 @@ export async function submitGuess(
 
   const roundRow = await db
     .prepare(
-      "SELECT bird_id, started_at, hints_used FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
+      "SELECT bird_id, started_at, hint_mask FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
     )
     .bind(gameId, round)
-    .first<{ bird_id: number; started_at: string | null; hints_used: number | null }>();
+    .first<{ bird_id: number; started_at: string | null; hint_mask: number | null }>();
 
   if (!roundRow) return null;
 
   // Both of these used to come from the request body, which let the client
   // award itself the full time bonus and waive the hint penalty.
   const timeMs = elapsedMs(roundRow.started_at, new Date().toISOString());
-  const hintsUsed = roundRow.hints_used ?? 0;
+  const hintMask = roundRow.hint_mask ?? 0;
 
   const birdData = await getBirdWithCountries(db, roundRow.bird_id);
   if (!birdData) return null;
@@ -314,7 +339,7 @@ export async function submitGuess(
   if (isMultipleChoice) {
     score = isCorrect ? 5000 : 0;
   } else {
-    const hintPenalty = Math.max(0, 1 - hintsUsed * 0.15);
+    const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
     const maxDistanceScore = Math.round(5000 * hintPenalty);
     const rawScore = isCorrect ? 5000 : calculateScore(distance);
     score = Math.min(rawScore, maxDistanceScore);
