@@ -103,7 +103,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren-babbler on branch, slightly blurred"
   },
   {
     "speciesCode": "chbbab1",
@@ -140,7 +141,8 @@
       "artist": "Mickey Wu"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "fulvetta blurred, obscured by foliage"
   },
   {
     "speciesCode": "gycful3",
@@ -194,7 +196,8 @@
       "artist": "\u738b\u5929\u660e"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "dead laughingthrush on sandy ground [corrected by me]"
   },
   {
     "speciesCode": "elllau1",
@@ -232,7 +235,8 @@
       "artist": "Wang.QG"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "laughingthrush heavily blurred"
   },
   {
     "speciesCode": "rewlau1",
@@ -270,7 +274,8 @@
       "artist": "Brodie Cass Talbott"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "blurry, out of focus, unclear"
   },
   {
     "speciesCode": "sttbar1",
@@ -289,7 +294,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "barwing heavily obscured, barely visible"
   },
   {
     "speciesCode": "gyflio1",
@@ -324,7 +330,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "high in canopy, heavily obscured"
   },
   {
     "speciesCode": "ruclau3",
@@ -1149,7 +1156,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "pigeon barely visible in dark, murky"
   },
   {
     "speciesCode": "ecgdov1",
@@ -1550,7 +1558,8 @@
       "artist": "Mike Ostrowski"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tiny, dense foliage, barely visible"
   },
   {
     "speciesCode": "ecupie1",
@@ -1784,7 +1793,8 @@
       "artist": "Dario Taraborelli"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tiny hummingbird, heavily blurred"
   },
   {
     "speciesCode": "hoapuf1",
@@ -2832,7 +2842,8 @@
       "artist": "Zac Peterson"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Hummingbird tiny silhouette, dark"
   },
   {
     "speciesCode": "blhsap1",
@@ -2887,7 +2898,8 @@
       "artist": "Esteban Poveda"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "rail hidden in tall grass"
   },
   {
     "speciesCode": "bograi1",
@@ -2922,7 +2934,8 @@
       "artist": "Daniel van der Post"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "rail hidden in grass"
   },
   {
     "speciesCode": "rwwrai1",
@@ -3540,7 +3553,8 @@
       "artist": "Peter Archdale"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "piculet on leaves, small, obscured"
   },
   {
     "speciesCode": "chepic1",
@@ -3685,7 +3699,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small woodpecker in branches, obscured and blurry"
   },
   {
     "speciesCode": "plffal1",
@@ -3755,7 +3770,8 @@
       "artist": "Ryan F. Mandelbaum"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "parakeets among foliage, not clearly identifiable"
   },
   {
     "speciesCode": "rufpar2",
@@ -3773,7 +3789,8 @@
       "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "parrot obscured by heavy lichen growth"
   },
   {
     "speciesCode": "inwpar1",
@@ -3790,7 +3807,8 @@
       "artist": "Julien Renoult"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Parrot grainy low resolution"
   },
   {
     "speciesCode": "rofpar2",
@@ -4043,7 +4061,8 @@
       "artist": "tlaloc27"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small antshrike in foliage, blurry and obscured"
   },
   {
     "speciesCode": "blaant1",
@@ -4080,7 +4099,8 @@
       "artist": "Ian Adams"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird mostly hidden in dense vegetation"
   },
   {
     "speciesCode": "uniant2",
@@ -4135,7 +4155,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird blurry and dark, not clear"
   },
   {
     "speciesCode": "bicant4",
@@ -4334,7 +4355,8 @@
       "artist": "James M. Maley"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "dark antbird barely visible in dark foliage"
   },
   {
     "speciesCode": "dumant3",
@@ -4352,7 +4374,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antbird heavily obscured by vegetation"
   },
   {
     "speciesCode": "esmant1",
@@ -4388,7 +4411,8 @@
       "artist": "Don Wellmann"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antbird in dense foliage, hidden"
   },
   {
     "speciesCode": "zimant1",
@@ -4605,7 +4629,8 @@
       "artist": "Jo Roberts"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird heavily obscured by dense foliage"
   },
   {
     "speciesCode": "rufant6",
@@ -4623,7 +4648,8 @@
       "artist": "desertnaturalist"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antpitta obscured by foliage and blur"
   },
   {
     "speciesCode": "bicant3",
@@ -4659,7 +4685,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antpitta partially visible in dense vegetation"
   },
   {
     "speciesCode": "chaant4",
@@ -4855,7 +4882,8 @@
       "artist": "Tristan Jobin"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tapaculo heavily obscured in moss-covered branches"
   },
   {
     "speciesCode": "partap1",
@@ -4959,7 +4987,8 @@
       "artist": "Michael Bakker Paiva"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird on branch but very dark, poor lighting"
   },
   {
     "speciesCode": "upmtap1",
@@ -4992,7 +5021,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tiny tapaculo heavily obscured by foliage"
   },
   {
     "speciesCode": "alptap1",
@@ -5371,7 +5401,8 @@
       "artist": "nmoorhatch"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "thistletail camouflaged in dark vegetation"
   },
   {
     "speciesCode": "dobgra1",
@@ -5807,7 +5838,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "moss or lichen only, no bird [corrected by me]"
   },
   {
     "speciesCode": "olipih2",
@@ -5863,7 +5895,8 @@
       "artist": "Paul Prior"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird obscured among branches"
   },
   {
     "speciesCode": "chcpih1",
@@ -6010,7 +6043,8 @@
       "artist": "tlaloc27"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tyrannulet mostly obscured by foliage"
   },
   {
     "speciesCode": "souben1",
@@ -6065,7 +6099,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small flatbill on branch, too dim"
   },
   {
     "speciesCode": "orefly1",
@@ -6491,7 +6526,8 @@
       "artist": "Roger A. Morales-Flores"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Sirystes heavily obscured by foliage"
   },
   {
     "speciesCode": "venfly1",
@@ -6527,7 +6563,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "flycatcher obscured by branch, dark"
   },
   {
     "speciesCode": "whbfly1",
@@ -6545,7 +6582,8 @@
       "artist": "Danna Lizeth Guevara Prieto"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "flycatcher tiny on distant wire"
   },
   {
     "speciesCode": "sntkin1",
@@ -6582,7 +6620,8 @@
       "artist": "Thibaud Aronson"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "heavily obscured by foliage, barely visible"
   },
   {
     "speciesCode": "ybsvir1",
@@ -6655,7 +6694,8 @@
       "artist": "tomas_kay"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "very blurry, bird indistinct in image"
   },
   {
     "speciesCode": "beajay1",
@@ -6730,7 +6770,8 @@
       "artist": "Ben Keen"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Gnatcatcher mostly hidden by foliage"
   },
   {
     "speciesCode": "ochwre1",
@@ -6855,7 +6896,8 @@
       "artist": "Barry Cottam"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren mostly hidden in foliage, obscured"
   },
   {
     "speciesCode": "whiwre1",
@@ -6893,7 +6935,8 @@
       "artist": "Ryan F. Mandelbaum"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "dense foliage obscures, blurred"
   },
   {
     "speciesCode": "antwre2",
@@ -6927,7 +6970,8 @@
       "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren in dense vegetation, blurred and obscured"
   },
   {
     "speciesCode": "sttwre1",
@@ -7436,7 +7480,8 @@
       "artist": "Ariel Gallego"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "brushfinch small in tree, heavily obscured"
   },
   {
     "speciesCode": "smbfin1",
@@ -7775,7 +7820,8 @@
       "artist": "RJ Baltierra"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small bird, mostly hidden in foliage"
   },
   {
     "speciesCode": "gytwar1",
@@ -7810,7 +7856,8 @@
       "artist": "Don Wellmann"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Bird heavily obscured by dense foliage"
   },
   {
     "speciesCode": "yecred1",
@@ -7935,7 +7982,8 @@
       "artist": "Ryan F. Mandelbaum"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird heavily obscured by bright foliage"
   },
   {
     "speciesCode": "vercar1",
@@ -7991,7 +8039,8 @@
       "artist": "Martha Lucia Ortiz-Moreno"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "cardinal in foliage, hard to see"
   },
   {
     "speciesCode": "ructan4",
@@ -8120,7 +8169,8 @@
       "artist": "Norma Malinowski"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small tanager mostly obscured by dense leaves"
   },
   {
     "speciesCode": "mobtan1",
@@ -8235,7 +8285,8 @@
       "artist": "Jonathan Eisen"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "parrots silhouettes flying, too tiny"
   },
   {
     "speciesCode": "yenpar1",
@@ -8358,7 +8409,8 @@
       "artist": "GERMAN LEONEL SARMIENTO CRUZ"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antshrike heavily obscured by foliage"
   },
   {
     "speciesCode": "rusant1",
@@ -8573,7 +8625,8 @@
       "artist": "Ricard Busquets Reverte"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Woodcreeper very small dark"
   },
   {
     "speciesCode": "spowoo1",
@@ -8647,7 +8700,8 @@
       "artist": "Kristy Morley"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "heavily blurred, barely visible among branches"
   },
   {
     "speciesCode": "rubspi2",
@@ -8739,7 +8793,8 @@
       "artist": "Carlos Dom\u00ednguez-Rodr\u00edguez"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "cotinga distant on branch, small and far"
   },
   {
     "speciesCode": "rufpih1",
@@ -8764,7 +8819,8 @@
       "artist": "Roger A. Morales-Flores"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "piha heavily obscured by foliage"
   },
   {
     "speciesCode": "thlsch2",
@@ -8889,7 +8945,8 @@
       "artist": "William Harmon"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird in foliage, heavily obscured"
   },
   {
     "speciesCode": "surfly1",
@@ -9225,7 +9282,8 @@
       "artist": "Carlos Dom\u00ednguez-Rodr\u00edguez"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird obscured by foliage, blurred"
   },
   {
     "speciesCode": "tacgre2",
@@ -9274,7 +9332,8 @@
       "artist": "Juan Cruzado Cort\u00e9s"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "vireo in upper branches, small and obscured"
   },
   {
     "speciesCode": "plsvir",
@@ -9460,7 +9519,8 @@
       "artist": "Dan MacNeal"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren behind mesh/wire, heavily obscured"
   },
   {
     "speciesCode": "carwre",
@@ -9556,7 +9616,8 @@
       "artist": "Joe crutwell"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren silhouette too dark against sky"
   },
   {
     "speciesCode": "whbwre1",
@@ -9576,7 +9637,8 @@
       "artist": "Jorge Arturo Rama Aguilar"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren obscured in green foliage"
   },
   {
     "speciesCode": "blacat1",
@@ -9900,7 +9962,8 @@
       "artist": "Laurel Meredyk"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "dead sparrow on muddy ground [corrected by me]"
   },
   {
     "speciesCode": "russpa1",
@@ -10353,7 +10416,8 @@
       "artist": "Madeleine Claire"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Bird among flowers mostly hidden"
   },
   {
     "speciesCode": "btstan1",
@@ -10516,7 +10580,8 @@
       "artist": "Ricard Busquets Reverte"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Live bird in grass heavily obscured by foliage"
   },
   {
     "speciesCode": "varsee3",
@@ -10639,7 +10704,8 @@
       "artist": "Roland Godon"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bare branches, no bird visible [corrected by me]"
   },
   {
     "speciesCode": "rcweye1",
@@ -10712,7 +10778,8 @@
       "artist": "Zac Peterson"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "cisticola obscured in dense branches"
   },
   {
     "speciesCode": "butsun2",
@@ -11508,7 +11575,8 @@
       "artist": "steve b"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Bird mostly hidden by vegetation, barely visible"
   },
   {
     "speciesCode": "tibpar1",
@@ -11706,7 +11774,8 @@
       "artist": "John Kenrick Gibson"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Only rocks and stones visible [corrected by me]"
   },
   {
     "speciesCode": "indvul1",
@@ -11775,7 +11844,8 @@
       "artist": "James Eaton"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "fish-owl heavily obscured in forest"
   },
   {
     "speciesCode": "himowl1",
@@ -12672,7 +12742,8 @@
       "artist": "\u6797\u6b63\u6587"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "warbler small and partially obscured"
   },
   {
     "speciesCode": "blfwar1",
@@ -12695,7 +12766,8 @@
       "artist": "Paulmathi Vinod"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "warbler mostly obscured by foliage"
   },
   {
     "speciesCode": "brbwar1",
@@ -12870,7 +12942,8 @@
       "artist": "Sagnik Dutta Roy"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "fulvetta small in brushy vegetation"
   },
   {
     "speciesCode": "grepar1",
@@ -13119,7 +13192,8 @@
       "artist": "Paulmathi Vinod"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "yuhina in dense foliage, barely visible"
   },
   {
     "speciesCode": "ruvyuh1",
@@ -13166,7 +13240,8 @@
       "artist": "Tristan Jobin"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small bird, partially hidden in branches"
   },
   {
     "speciesCode": "rucbab1",
@@ -13725,7 +13800,8 @@
       "artist": "deepachandran"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird obscured in dark dense foliage"
   },
   {
     "speciesCode": "spolau1",
@@ -13943,7 +14019,8 @@
       "artist": "Jay Pruett"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small blue bird on mountainside, distant"
   },
   {
     "speciesCode": "lotthr1",
@@ -14074,7 +14151,8 @@
       "artist": "Tom Heijnen"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "thrush distant in misty fog"
   },
   {
     "speciesCode": "chethr1",
@@ -14119,7 +14197,8 @@
       "artist": "Chayant Gonsalves"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Birds in mud very small dark"
   },
   {
     "speciesCode": "whgfly1",
@@ -14637,7 +14716,8 @@
       "artist": "Ramnarayan K"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "rosefinch in tall grass, mostly obscured"
   },
   {
     "speciesCode": "crbfin3",
@@ -14966,7 +15046,8 @@
       "artist": "Henrique Bitencourt"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "Bird in debris heavily blurred and obscured"
   },
   {
     "speciesCode": "bartin2",
@@ -15350,7 +15431,8 @@
       "artist": "Jan Ebr &amp; Ivana Ebrov\u00e1"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "nightjar eye only, mostly dark"
   },
   {
     "speciesCode": "swtnig1",
@@ -15456,7 +15538,8 @@
       "artist": "David F. Belmonte"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "swift too small against sky, barely visible"
   },
   {
     "speciesCode": "patbar1",
@@ -16434,7 +16517,8 @@
       "artist": "Don Wellmann"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "owl heavily obscured in foliage"
   },
   {
     "speciesCode": "amapyo1",
@@ -17103,7 +17187,8 @@
       "artist": "Riley Pollom"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "two jacamars too tiny to identify"
   },
   {
     "speciesCode": "gilbar1",
@@ -17763,7 +17848,8 @@
       "artist": "Toby Rowland"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "tiny distant parakeets, too small to identify"
   },
   {
     "speciesCode": "orcpar2",
@@ -17806,7 +17892,8 @@
       "artist": "Jan Ebr &amp; Ivana Ebrov\u00e1"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "parrots in foliage, heavily obscured"
   },
   {
     "speciesCode": "spfpar1",
@@ -17979,7 +18066,8 @@
       "artist": "Sandra Keller"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "parakeet heavily obscured by foliage"
   },
   {
     "speciesCode": "hyamac1",
@@ -18560,7 +18648,8 @@
       "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antbird blurry, heavily obscured"
   },
   {
     "speciesCode": "sthant1",
@@ -18580,7 +18669,8 @@
       "artist": "Carlos Torrente"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "antbird among ferns, partially obscured"
   },
   {
     "speciesCode": "perwaa1",
@@ -18646,7 +18736,8 @@
       "artist": "Renato Moraes"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "bird obscured in foliage, blurred"
   },
   {
     "speciesCode": "blaant5",
@@ -18714,7 +18805,8 @@
       "artist": "Rob Foster"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "dark fire-eye obscured in shadows"
   },
   {
     "speciesCode": "whbant6",
@@ -19144,7 +19236,8 @@
       "artist": "CH Hemphill"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "small dark bird on forest floor, dim"
   },
   {
     "speciesCode": "rubtap1",
