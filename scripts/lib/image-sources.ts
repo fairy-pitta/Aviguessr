@@ -70,6 +70,7 @@ export type InatObservation = {
   quality_grade: string;
   taxon: { name: string } | null;
   photos: InatPhoto[];
+  user?: { login?: string; name?: string | null } | null;
 };
 
 export type PickedPhoto = {
@@ -78,13 +79,29 @@ export type PickedPhoto = {
   artist: string;
 };
 
-/** "(c) Cullen Hanks, some rights reserved (CC BY)" -> "Cullen Hanks" */
-function photographer(attribution: string): string {
-  return attribution
-    .replace(/^\(c\)\s*/i, "")
-    .split(",")[0]
-    .replace(/\s*\(.*\)\s*$/, "")
-    .trim();
+/**
+ * Photographer credit for a photo.
+ *
+ * "(c) Cullen Hanks, some rights reserved (CC BY)" -> "Cullen Hanks".
+ * CC0 photos are attributed as a bare "no rights reserved" with no name, so
+ * fall back to the uploader named in the string, then to the observer. Never
+ * return the licence phrase itself as if it were a person.
+ */
+function photographer(
+  attribution: string,
+  user: InatObservation["user"]
+): string {
+  const credited = attribution.match(/^\(c\)\s*([^,]+)/i);
+  if (credited) {
+    return credited[1].replace(/\s*\(.*\)\s*$/, "").trim();
+  }
+
+  const uploaded = attribution.match(/uploaded by\s+([^,]+)/i);
+  if (uploaded) {
+    return uploaded[1].trim();
+  }
+
+  return (user?.name || user?.login || "").trim();
 }
 
 /**
@@ -116,7 +133,7 @@ export function pickInatPhoto(
       return {
         url,
         license: label,
-        artist: photographer(photo.attribution),
+        artist: photographer(photo.attribution, obs.user),
       };
     }
   }

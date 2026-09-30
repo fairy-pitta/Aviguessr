@@ -27,3 +27,4 @@ data/images/
 data/images-commons-backup/
 data/update-metadata.sql
 data/update-fun-facts.sql
+data/update-image-metadata.sql

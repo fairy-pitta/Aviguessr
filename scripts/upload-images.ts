@@ -28,6 +28,7 @@ const MAX_RETRIES = 3;
 type BirdEntry = {
   speciesCode: string;
   name: string;
+  playable?: boolean;
   image: {
     url: string;
     license: string;
@@ -115,7 +116,10 @@ async function main() {
 
   const force = process.argv.slice(2).includes("--force");
   const uploaded = force ? new Set<string>() : loadCheckpoint();
-  const remaining = birds.filter((b) => !uploaded.has(b.speciesCode));
+  // playable:false species are never served, so their image is not worth fetching
+  const remaining = birds.filter(
+    (b) => b.playable !== false && !uploaded.has(b.speciesCode)
+  );
 
   console.log(
     force

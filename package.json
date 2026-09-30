@@ -11,6 +11,8 @@
     "generate:centroids": "npx tsx scripts/generate-centroids.ts",
     "seed": "npx tsx scripts/seed.ts",
     "populate:fun-facts": "npx tsx scripts/populate-fun-facts.ts",
+    "collect:inat-images": "npx tsx scripts/collect-inat-images.ts",
+    "apply:image-metadata": "npx tsx scripts/apply-image-metadata.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

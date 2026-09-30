@@ -207,4 +207,57 @@ describe("pickInatPhoto", () => {
     const picked = pickInatPhoto([obs()], "Cistothorus palustris");
     expect(picked?.artist).toBe("Someone");
   });
+
+  it("test_pick_inat_photo_with_cc0_attribution_falls_back_to_observer_name", () => {
+    // CC0 attributions are just "no rights reserved" — no name to parse
+    const picked = pickInatPhoto(
+      [
+        obs({
+          photos: [{ url: "https://x/photos/5/square.jpg", license_code: "cc0", attribution: "no rights reserved" }],
+          user: { login: "wang_qg", name: "Wang QG" },
+        }),
+      ],
+      "Cistothorus palustris"
+    );
+    expect(picked?.artist).toBe("Wang QG");
+  });
+
+  it("test_pick_inat_photo_with_cc0_and_no_observer_name_uses_login", () => {
+    const picked = pickInatPhoto(
+      [
+        obs({
+          photos: [{ url: "https://x/photos/6/square.jpg", license_code: "cc0", attribution: "no rights reserved" }],
+          user: { login: "desertnaturalist", name: null },
+        }),
+      ],
+      "Cistothorus palustris"
+    );
+    expect(picked?.artist).toBe("desertnaturalist");
+  });
+
+  it("test_pick_inat_photo_reads_uploader_from_attribution_when_present", () => {
+    const picked = pickInatPhoto(
+      [
+        obs({
+          photos: [{ url: "https://x/photos/8/square.jpg", license_code: "cc0", attribution: "no rights reserved, uploaded by Hickson Fergusson" }],
+          user: { login: "someone_else", name: "Someone Else" },
+        }),
+      ],
+      "Cistothorus palustris"
+    );
+    expect(picked?.artist).toBe("Hickson Fergusson");
+  });
+
+  it("test_pick_inat_photo_never_uses_a_licence_phrase_as_the_artist", () => {
+    const picked = pickInatPhoto(
+      [
+        obs({
+          photos: [{ url: "https://x/photos/11/square.jpg", license_code: "cc0", attribution: "no rights reserved" }],
+          user: null,
+        }),
+      ],
+      "Cistothorus palustris"
+    );
+    expect(picked?.artist).toBe("");
+  });
 });
