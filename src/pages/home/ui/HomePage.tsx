@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useStartGame } from "@/features/start-game";
-import { Button } from "@/shared/ui";
+import { FieldKit } from "@/shared/ui";
 
 /**
- * The title page of the guide. It opens on the premise rather than on a
- * feature list: a plate, and the question the plate is asking.
+ * The title page of the guide — the one screen in the book that is centred.
+ * It opens on the drawing rather than on a feature list, because the drawing
+ * says the premise faster than the sentence does: here is the spread a guide
+ * gives you, and here is the half of it you have to fill in.
  */
 export function HomePage() {
   const navigate = useNavigate();
@@ -20,22 +22,26 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-paper)] flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-xl">
-        <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight leading-none">
-          AviGuessr
-        </h1>
-        <p className="mt-5 text-xl leading-relaxed text-[var(--color-ink-soft)] max-w-[34ch]">
-          A field guide gives you the plate and the range map together. Here you
-          get the plate, and you draw the range.
-        </p>
+    <div className="min-h-screen bg-[var(--color-paper)] flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-lg">
+        <FieldKit className="mx-auto w-[288px] sm:w-[368px] h-auto" />
 
-        <div className="mt-10 border-t rule">
+        <div className="mt-6 text-center">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-none">
+            AviGuessr
+          </h1>
+          <p className="mt-4 mx-auto text-lg leading-relaxed text-[var(--color-ink-soft)] max-w-[32ch]">
+            A guide hands you the plate and the range map together. Here you get
+            the plate, and you draw the range.
+          </p>
+        </div>
+
+        <div className="mt-9 border-t rule">
           <button
             type="button"
             disabled={loading}
             onClick={() => begin("classic")}
-            className="w-full text-left py-5 border-b rule group disabled:opacity-50"
+            className="w-full text-left py-4 border-b rule disabled:opacity-50"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Name the country</span>
@@ -52,7 +58,7 @@ export function HomePage() {
             type="button"
             disabled={loading}
             onClick={() => begin("multiple_choice")}
-            className="w-full text-left py-5 border-b rule disabled:opacity-50"
+            className="w-full text-left py-4 border-b rule disabled:opacity-50"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Four choices</span>
@@ -68,7 +74,7 @@ export function HomePage() {
           <button
             type="button"
             onClick={() => navigate("/daily")}
-            className="w-full text-left py-5 border-b rule"
+            className="w-full text-left py-4 border-b rule"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Today's five</span>
@@ -82,15 +88,11 @@ export function HomePage() {
           </button>
         </div>
 
-        <p className="mt-8 text-base text-[var(--color-ink-faint)]">
-          782 species, photographed in the wild, from 172 countries.
+        <p className="mt-6 text-center text-base text-[var(--color-ink-faint)]">
+          {loading
+            ? "Choosing your plates"
+            : "782 species, photographed in the wild, from 172 countries."}
         </p>
-
-        {loading && (
-          <p className="mt-4 text-base text-[var(--color-ink-soft)]">
-            Choosing your plates
-          </p>
-        )}
       </div>
     </div>
   );
