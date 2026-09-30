@@ -7,6 +7,11 @@ type TimerProps = {
   paused?: boolean;
 };
 
+/**
+ * The countdown, set as the largest figure on the right page. A ruled bar
+ * underneath carries the same information for anyone who reads shape faster
+ * than digits.
+ */
 export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const [elapsed, setElapsed] = useState(0);
   // The tick keeps running after the limit, so the round must only be
@@ -31,40 +36,30 @@ export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const remaining = Math.max(0, TIME_LIMIT_MS - elapsed);
   const fraction = remaining / TIME_LIMIT_MS;
   const seconds = Math.ceil(remaining / 1000);
-
   const urgent = fraction <= 0.2;
-  const warning = fraction <= 0.5 && !urgent;
-
-  const numberColor = urgent
-    ? "text-rose-300"
-    : warning
-      ? "text-amber-200"
-      : "text-[var(--color-text-strong)]";
-
-  const barColor = urgent
-    ? "bg-rose-400"
-    : warning
-      ? "bg-amber-300"
-      : "bg-teal-300";
 
   return (
-    <div className="w-full">
-      <div className="flex items-baseline gap-1.5">
+    <div className="shrink-0 text-right">
+      <div className="flex items-baseline justify-end gap-1.5">
         <span
-          className={`font-mono font-bold text-4xl leading-none tabular ${numberColor} ${
-            urgent ? "animate-streak-fire" : ""
+          className={`text-5xl font-semibold leading-none tabular ${
+            urgent
+              ? "text-[var(--color-alarm)] animate-alarm"
+              : "text-[var(--color-ink)]"
           }`}
-          aria-live="off"
         >
           {seconds}
         </span>
-        <span className="text-sm font-medium text-[var(--color-text-muted)]">
-          seconds left
-        </span>
+        <span className="text-sm text-[var(--color-ink-soft)]">s</span>
       </div>
-      <div className="mt-2 w-full h-2 bg-white/15 rounded-full overflow-hidden">
+      <div
+        className="mt-2 h-px w-28 ml-auto bg-[var(--color-paper-edge)]"
+        aria-hidden="true"
+      >
         <div
-          className={`h-full ${barColor} rounded-full transition-all duration-100`}
+          className={`h-px transition-all duration-100 ${
+            urgent ? "bg-[var(--color-alarm)]" : "bg-[var(--color-ink)]"
+          }`}
           style={{ width: `${fraction * 100}%` }}
         />
       </div>

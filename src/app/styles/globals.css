@@ -1,160 +1,132 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap');
+
+/*
+ * AviGuessr — a field guide you read backwards.
+ *
+ * A guide gives you the plate and the range map together. This game hands you
+ * the plate and keeps the range map blank until you fill it in, so the screen
+ * is built as a guide spread: the photograph is the left page, the map and the
+ * species account share the right.
+ *
+ * The palette is borrowed from range-map printing rather than from paper
+ * nostalgia: cool grey-green stock, a desaturated ink, and the two washes a
+ * printed distribution map uses to separate where a bird is from where it
+ * is not.
+ */
 
 @theme inline {
-  --color-surface: #0c1222;
-  --color-surface-raised: #151d30;
-  /* Panels sit over a world map, so they need a solid enough ground for text */
-  --color-surface-glass: rgba(13, 19, 33, 0.92);
-  --color-border-glass: rgba(255, 255, 255, 0.14);
+  /* Stock: green-dominant and cool, deliberately not a warm cream */
+  --color-paper: #edefea;
+  --color-paper-deep: #e1e5dd;
+  --color-paper-edge: #cfd6cc;
 
-  /*
-   * Text ramp, measured against the glass ground (~#0d1321).
-   * strong 16.4:1 · body 11.2:1 · muted 6.6:1 — muted is the floor, and
-   * nothing smaller than 12px uses it. slate-500/600 were failing at 4.0:1
-   * and 2.4:1 while carrying 10-11px labels.
-   */
-  --color-text-strong: #f8fafc;
-  --color-text-body: #dbe3ee;
-  --color-text-muted: #9fb0c6;
-  --color-accent: #14b8a6;
-  --color-accent-glow: rgba(20, 184, 166, 0.3);
-  --color-hot: #f43f5e;
-  --color-hot-glow: rgba(244, 63, 94, 0.3);
-  --color-gold: #f59e0b;
-  --color-gold-glow: rgba(245, 158, 11, 0.3);
-  --color-streak: #fb923c;
-  --font-display: 'Outfit', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Ink, never pure black */
+  --color-ink: #1b2a28;
+  --color-ink-soft: #566460;
+  --color-ink-faint: #7b8a85;
+
+  /* The two washes of a printed range map */
+  --color-range: #5e7a2e;
+  --color-range-wash: rgba(94, 122, 46, 0.28);
+  --color-miss: #7d3b4f;
+  --color-miss-wash: rgba(125, 59, 79, 0.22);
+
+  /* Time running out */
+  --color-alarm: #9a4a1f;
+
+  --font-display: 'Instrument Sans', system-ui, sans-serif;
+  --font-binomial: 'Newsreader', Georgia, serif;
 }
 
 :root {
-  --background: #0c1222;
-  --foreground: #e2e8f0;
+  color-scheme: light;
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-display);
   margin: 0;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Leaflet fix */
-.leaflet-container {
-  z-index: 0;
+/*
+ * Binomials are italic by scientific convention, so the one italic serif on
+ * the page carries information rather than decoration.
+ */
+.binomial {
+  font-family: var(--font-binomial);
+  font-style: italic;
+  letter-spacing: 0.01em;
 }
 
-/* Glass panel base */
-.glass {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border-glass);
-}
-
-/* Glow effects */
-.glow-accent {
-  box-shadow: 0 0 20px var(--color-accent-glow), 0 0 60px rgba(20, 184, 166, 0.1);
-}
-.glow-hot {
-  box-shadow: 0 0 20px var(--color-hot-glow), 0 0 60px rgba(244, 63, 94, 0.1);
-}
-.glow-gold {
-  box-shadow: 0 0 20px var(--color-gold-glow), 0 0 60px rgba(245, 158, 11, 0.1);
-}
-
-/* Animations */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px var(--color-accent-glow); }
-  50% { box-shadow: 0 0 24px var(--color-accent-glow), 0 0 48px rgba(20, 184, 166, 0.15); }
-}
-@keyframes score-pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-@keyframes streak-fire {
-  0%, 100% { text-shadow: 0 0 8px rgba(251, 146, 60, 0.5); }
-  50% { text-shadow: 0 0 16px rgba(251, 146, 60, 0.8), 0 0 32px rgba(251, 146, 60, 0.3); }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.5s ease-out both;
-}
-.animate-fade-in {
-  animation: fade-in 0.4s ease-out both;
-}
-.animate-slide-in-right {
-  animation: slide-in-right 0.4s ease-out both;
-}
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-.animate-score-pop {
-  animation: score-pop 0.4s ease-out;
-}
-.animate-shake {
-  animation: shake 0.4s ease-out;
-}
-.animate-streak-fire {
-  animation: streak-fire 1.5s ease-in-out infinite;
-}
-
-/* Stagger children */
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 80ms; }
-.stagger > *:nth-child(3) { animation-delay: 160ms; }
-.stagger > *:nth-child(4) { animation-delay: 240ms; }
-.stagger > *:nth-child(5) { animation-delay: 320ms; }
-.stagger > *:nth-child(6) { animation-delay: 400ms; }
-
-/* Gradient text utility */
-.text-gradient-accent {
-  background: linear-gradient(135deg, #14b8a6, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.text-gradient-gold {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Numerals that do not change width as they count down */
+/* Figures that do not shift width as they count */
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
+/* A guide's hairline, used for structure instead of boxes */
+.rule {
+  border-color: var(--color-paper-edge);
+}
+
+.leaflet-container {
+  z-index: 0;
+  background: var(--color-paper-deep);
+  font-family: var(--font-display);
+}
+
+/* The map is a range map: no imagery, no attribution furniture to fight */
+.leaflet-control-container {
+  display: none;
+}
+
+/*
+ * One orchestrated moment: the species account arriving over the plate when
+ * the round resolves. Nothing else animates on entry.
+ */
+@keyframes account-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-account {
+  animation: account-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes tick-alarm {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.animate-alarm {
+  animation: tick-alarm 1s steps(2, end) infinite;
+}
+
+/* Focus that is visible on paper */
+:where(button, a, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-up,
-  .animate-fade-in,
-  .animate-slide-in-right,
-  .animate-pulse-glow,
-  .animate-score-pop,
-  .animate-shake,
-  .animate-streak-fire {
+  .animate-account,
+  .animate-alarm {
     animation: none;
   }
   * {

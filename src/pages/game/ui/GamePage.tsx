@@ -79,7 +79,7 @@ export function GamePage() {
   if (game.phase === "idle") {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-[var(--color-text-muted)]">Loading game</p>
+        <p className="text-[var(--color-ink-soft)]">Loading game</p>
       </div>
     );
   }

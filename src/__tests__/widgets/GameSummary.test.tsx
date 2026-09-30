@@ -41,7 +41,7 @@ describe("GameSummary", () => {
       />
     );
     expect(screen.getByText("21,400")).toBeInTheDocument();
-    expect(screen.getByText("Game Complete")).toBeInTheDocument();
+    expect(screen.getByText("3 of 5 within range")).toBeInTheDocument();
   });
 
   it("test_render_shows_all_bird_names", () => {
@@ -66,7 +66,7 @@ describe("GameSummary", () => {
         onPlayAgain={onPlayAgain}
       />
     );
-    fireEvent.click(screen.getByText("Play Again"));
+    fireEvent.click(screen.getByText("Start a new round"));
     expect(onPlayAgain).toHaveBeenCalledOnce();
   });
 });

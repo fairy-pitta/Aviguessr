@@ -1,7 +1,12 @@
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import { MapContainer, GeoJSON } from "react-leaflet";
 import { useEffect, useState, useCallback, useRef } from "react";
-import type { Layer, LeafletMouseEvent, PathOptions } from "leaflet";
-import type { Feature, Geometry, GeoJsonProperties, FeatureCollection } from "geojson";
+import type { Layer, PathOptions } from "leaflet";
+import type {
+  Feature,
+  Geometry,
+  GeoJsonProperties,
+  FeatureCollection,
+} from "geojson";
 import { featureCountryCode } from "../lib/featureCode";
 import "leaflet/dist/leaflet.css";
 
@@ -14,6 +19,16 @@ type WorldMapProps = {
     incorrect?: string;
   };
 };
+
+/*
+ * A printed range map, not a slippy map: no imagery, two washes, and land that
+ * reads as the same stock as the page around it.
+ */
+const PAPER = "#e1e5dd";
+const EDGE = "#b9c3b8";
+const INK = "#1b2a28";
+const RANGE = "#5e7a2e";
+const MISS = "#7d3b4f";
 
 export function WorldMap({
   onCountrySelect,
@@ -33,49 +48,44 @@ export function WorldMap({
   const getStyle = useCallback(
     (feature?: Feature<Geometry, GeoJsonProperties>): PathOptions => {
       const code = featureCountryCode(feature?.properties);
-      if (!code) return {};
+
+      const land: PathOptions = {
+        fillColor: PAPER,
+        fillOpacity: 1,
+        color: EDGE,
+        weight: 0.6,
+      };
+
+      // No ISO identity means it cannot be guessed, so it reads as inert
+      if (!code) return { ...land, fillOpacity: 0.5 };
 
       if (resultMode && highlightCountries) {
         if (highlightCountries.correct.includes(code)) {
           return {
-            fillColor: "#22c55e",
-            weight: 2,
-            color: "#15803d",
-            fillOpacity: 0.7,
+            fillColor: RANGE,
+            fillOpacity: 0.78,
+            color: RANGE,
+            weight: 1,
           };
         }
         if (code === highlightCountries.incorrect) {
-          return {
-            fillColor: "#ef4444",
-            weight: 2,
-            color: "#b91c1c",
-            fillOpacity: 0.7,
-          };
+          return { fillColor: MISS, fillOpacity: 0.72, color: MISS, weight: 1 };
         }
+        return land;
       }
 
       if (code === selectedCountry) {
-        return {
-          fillColor: "#f59e0b",
-          weight: 2,
-          color: "white",
-          fillOpacity: 0.8,
-        };
+        return { fillColor: INK, fillOpacity: 0.88, color: INK, weight: 1 };
       }
 
-      return {
-        fillColor: "#d1d5db",
-        weight: 1,
-        color: "#6b7280",
-        fillOpacity: 0.4,
-      };
+      return land;
     },
     [selectedCountry, resultMode, highlightCountries]
   );
 
   const onEachFeature = useCallback(
     (feature: Feature<Geometry, GeoJsonProperties>, layer: Layer) => {
-      layer.on("click", (_e: LeafletMouseEvent) => {
+      layer.on("click", () => {
         const code = featureCountryCode(feature.properties);
         if (!resultMode && onCountrySelect && code) {
           onCountrySelect(code);
@@ -85,7 +95,6 @@ export function WorldMap({
     [onCountrySelect, resultMode]
   );
 
-  // Force re-render GeoJSON when style deps change
   useEffect(() => {
     if (geoJsonRef.current) {
       geoJsonRef.current.setStyle(getStyle);
@@ -94,15 +103,14 @@ export function WorldMap({
 
   return (
     <MapContainer
-      center={[20, 0]}
+      center={[24, 12]}
       zoom={2}
+      minZoom={2}
+      maxZoom={6}
+      zoomControl={false}
+      attributionControl={false}
       style={{ height: "100%", width: "100%" }}
-      className="z-0"
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/">OSM</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
       {geoData && (
         <GeoJSON
           ref={geoJsonRef as React.Ref<L.GeoJSON>}

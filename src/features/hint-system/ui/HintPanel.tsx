@@ -12,10 +12,7 @@ const HINT_LEVELS = [
 
 export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
   return (
-    <div className="glass rounded-xl p-4 w-72 animate-fade-up">
-      <h3 className="text-sm font-semibold text-[var(--color-text-muted)] mb-3">
-        Hints
-      </h3>
+    <div className="bg-[var(--color-paper)]/95 backdrop-blur-sm border rule rounded p-3.5">
       <ul className="flex flex-col gap-2">
         {HINT_LEVELS.map((level, i) => {
           const hint = hints[i];
@@ -25,9 +22,10 @@ export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
             return (
               <li
                 key={level.label}
-                className="rounded-lg bg-teal-400/15 border border-teal-300/40 px-3 py-2"
+                className="border-l-2 pl-2.5"
+                style={{ borderColor: "var(--color-range)" }}
               >
-                <span className="text-sm font-medium text-[var(--color-text-strong)]">
+                <span className="text-sm font-medium text-[var(--color-ink)]">
                   {hint}
                 </span>
               </li>
@@ -40,22 +38,19 @@ export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
                 type="button"
                 disabled={isLoading}
                 onClick={() => onReveal(i + 1)}
-                className="w-full flex items-center justify-between gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-left hover:bg-white/10 hover:border-white/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300 transition-colors disabled:opacity-60"
+                className="w-full flex items-baseline justify-between gap-3 text-left border-b rule pb-1.5 hover:border-[var(--color-ink)] transition-colors disabled:opacity-50"
               >
-                <span className="text-sm font-medium text-[var(--color-text-body)]">
+                <span className="text-sm font-medium text-[var(--color-ink)]">
                   {isLoading ? "Revealing" : level.label}
                 </span>
-                <span className="text-sm font-mono text-amber-200 tabular">
-                  −{level.cost}%
+                <span className="text-sm text-[var(--color-ink-soft)] tabular shrink-0">
+                  costs {level.cost}%
                 </span>
               </button>
             </li>
           );
         })}
       </ul>
-      <p className="mt-3 text-sm text-[var(--color-text-muted)] leading-snug">
-        A hint costs part of this round's score.
-      </p>
     </div>
   );
 }

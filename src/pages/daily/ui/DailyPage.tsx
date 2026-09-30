@@ -5,9 +5,9 @@ import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
 import { GameBoard } from "@/widgets/game-board";
 import { RoundResult } from "@/widgets/round-result";
-import { GameSummary } from "@/widgets/game-summary";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
+import { DailyResult } from "@/widgets/daily-result";
 import {
   getDailyChallenge,
   getDailyStatus,
@@ -170,7 +170,7 @@ export function DailyPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-[var(--color-text-muted)]">Loading daily challenge</p>
+        <p className="text-[var(--color-ink-soft)]">Loading daily challenge</p>
       </div>
     );
   }
@@ -187,86 +187,16 @@ export function DailyPage() {
   // Already completed view
   if (completedScore !== null) {
     return (
-      <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4">
-        <div className="glass rounded-2xl p-8 max-w-lg w-full">
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Daily Challenge
-          </h1>
-          <p className="text-center text-[var(--color-text-muted)] mb-4">{dailyDate}</p>
-          <div className="text-center mb-6">
-            <div className="text-5xl font-bold text-emerald-600">
-              {completedScore.toLocaleString()}
-            </div>
-            <div className="text-[var(--color-text-muted)]">
-              / {MAX_TOTAL_SCORE.toLocaleString()}
-            </div>
-          </div>
-
-          {completedRounds && (
-            <div className="space-y-3 mb-6">
-              {completedRounds.map((round) => (
-                <div
-                  key={round.round}
-                  className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-[var(--color-text-muted)] tabular">
-                      R{round.round}
-                    </span>
-                    <span className="font-medium">{round.bird.name}</span>
-                  </div>
-                  <div>
-                    {round.result && (
-                      <span
-                        className={`font-semibold ${
-                          round.result.score >= 4000
-                            ? "text-emerald-600"
-                            : round.result.score >= 2000
-                              ? "text-yellow-600"
-                              : "text-red-600"
-                        }`}
-                      >
-                        {round.result.score.toLocaleString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {leaderboard.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3">Leaderboard</h2>
-              <div className="space-y-2">
-                {leaderboard.map((entry, i) => (
-                  <div
-                    key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/10"
-                  >
-                    <span className="text-sm text-[var(--color-text-muted)] tabular">#{i + 1}</span>
-                    <span className="text-sm font-mono">
-                      {entry.playerId.slice(0, 8)}...
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      {entry.totalScore.toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 justify-center">
-            <Button onClick={handleShare}>
-              {copied ? "Copied!" : "Share Result"}
-            </Button>
-            <Button variant="secondary" onClick={handleHome}>
-              Home
-            </Button>
-          </div>
-        </div>
-      </div>
+      <DailyResult
+        date={dailyDate}
+        totalScore={completedScore}
+        rounds={completedRounds}
+        leaderboard={leaderboard}
+        playerId={getOrCreatePlayerId()}
+        copied={copied}
+        onShare={handleShare}
+        onHome={handleHome}
+      />
     );
   }
 
@@ -304,59 +234,16 @@ export function DailyPage() {
 
   if (game.phase === "finished") {
     return (
-      <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4">
-        <div className="glass rounded-2xl p-8 max-w-lg w-full">
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Daily Challenge Complete!
-          </h1>
-          <p className="text-center text-[var(--color-text-muted)] mb-4">{dailyDate}</p>
-          <div className="text-center mb-6">
-            <div className="text-5xl font-bold text-emerald-600">
-              {game.totalScore.toLocaleString()}
-            </div>
-            <div className="text-[var(--color-text-muted)]">
-              / {MAX_TOTAL_SCORE.toLocaleString()}
-            </div>
-          </div>
-
-          <GameSummary
-            rounds={game.rounds}
-            totalScore={game.totalScore}
-            onPlayAgain={handleHome}
-          />
-
-          {leaderboard.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3">Leaderboard</h2>
-              <div className="space-y-2">
-                {leaderboard.map((entry, i) => (
-                  <div
-                    key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/10"
-                  >
-                    <span className="text-sm text-[var(--color-text-muted)] tabular">#{i + 1}</span>
-                    <span className="text-sm font-mono">
-                      {entry.playerId.slice(0, 8)}...
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      {entry.totalScore.toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 justify-center mt-4">
-            <Button onClick={handleShare}>
-              {copied ? "Copied!" : "Share Result"}
-            </Button>
-            <Button variant="secondary" onClick={handleHome}>
-              Home
-            </Button>
-          </div>
-        </div>
-      </div>
+      <DailyResult
+        date={dailyDate}
+        totalScore={game.totalScore}
+        rounds={game.rounds}
+        leaderboard={leaderboard}
+        playerId={getOrCreatePlayerId()}
+        copied={copied}
+        onShare={handleShare}
+        onHome={handleHome}
+      />
     );
   }
 

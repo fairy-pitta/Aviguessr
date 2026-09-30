@@ -1,4 +1,4 @@
-import { BirdCard } from "@/entities/bird";
+import { PlatePage } from "@/entities/bird";
 import { ScorePanel } from "@/entities/game";
 import { COUNTRY_NAMES } from "@/entities/country";
 import { Timer } from "@/shared/ui";
@@ -15,6 +15,7 @@ type ChoiceBoardProps = {
   onTimeout: () => void;
 };
 
+/** The same spread, with four ruled answers where the map would be. */
 export function ChoiceBoard({
   bird,
   currentRound,
@@ -26,29 +27,33 @@ export function ChoiceBoard({
   onTimeout,
 }: ChoiceBoardProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] flex flex-col items-center px-4 py-6">
-      <div className="w-full max-w-sm glass rounded-xl px-5 py-4 mb-6">
-        <Timer startTime={roundStartTime} onTimeout={onTimeout} />
-        <div className="mt-4 pt-3 border-t border-white/10">
+    <div className="min-h-screen bg-[var(--color-paper)] lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
+      <div className="lg:w-[52%] lg:h-full h-[46vh] shrink-0">
+        <PlatePage bird={bird} />
+      </div>
+
+      <div className="flex-1 min-w-0 flex flex-col border-t lg:border-t-0 lg:border-l rule">
+        <header className="flex items-baseline justify-between gap-4 px-5 lg:px-8 pt-5 lg:pt-6 pb-4 border-b rule">
           <ScorePanel currentRound={currentRound} totalScore={totalScore} />
+          <Timer startTime={roundStartTime} onTimeout={onTimeout} />
+        </header>
+
+        <div className="flex-1 flex flex-col justify-center px-5 lg:px-8 py-6">
+          <ul>
+            {choices.map((code) => (
+              <li key={code}>
+                <button
+                  type="button"
+                  disabled={guessLoading}
+                  onClick={() => onChoiceSelect(code)}
+                  className="w-full text-left py-5 border-b rule text-2xl font-medium hover:pl-2 transition-all disabled:opacity-50"
+                >
+                  {COUNTRY_NAMES[code] ?? code}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-
-      <div className="mb-8">
-        <BirdCard bird={bird} />
-      </div>
-
-      <div className="w-full max-w-md grid grid-cols-2 gap-3">
-        {choices.map((code) => (
-          <button
-            key={code}
-            disabled={guessLoading}
-            onClick={() => onChoiceSelect(code)}
-            className="px-4 py-4 glass rounded-xl font-semibold text-base text-[var(--color-text-strong)] border border-white/15 hover:border-teal-300/60 hover:bg-teal-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center"
-          >
-            {COUNTRY_NAMES[code] ?? code}
-          </button>
-        ))}
       </div>
     </div>
   );
