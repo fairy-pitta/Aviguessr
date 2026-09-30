@@ -186,3 +186,11 @@ export const COUNTRY_NAMES: Record<string, string> = {
   "SG": "Singapore",
   "VI": "United States Virgin Islands"
 };
+
+/** Map feature codes that are not ISO 3166-1 alpha-2, keyed by iso_a2 then adm0_a3. */
+export const CODE_OVERRIDES: Record<string, string> = {
+  "CN-TW": "TW",
+  "FRA": "FR",
+  "NOR": "NO",
+  "KOS": "XK"
+};
