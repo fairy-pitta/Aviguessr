@@ -191,7 +191,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/633047003/medium.jpg",
       "license": "CC BY",
-      "artist": "王天明"
+      "artist": "\u738b\u5929\u660e"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -373,7 +373,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/365021242/medium.jpeg",
       "license": "CC BY",
-      "artist": "卢江离"
+      "artist": "\u5362\u6c5f\u79bb"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -390,7 +390,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605310987/medium.jpg",
       "license": "CC BY",
-      "artist": "夏仲归"
+      "artist": "\u590f\u4ef2\u5f52"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -407,7 +407,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/515024001/medium.jpg",
       "license": "CC BY",
-      "artist": "Peter T. Rühr"
+      "artist": "Peter T. R\u00fchr"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -788,7 +788,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/589427637/medium.jpg",
       "license": "CC BY",
-      "artist": "Кирилл"
+      "artist": "\u041a\u0438\u0440\u0438\u043b\u043b"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -879,7 +879,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/202676233/medium.jpeg",
       "license": "CC BY",
-      "artist": "Luis Ángel Niño Barreat"
+      "artist": "Luis \u00c1ngel Ni\u00f1o Barreat"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -1075,7 +1075,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/611036516/medium.jpg",
       "license": "CC BY",
-      "artist": "Francisco Sánchez Karste"
+      "artist": "Francisco S\u00e1nchez Karste"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -1605,7 +1605,8 @@
       "artist": "Esteban Poveda"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "two dead hummingbirds laid out on rock"
   },
   {
     "speciesCode": "mouavo1",
@@ -2325,7 +2326,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/173116791/medium.jpg",
       "license": "CC BY",
-      "artist": "Skjold Søndergaard"
+      "artist": "Skjold S\u00f8ndergaard"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -2958,7 +2959,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "paramo vegetation only, no bird findable"
   },
   {
     "speciesCode": "colgre1",
@@ -3768,7 +3770,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29378415/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4258,7 +4260,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/360530610/medium.jpg",
       "license": "CC BY",
-      "artist": "Hugo Bernal Hernández"
+      "artist": "Hugo Bernal Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4276,7 +4278,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29327059/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4310,7 +4312,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29327074/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4583,7 +4585,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/412686588/medium.jpg",
       "license": "CC BY",
-      "artist": "Attila Oláh"
+      "artist": "Attila Ol\u00e1h"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4796,7 +4798,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29051333/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -4908,7 +4910,7 @@
   },
   {
     "speciesCode": "nartap2",
-    "name": "Nariño Tapaculo",
+    "name": "Nari\u00f1o Tapaculo",
     "scientificName": "Scytalopus vicinior",
     "family": "Tapaculos",
     "countries": [
@@ -5022,7 +5024,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/320655729/medium.jpeg",
       "license": "CC BY",
-      "artist": "Hugo Bernal Hernández"
+      "artist": "Hugo Bernal Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -5057,7 +5059,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29051782/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -5599,7 +5601,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/353835744/medium.jpeg",
       "license": "CC BY",
-      "artist": "Hugo Bernal Hernández"
+      "artist": "Hugo Bernal Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -6079,7 +6081,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/485317126/medium.jpeg",
       "license": "CC BY",
-      "artist": "Hugo Bernal Hernández"
+      "artist": "Hugo Bernal Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -6394,7 +6396,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/58380546/medium.jpg",
       "license": "CC BY",
-      "artist": "Jan Axel Cubilla Rodríguez"
+      "artist": "Jan Axel Cubilla Rodr\u00edguez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -6668,7 +6670,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/28748812/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -6869,7 +6871,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/102096526/medium.jpeg",
       "license": "CC BY",
-      "artist": "Álvaro Rivas Godin"
+      "artist": "\u00c1lvaro Rivas Godin"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -6922,7 +6924,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29378283/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -7049,7 +7051,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/382666065/medium.jpg",
       "license": "CC BY",
-      "artist": "Attila Oláh"
+      "artist": "Attila Ol\u00e1h"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -7681,7 +7683,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/247217125/medium.jpeg",
       "license": "CC BY",
-      "artist": "Cajá-manga"
+      "artist": "Caj\u00e1-manga"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -7967,7 +7969,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/375765951/medium.jpg",
       "license": "CC BY",
-      "artist": "Attila Oláh"
+      "artist": "Attila Ol\u00e1h"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -8023,7 +8025,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29327037/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -8302,7 +8304,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/61673706/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Juan Cruzado Cortés"
+      "artist": "Juan Cruzado Cort\u00e9s"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -8420,7 +8422,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/423603369/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -8734,7 +8736,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5148945/medium.jpeg",
       "license": "CC BY",
-      "artist": "Carlos Domínguez-Rodríguez"
+      "artist": "Carlos Dom\u00ednguez-Rodr\u00edguez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -8785,7 +8787,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29973596/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9196,7 +9198,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/251935228/medium.jpeg",
       "license": "CC BY",
-      "artist": "Mauricio Calderón"
+      "artist": "Mauricio Calder\u00f3n"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9220,7 +9222,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12341804/medium.jpeg",
       "license": "CC BY",
-      "artist": "Carlos Domínguez-Rodríguez"
+      "artist": "Carlos Dom\u00ednguez-Rodr\u00edguez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9269,7 +9271,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/79211105/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Juan Cruzado Cortés"
+      "artist": "Juan Cruzado Cort\u00e9s"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9381,7 +9383,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/108404030/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9433,7 +9435,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/148659520/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9481,7 +9483,8 @@
       "artist": "Mark Apgar"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "wren nest built indoors on a shelf, no bird"
   },
   {
     "speciesCode": "babwre1",
@@ -9527,7 +9530,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/17669083/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Juan Carlos Pérez Magaña"
+      "artist": "Juan Carlos P\u00e9rez Maga\u00f1a"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9613,7 +9616,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/351279210/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9667,7 +9670,8 @@
       "artist": "Rodolfo Salinas Villarreal"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "empty nest held in a hand, no bird"
   },
   {
     "speciesCode": "eleeup1",
@@ -9711,7 +9715,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2139965/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Gonzalo Zepeda Martínez"
+      "artist": "Gonzalo Zepeda Mart\u00ednez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9804,7 +9808,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/22519041/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Leticia Jiménez Hernández"
+      "artist": "Leticia Jim\u00e9nez Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9846,7 +9850,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/91987790/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -9989,7 +9993,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/147249674/medium.jpeg",
       "license": "CC BY",
-      "artist": "Sebastián de Jesús Herrera Buenfil"
+      "artist": "Sebasti\u00e1n de Jes\u00fas Herrera Buenfil"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -10389,7 +10393,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12785831/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Leticia Jiménez Hernández"
+      "artist": "Leticia Jim\u00e9nez Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -10435,7 +10439,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/176088953/medium.jpeg",
       "license": "CC BY-SA",
-      "artist": "Leticia Jiménez Hernández"
+      "artist": "Leticia Jim\u00e9nez Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -11124,7 +11128,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/201776048/medium.jpeg",
       "license": "CC BY",
-      "artist": "Josiah Londerée"
+      "artist": "Josiah Londer\u00e9e"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -11148,7 +11152,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/257715956/medium.jpeg",
       "license": "CC0",
-      "artist": "Игорь Загребин"
+      "artist": "\u0418\u0433\u043e\u0440\u044c \u0417\u0430\u0433\u0440\u0435\u0431\u0438\u043d"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -11394,7 +11398,8 @@
       "artist": "Jagdish Singh Negi"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "partridge dead on asphalt, date-stamped"
   },
   {
     "speciesCode": "rutpar1",
@@ -11588,7 +11593,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/479301245/medium.jpeg",
       "license": "CC BY",
-      "artist": "雲一百香果"
+      "artist": "\u96f2\u4e00\u767e\u9999\u679c"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -11718,7 +11723,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/261070424/medium.jpg",
       "license": "CC BY",
-      "artist": "Pål A. Olsvik"
+      "artist": "P\u00e5l A. Olsvik"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -11743,7 +11748,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/264143137/medium.jpg",
       "license": "CC BY",
-      "artist": "Pål A. Olsvik"
+      "artist": "P\u00e5l A. Olsvik"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -12292,7 +12297,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/488249059/medium.jpeg",
       "license": "CC BY",
-      "artist": "祐"
+      "artist": "\u7950"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -12664,7 +12669,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/257259640/medium.jpeg",
       "license": "CC BY",
-      "artist": "林正文"
+      "artist": "\u6797\u6b63\u6587"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -12800,7 +12805,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "rhododendron flowers only, no bird findable"
   },
   {
     "speciesCode": "gobful1",
@@ -14047,7 +14053,8 @@
       "artist": "Christoph Moning"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "rocky slope only, no bird findable"
   },
   {
     "speciesCode": "whbthr2",
@@ -14536,7 +14543,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/264099629/medium.jpg",
       "license": "CC BY",
-      "artist": "Pål A. Olsvik"
+      "artist": "P\u00e5l A. Olsvik"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -14888,7 +14895,8 @@
       "artist": "Vincent A. Vos"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "single egg on leaf litter with pen for scale"
   },
   {
     "speciesCode": "blatin1",
@@ -14930,7 +14938,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591902695/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15268,7 +15276,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/210236201/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15314,7 +15322,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/140448509/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15339,7 +15347,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/463402254/medium.jpeg",
       "license": "CC BY",
-      "artist": "Jan Ebr &amp; Ivana Ebrová"
+      "artist": "Jan Ebr &amp; Ivana Ebrov\u00e1"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15539,7 +15547,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/470554342/medium.jpeg",
       "license": "CC BY",
-      "artist": "Jan Ebr &amp; Ivana Ebrová"
+      "artist": "Jan Ebr &amp; Ivana Ebrov\u00e1"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15587,7 +15595,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/28748131/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15680,7 +15688,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591652303/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -15972,7 +15980,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/482632948/medium.jpeg",
       "license": "CC0",
-      "artist": "Ruth Gutiérrez Oliveros"
+      "artist": "Ruth Guti\u00e9rrez Oliveros"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -16177,7 +16185,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591636976/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -16511,7 +16519,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/394843737/medium.jpg",
       "license": "CC BY",
-      "artist": "Attila Oláh"
+      "artist": "Attila Ol\u00e1h"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -16631,7 +16639,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/243951943/medium.jpg",
       "license": "CC0",
-      "artist": "Evelyn Lazzaretti 🏳️‍⚧️"
+      "artist": "Evelyn Lazzaretti \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -16768,7 +16776,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/480648298/medium.jpeg",
       "license": "CC0",
-      "artist": "Ruth Gutiérrez Oliveros"
+      "artist": "Ruth Guti\u00e9rrez Oliveros"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -16954,7 +16962,8 @@
       "artist": "crlevy"
     },
     "imageSource": "inaturalist",
-    "playable": true
+    "playable": false,
+    "imageNote": "scope view, haze, no identifiable bird"
   },
   {
     "speciesCode": "yebnun1",
@@ -16972,7 +16981,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/437380794/medium.jpeg",
       "license": "CC BY",
-      "artist": "Edwin Rivera Millán"
+      "artist": "Edwin Rivera Mill\u00e1n"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -17287,7 +17296,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/169673253/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -17687,7 +17696,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591888503/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -17794,7 +17803,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/123373351/medium.jpg",
       "license": "CC BY",
-      "artist": "Jan Ebr &amp; Ivana Ebrová"
+      "artist": "Jan Ebr &amp; Ivana Ebrov\u00e1"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18190,7 +18199,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/426775690/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18326,7 +18335,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/418053287/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18443,7 +18452,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/418228980/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18548,7 +18557,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591909166/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18790,7 +18799,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/418058094/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -18883,7 +18892,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591650026/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -19085,7 +19094,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/320655811/medium.jpeg",
       "license": "CC BY",
-      "artist": "Hugo Bernal Hernández"
+      "artist": "Hugo Bernal Hern\u00e1ndez"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -19178,7 +19187,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/418686404/medium.jpg",
       "license": "CC0",
-      "artist": "NINA WENÓLI"
+      "artist": "NINA WEN\u00d3LI"
     },
     "imageSource": "inaturalist",
     "playable": true
@@ -19199,7 +19208,7 @@
     "image": {
       "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Chamaeza_nobilis.jpg/960px-Chamaeza_nobilis.jpg",
       "license": "Public domain",
-      "artist": "Chrystopher Canaday, Aves y Conservación"
+      "artist": "Chrystopher Canaday, Aves y Conservaci\u00f3n"
     },
     "playable": false
   },
@@ -19242,7 +19251,7 @@
     "image": {
       "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29826296/medium.jpg",
       "license": "CC BY-SA",
-      "artist": "Oscar Marín"
+      "artist": "Oscar Mar\u00edn"
     },
     "imageSource": "inaturalist",
     "playable": true
