@@ -6,7 +6,6 @@ import { useHints } from "@/features/hint-system";
 import { GameBoard } from "@/widgets/game-board";
 import { RoundResult } from "@/widgets/round-result";
 import { GameSummary } from "@/widgets/game-summary";
-import { TIME_LIMIT_MS } from "@/shared/config/constants";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import {
   getDailyChallenge,
@@ -46,7 +45,7 @@ export function DailyPage() {
   const game = useGame();
   const [gameId, setGameId] = useState<string | null>(null);
   const { guess, loading: guessLoading } = useGuess(gameId);
-  const { hints, hintsUsed, loading: hintsLoading } = useHints(
+  const { hints, loading: hintsLoading } = useHints(
     gameId,
     game.currentRound,
     game.roundStartTime
@@ -115,11 +114,11 @@ export function DailyPage() {
   useEffect(() => {
     if (game.phase === "finished" && !scoreSubmitted && gameId) {
       const playerId = getOrCreatePlayerId();
-      const roundsJson = JSON.stringify(game.rounds);
-      submitDailyScore(playerId, game.totalScore, roundsJson)
-        .then(async () => {
+      submitDailyScore(playerId)
+        .then(async (res) => {
           setScoreSubmitted(true);
-          setCompletedScore(game.totalScore);
+          // The server's total is authoritative
+          setCompletedScore(res.totalScore);
           setCompletedRounds(game.rounds);
           const lb = await getDailyLeaderboard();
           setLeaderboard(lb.leaderboard);
@@ -132,24 +131,18 @@ export function DailyPage() {
 
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
-    const timeMs = Date.now() - game.roundStartTime;
-    const result = await guess(game.currentRound, selectedCountry, timeMs, hintsUsed);
+    const result = await guess(game.currentRound, selectedCountry);
     if (result) {
       game.showResult(result);
     }
-  }, [selectedCountry, game.roundStartTime, game.currentRound, guess, game.showResult, hintsUsed]);
+  }, [selectedCountry, game.currentRound, guess, game.showResult]);
 
   const handleTimeout = useCallback(async () => {
-    const result = await guess(
-      game.currentRound,
-      selectedCountry ?? "__TIMEOUT__",
-      TIME_LIMIT_MS,
-      hintsUsed
-    );
+    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__");
     if (result) {
       game.showResult(result);
     }
-  }, [game.currentRound, selectedCountry, guess, game.showResult, hintsUsed]);
+  }, [game.currentRound, selectedCountry, guess, game.showResult]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);

@@ -248,7 +248,7 @@ export const REGIONS: Record<string, { continent: string; subregion: string }> =
     "continent": "Asia",
     "subregion": "Southern Asia"
   },
-  "CN-TW": {
+  "TW": {
     "continent": "Asia",
     "subregion": "Eastern Asia"
   },
@@ -508,6 +508,10 @@ export const REGIONS: Record<string, { continent: string; subregion: string }> =
     "continent": "Africa",
     "subregion": "Eastern Africa"
   },
+  "FR": {
+    "continent": "Europe",
+    "subregion": "Western Europe"
+  },
   "UA": {
     "continent": "Europe",
     "subregion": "Eastern Europe"
@@ -540,6 +544,10 @@ export const REGIONS: Record<string, { continent: string; subregion: string }> =
     "continent": "Europe",
     "subregion": "Northern Europe"
   },
+  "NO": {
+    "continent": "Europe",
+    "subregion": "Northern Europe"
+  },
   "SE": {
     "continent": "Europe",
     "subregion": "Northern Europe"
@@ -561,6 +569,10 @@ export const REGIONS: Record<string, { continent: string; subregion: string }> =
     "subregion": "Southern Europe"
   },
   "AL": {
+    "continent": "Europe",
+    "subregion": "Southern Europe"
+  },
+  "XK": {
     "continent": "Europe",
     "subregion": "Southern Europe"
   },
@@ -687,5 +699,45 @@ export const REGIONS: Record<string, { continent: string; subregion: string }> =
   "TF": {
     "continent": "Seven seas (open ocean)",
     "subregion": "Seven seas (open ocean)"
+  },
+  "BM": {
+    "continent": "North America",
+    "subregion": "Northern America"
+  },
+  "CC": {
+    "continent": "Oceania",
+    "subregion": "Australia and New Zealand"
+  },
+  "CX": {
+    "continent": "Oceania",
+    "subregion": "Australia and New Zealand"
+  },
+  "GF": {
+    "continent": "South America",
+    "subregion": "South America"
+  },
+  "HK": {
+    "continent": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  "KY": {
+    "continent": "North America",
+    "subregion": "Caribbean"
+  },
+  "MO": {
+    "continent": "Asia",
+    "subregion": "Eastern Asia"
+  },
+  "PM": {
+    "continent": "North America",
+    "subregion": "Northern America"
+  },
+  "SG": {
+    "continent": "Asia",
+    "subregion": "South-Eastern Asia"
+  },
+  "VI": {
+    "continent": "North America",
+    "subregion": "Caribbean"
   }
 };

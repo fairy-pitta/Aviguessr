@@ -1,7 +1,12 @@
 /**
  * birds.json の画像URLからダウンロードし、wrangler r2 object put で R2 にアップロード
  *
- * Usage: npx tsx scripts/upload-images.ts
+ * Usage: npx tsx scripts/upload-images.ts [--force]
+ *
+ * --force ignores the upload checkpoint and re-downloads every image, for when
+ * the URLs in birds.json have changed (e.g. the switch to iNaturalist photos).
+ * Without it, a cached local file is reused even if the URL now points
+ * somewhere else, which would silently re-upload the previous image.
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
@@ -18,11 +23,13 @@ const CHECKPOINT_PATH = resolve(
   "../data/_cache_upload_checkpoint.json"
 );
 const DOWNLOAD_DELAY_MS = 500; // Wikimedia rate limit 対策
+const CONCURRENCY = 8; // wrangler spends ~2s per object on process start-up
 const MAX_RETRIES = 3;
 
 type BirdEntry = {
   speciesCode: string;
   name: string;
+  playable?: boolean;
   image: {
     url: string;
     license: string;
@@ -91,7 +98,7 @@ async function downloadImage(
 function uploadToR2(localPath: string, r2Key: string): boolean {
   try {
     execSync(
-      `npx wrangler r2 object put aviguessr-images/${r2Key} --file="${localPath}" --content-type="image/jpeg" --remote`,
+      `./node_modules/.bin/wrangler r2 object put aviguessr-images/${r2Key} --file="${localPath}" --content-type="image/jpeg" --remote`,
       { stdio: "pipe", timeout: 30000 }
     );
     return true;
@@ -108,23 +115,32 @@ async function main() {
     mkdirSync(IMAGES_DIR, { recursive: true });
   }
 
-  const uploaded = loadCheckpoint();
-  const remaining = birds.filter((b) => !uploaded.has(b.speciesCode));
+  const force = process.argv.slice(2).includes("--force");
+  const uploaded = force ? new Set<string>() : loadCheckpoint();
+  // playable:false species are never served, so their image is not worth fetching
+  const remaining = birds.filter(
+    (b) => b.playable !== false && !uploaded.has(b.speciesCode)
+  );
 
   console.log(
-    `画像アップロード: ${birds.length}件中 ${uploaded.size}件済み, ${remaining.length}件残り`
+    force
+      ? `画像アップロード(--force): ${birds.length}件すべて再取得`
+      : `画像アップロード: ${birds.length}件中 ${uploaded.size}件済み, ${remaining.length}件残り`
   );
 
   let done = 0;
   let failed = 0;
 
-  for (let i = 0; i < remaining.length; i++) {
-    const bird = remaining[i];
+  // Each bird is independent, and most of the wall-clock is wrangler's start-up,
+  // so run a small pool rather than one at a time.
+  let cursor = 0;
+  async function processOne(bird: BirdEntry): Promise<void> {
     const r2Key = `birds/${bird.speciesCode}.jpg`;
     const localPath = resolve(IMAGES_DIR, `${bird.speciesCode}.jpg`);
 
-    // Download if not cached locally
-    let downloadOk = existsSync(localPath);
+    // Download if not cached locally (--force always re-fetches, since a
+    // cached file may predate a URL change)
+    let downloadOk = !force && existsSync(localPath);
     if (!downloadOk) {
       downloadOk = await downloadImage(bird.image.url, localPath);
       await sleep(DOWNLOAD_DELAY_MS);
@@ -133,7 +149,7 @@ async function main() {
     if (!downloadOk) {
       console.warn(`  [skip] ${bird.speciesCode} (${bird.name}) — download failed`);
       failed++;
-      continue;
+      return;
     }
 
     // Upload to R2
@@ -141,18 +157,28 @@ async function main() {
     if (!uploadOk) {
       console.warn(`  [skip] ${bird.speciesCode} (${bird.name}) — upload failed`);
       failed++;
-      continue;
+      return;
     }
 
     uploaded.add(bird.speciesCode);
     done++;
 
-    const total = uploaded.size;
-    if (total % 10 === 0 || i === remaining.length - 1) {
-      console.log(`  ${total}/${birds.length} 完了`);
+    if (uploaded.size % 25 === 0) {
+      console.log(`  ${uploaded.size}/${remaining.length} 完了`);
       saveCheckpoint(uploaded);
     }
   }
+
+  async function worker(): Promise<void> {
+    while (cursor < remaining.length) {
+      const bird = remaining[cursor++];
+      await processOne(bird);
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, remaining.length) }, worker)
+  );
 
   // Final checkpoint
   saveCheckpoint(uploaded);

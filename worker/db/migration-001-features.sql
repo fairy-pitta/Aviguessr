@@ -23,9 +23,14 @@ CREATE TABLE IF NOT EXISTS daily_challenges (
 );
 
 CREATE TABLE IF NOT EXISTS daily_scores (
-  date TEXT PRIMARY KEY,
+  date TEXT NOT NULL,
   player_id TEXT NOT NULL,
   total_score INTEGER NOT NULL,
   rounds_json TEXT NOT NULL,
-  completed_at TEXT NOT NULL DEFAULT (datetime('now'))
+  completed_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (date, player_id)
 );
+
+-- Leaderboard lookup: one query per date ordered by score
+CREATE INDEX IF NOT EXISTS idx_daily_scores_date_score
+  ON daily_scores(date, total_score DESC);

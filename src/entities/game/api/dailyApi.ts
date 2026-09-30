@@ -54,13 +54,11 @@ export function getDailyLeaderboard(): Promise<DailyLeaderboardResponse> {
 }
 
 export function submitDailyScore(
-  playerId: string,
-  totalScore: number,
-  roundsJson: string
-): Promise<{ success: boolean }> {
-  return apiFetch<{ success: boolean }>("/daily/score", {
+  playerId: string
+): Promise<{ success: boolean; totalScore: number }> {
+  // The score and round list come from the server's own record of the game.
+  return apiFetch<{ success: boolean; totalScore: number }>("/daily/score", {
     method: "POST",
     headers: { "X-Player-Id": playerId },
-    body: JSON.stringify({ totalScore, roundsJson }),
   });
 }

@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { useEffect, useState, useCallback, useRef } from "react";
 import type { Layer, LeafletMouseEvent, PathOptions } from "leaflet";
 import type { Feature, Geometry, GeoJsonProperties, FeatureCollection } from "geojson";
+import { featureCountryCode } from "../lib/featureCode";
 import "leaflet/dist/leaflet.css";
 
 type WorldMapProps = {
@@ -31,8 +32,8 @@ export function WorldMap({
 
   const getStyle = useCallback(
     (feature?: Feature<Geometry, GeoJsonProperties>): PathOptions => {
-      if (!feature?.properties) return {};
-      const code = feature.properties.iso_a2 as string;
+      const code = featureCountryCode(feature?.properties);
+      if (!code) return {};
 
       if (resultMode && highlightCountries) {
         if (highlightCountries.correct.includes(code)) {
@@ -75,8 +76,9 @@ export function WorldMap({
   const onEachFeature = useCallback(
     (feature: Feature<Geometry, GeoJsonProperties>, layer: Layer) => {
       layer.on("click", (_e: LeafletMouseEvent) => {
-        if (!resultMode && onCountrySelect && feature.properties) {
-          onCountrySelect(feature.properties.iso_a2 as string);
+        const code = featureCountryCode(feature.properties);
+        if (!resultMode && onCountrySelect && code) {
+          onCountrySelect(code);
         }
       });
     },

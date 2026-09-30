@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { createGame } from "@/entities/game";
+import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import type { GameRound } from "@/entities/game";
 
 export function useStartGame() {
@@ -15,7 +16,7 @@ export function useStartGame() {
     } | null> => {
       setLoading(true);
       try {
-        const data = await createGame(mode);
+        const data = await createGame(mode, getOrCreatePlayerId());
         return {
           gameId: data.gameId,
           mode: data.mode,
