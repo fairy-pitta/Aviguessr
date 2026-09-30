@@ -25,3 +25,4 @@ data/seed.sql
 worker/node_modules/
 data/images/
 data/update-metadata.sql
+data/update-fun-facts.sql
