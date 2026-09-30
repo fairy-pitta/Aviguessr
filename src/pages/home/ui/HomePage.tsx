@@ -45,7 +45,7 @@ export function HomePage() {
           AviGuessr
         </h1>
 
-        <p className="animate-fade-up text-lg text-slate-400 mb-12 max-w-md text-center">
+        <p className="animate-fade-up text-lg text-[var(--color-text-body)] mb-12 max-w-md text-center">
           Can you guess where each bird calls home? Test your knowledge across 939 species from every continent.
         </p>
 
@@ -82,7 +82,7 @@ export function HomePage() {
         </div>
 
         {/* Stats footer */}
-        <div className="animate-fade-up mt-16 flex items-center gap-8 text-xs text-slate-600">
+        <div className="animate-fade-up mt-16 flex items-center gap-8 text-sm text-[var(--color-text-muted)]">
           <div className="text-center">
             <div className="font-mono font-bold text-slate-400 text-base">939</div>
             <div>Species</div>

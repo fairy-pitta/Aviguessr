@@ -7,6 +7,7 @@ import { GameBoard } from "@/widgets/game-board";
 import { RoundResult } from "@/widgets/round-result";
 import { GameSummary } from "@/widgets/game-summary";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
+import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 import {
   getDailyChallenge,
   getDailyStatus,
@@ -37,7 +38,7 @@ function generateShareText(
     })
     .join("");
 
-  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/30,000\n${roundEmojis}`;
+  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/${MAX_TOTAL_SCORE.toLocaleString()}\n${roundEmojis}`;
 }
 
 export function DailyPage() {
@@ -170,7 +171,7 @@ export function DailyPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading daily challenge...</p>
+        <p className="text-[var(--color-text-muted)]">Loading daily challenge</p>
       </div>
     );
   }
@@ -187,17 +188,19 @@ export function DailyPage() {
   // Already completed view
   if (completedScore !== null) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
+      <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4">
+        <div className="glass rounded-2xl p-8 max-w-lg w-full">
           <h1 className="text-3xl font-bold text-center mb-2">
             Daily Challenge
           </h1>
-          <p className="text-center text-gray-500 mb-4">{dailyDate}</p>
+          <p className="text-center text-[var(--color-text-muted)] mb-4">{dailyDate}</p>
           <div className="text-center mb-6">
             <div className="text-5xl font-bold text-emerald-600">
               {completedScore.toLocaleString()}
             </div>
-            <div className="text-gray-500">/ 30,000</div>
+            <div className="text-[var(--color-text-muted)]">
+              / {MAX_TOTAL_SCORE.toLocaleString()}
+            </div>
           </div>
 
           {completedRounds && (
@@ -205,10 +208,10 @@ export function DailyPage() {
               {completedRounds.map((round) => (
                 <div
                   key={round.round}
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-400">
+                    <span className="text-sm font-medium text-[var(--color-text-muted)] tabular">
                       R{round.round}
                     </span>
                     <span className="font-medium">{round.bird.name}</span>
@@ -240,9 +243,9 @@ export function DailyPage() {
                 {leaderboard.map((entry, i) => (
                   <div
                     key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-gray-50"
+                    className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/10"
                   >
-                    <span className="text-sm text-gray-500">#{i + 1}</span>
+                    <span className="text-sm text-[var(--color-text-muted)] tabular">#{i + 1}</span>
                     <span className="text-sm font-mono">
                       {entry.playerId.slice(0, 8)}...
                     </span>
@@ -301,17 +304,19 @@ export function DailyPage() {
 
   if (game.phase === "finished") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
+      <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4">
+        <div className="glass rounded-2xl p-8 max-w-lg w-full">
           <h1 className="text-3xl font-bold text-center mb-2">
             Daily Challenge Complete!
           </h1>
-          <p className="text-center text-gray-500 mb-4">{dailyDate}</p>
+          <p className="text-center text-[var(--color-text-muted)] mb-4">{dailyDate}</p>
           <div className="text-center mb-6">
             <div className="text-5xl font-bold text-emerald-600">
               {game.totalScore.toLocaleString()}
             </div>
-            <div className="text-gray-500">/ 30,000</div>
+            <div className="text-[var(--color-text-muted)]">
+              / {MAX_TOTAL_SCORE.toLocaleString()}
+            </div>
           </div>
 
           <GameSummary
@@ -327,9 +332,9 @@ export function DailyPage() {
                 {leaderboard.map((entry, i) => (
                   <div
                     key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-gray-50"
+                    className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/10"
                   >
-                    <span className="text-sm text-gray-500">#{i + 1}</span>
+                    <span className="text-sm text-[var(--color-text-muted)] tabular">#{i + 1}</span>
                     <span className="text-sm font-mono">
                       {entry.playerId.slice(0, 8)}...
                     </span>

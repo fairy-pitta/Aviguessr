@@ -42,13 +42,14 @@ export function GameBoard({
         selectedCountry={selectedCountry}
       />
 
-      {/* Top bar */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col gap-3">
-        <ScorePanel currentRound={currentRound} totalScore={totalScore} currentStreak={currentStreak} />
-        <div className="w-64">
-          <Timer
-            startTime={roundStartTime}
-            onTimeout={onTimeout}
+      {/* Status: one panel so the countdown reads as part of the same block */}
+      <div className="absolute top-4 left-4 z-10 glass rounded-xl px-5 py-4 w-72">
+        <Timer startTime={roundStartTime} onTimeout={onTimeout} />
+        <div className="mt-4 pt-3 border-t border-white/10">
+          <ScorePanel
+            currentRound={currentRound}
+            totalScore={totalScore}
+            currentStreak={currentStreak}
           />
         </div>
       </div>

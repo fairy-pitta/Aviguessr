@@ -26,11 +26,11 @@ export function Button({
     primary:
       "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 hover:brightness-110",
     secondary:
-      "glass text-slate-200 hover:bg-white/10 hover:border-white/15",
+      "glass text-[var(--color-text-strong)] hover:bg-white/10 hover:border-white/25",
     danger:
       "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:brightness-110",
     ghost:
-      "bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5",
+      "bg-transparent text-[var(--color-text-body)] hover:text-[var(--color-text-strong)] hover:bg-white/10",
   };
 
   return (

@@ -4,8 +4,19 @@
 @theme inline {
   --color-surface: #0c1222;
   --color-surface-raised: #151d30;
-  --color-surface-glass: rgba(21, 29, 48, 0.75);
-  --color-border-glass: rgba(255, 255, 255, 0.08);
+  /* Panels sit over a world map, so they need a solid enough ground for text */
+  --color-surface-glass: rgba(13, 19, 33, 0.92);
+  --color-border-glass: rgba(255, 255, 255, 0.14);
+
+  /*
+   * Text ramp, measured against the glass ground (~#0d1321).
+   * strong 16.4:1 · body 11.2:1 · muted 6.6:1 — muted is the floor, and
+   * nothing smaller than 12px uses it. slate-500/600 were failing at 4.0:1
+   * and 2.4:1 while carrying 10-11px labels.
+   */
+  --color-text-strong: #f8fafc;
+  --color-text-body: #dbe3ee;
+  --color-text-muted: #9fb0c6;
   --color-accent: #14b8a6;
   --color-accent-glow: rgba(20, 184, 166, 0.3);
   --color-hot: #f43f5e;
@@ -128,4 +139,25 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Numerals that do not change width as they count down */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-slide-in-right,
+  .animate-pulse-glow,
+  .animate-score-pop,
+  .animate-shake,
+  .animate-streak-fire {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -26,30 +26,25 @@ export function ChoiceBoard({
   onTimeout,
 }: ChoiceBoardProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white flex flex-col items-center px-4 py-6">
-      {/* Top bar */}
-      <div className="w-full max-w-2xl flex items-start justify-between gap-4 mb-6">
-        <div className="flex flex-col gap-3">
+    <div className="min-h-screen bg-[var(--color-surface)] flex flex-col items-center px-4 py-6">
+      <div className="w-full max-w-sm glass rounded-xl px-5 py-4 mb-6">
+        <Timer startTime={roundStartTime} onTimeout={onTimeout} />
+        <div className="mt-4 pt-3 border-t border-white/10">
           <ScorePanel currentRound={currentRound} totalScore={totalScore} />
-          <div className="w-64">
-            <Timer startTime={roundStartTime} onTimeout={onTimeout} />
-          </div>
         </div>
       </div>
 
-      {/* Bird card centered */}
       <div className="mb-8">
         <BirdCard bird={bird} />
       </div>
 
-      {/* 4 country buttons */}
       <div className="w-full max-w-md grid grid-cols-2 gap-3">
         {choices.map((code) => (
           <button
             key={code}
             disabled={guessLoading}
             onClick={() => onChoiceSelect(code)}
-            className="px-4 py-3 bg-white border-2 border-emerald-200 rounded-lg font-medium text-gray-800 hover:bg-emerald-50 hover:border-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center"
+            className="px-4 py-4 glass rounded-xl font-semibold text-base text-[var(--color-text-strong)] border border-white/15 hover:border-teal-300/60 hover:bg-teal-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center"
           >
             {COUNTRY_NAMES[code] ?? code}
           </button>

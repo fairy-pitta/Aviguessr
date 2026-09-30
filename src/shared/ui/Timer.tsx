@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TIME_LIMIT_MS } from "../config/constants";
 
 type TimerProps = {
@@ -9,15 +9,18 @@ type TimerProps = {
 
 export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const [elapsed, setElapsed] = useState(0);
+  // The tick keeps running after the limit, so the round must only be
+  // submitted once — without this it fired ten times a second.
+  const firedFor = useRef<number | null>(null);
 
   useEffect(() => {
     if (paused) return;
 
     const interval = setInterval(() => {
-      const now = Date.now();
-      const ms = now - startTime;
+      const ms = Date.now() - startTime;
       setElapsed(ms);
-      if (ms >= TIME_LIMIT_MS) {
+      if (ms >= TIME_LIMIT_MS && firedFor.current !== startTime) {
+        firedFor.current = startTime;
         onTimeout();
       }
     }, 100);
@@ -32,36 +35,36 @@ export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const urgent = fraction <= 0.2;
   const warning = fraction <= 0.5 && !urgent;
 
-  const barColor = urgent
-    ? "bg-rose-500"
+  const numberColor = urgent
+    ? "text-rose-300"
     : warning
-      ? "bg-amber-400"
-      : "bg-teal-400";
+      ? "text-amber-200"
+      : "text-[var(--color-text-strong)]";
 
-  const glowColor = urgent
-    ? "shadow-rose-500/40"
+  const barColor = urgent
+    ? "bg-rose-400"
     : warning
-      ? "shadow-amber-400/30"
-      : "shadow-teal-400/20";
+      ? "bg-amber-300"
+      : "bg-teal-300";
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-1.5">
+      <div className="flex items-baseline gap-1.5">
         <span
-          className={`font-mono font-bold text-sm tracking-wider ${
-            urgent
-              ? "text-rose-400 animate-streak-fire"
-              : warning
-                ? "text-amber-300"
-                : "text-slate-300"
+          className={`font-mono font-bold text-4xl leading-none tabular ${numberColor} ${
+            urgent ? "animate-streak-fire" : ""
           }`}
+          aria-live="off"
         >
-          {seconds}s
+          {seconds}
+        </span>
+        <span className="text-sm font-medium text-[var(--color-text-muted)]">
+          seconds left
         </span>
       </div>
-      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+      <div className="mt-2 w-full h-2 bg-white/15 rounded-full overflow-hidden">
         <div
-          className={`h-full ${barColor} rounded-full transition-all duration-100 shadow-lg ${glowColor}`}
+          className={`h-full ${barColor} rounded-full transition-all duration-100`}
           style={{ width: `${fraction * 100}%` }}
         />
       </div>

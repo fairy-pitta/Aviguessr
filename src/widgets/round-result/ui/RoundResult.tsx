@@ -60,43 +60,41 @@ export function RoundResult({
           </div>
 
           <div className="p-4">
-            <h3 className="font-bold text-white text-sm">{bird.name}</h3>
+            <h3 className="font-bold text-[var(--color-text-strong)] text-lg leading-tight">
+              {bird.name}
+            </h3>
 
             {!result.isCorrect && (
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-sm text-[var(--color-text-body)] mt-1">
                 {result.distanceKm.toLocaleString()} km away
               </p>
             )}
 
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-sm text-[var(--color-text-muted)] mt-1.5 leading-snug">
               {result.correctCountries.map(countryName).join(", ")}
             </p>
 
             {/* Score breakdown */}
             <div className="flex gap-2 mt-3 text-center stagger">
               <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
-                <div className="font-mono font-bold text-base text-teal-300">
+                <div className="font-mono font-bold text-lg text-teal-200 tabular">
                   {result.score.toLocaleString()}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase tracking-wider">
-                  Distance
-                </div>
+                <div className="text-xs text-[var(--color-text-muted)] mt-0.5">Distance</div>
               </div>
               <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
-                <div className="font-mono font-bold text-base text-cyan-300">
+                <div className="font-mono font-bold text-lg text-cyan-200 tabular">
                   +{result.timeBonus.toLocaleString()}
                 </div>
-                <div className="text-[9px] text-slate-500 uppercase tracking-wider">
-                  Time
-                </div>
+                <div className="text-xs text-[var(--color-text-muted)] mt-0.5">Time</div>
               </div>
               {result.streakLength > 0 && (
                 <div className="flex-1 glass rounded-lg p-2 animate-fade-up">
-                  <div className="font-mono font-bold text-base text-streak animate-streak-fire">
+                  <div className="font-mono font-bold text-lg text-[var(--color-streak)] tabular animate-streak-fire">
                     +{result.streakBonus.toLocaleString()}
                   </div>
-                  <div className="text-[9px] text-slate-500 uppercase tracking-wider">
-                    x{result.streakLength}
+                  <div className="text-xs text-[var(--color-text-muted)] mt-0.5">
+                    {result.streakLength}x streak
                   </div>
                 </div>
               )}
@@ -104,25 +102,23 @@ export function RoundResult({
 
             {/* Total */}
             <div className="text-center mt-3">
-              <span className="font-mono font-bold text-lg text-white animate-score-pop inline-block">
+              <span className="font-mono font-bold text-2xl text-[var(--color-text-strong)] tabular animate-score-pop inline-block">
                 {result.totalScore.toLocaleString()}
               </span>
-              <span className="text-xs text-slate-500 ml-1">total</span>
+              <span className="text-sm text-[var(--color-text-muted)] ml-1.5">total</span>
             </div>
 
             {/* Learning section */}
             {(result.rangeDescription || result.funFact) && (
               <div className="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">
-                  Did you know?
-                </p>
+                <p className="text-sm font-semibold text-amber-200 mb-1.5">Did you know?</p>
                 {result.rangeDescription && (
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[var(--color-text-body)] leading-relaxed">
                     {result.rangeDescription}
                   </p>
                 )}
                 {result.funFact && (
-                  <p className="text-xs text-slate-400 leading-relaxed mt-1 italic">
+                  <p className="text-sm text-[var(--color-text-muted)] leading-relaxed mt-1.5">
                     {result.funFact}
                   </p>
                 )}

@@ -1,7 +1,7 @@
 import { COUNTRY_NAMES } from "@/entities/country";
 import { Button } from "@/shared/ui";
 import type { GameRound } from "@/entities/game";
-import { MAX_ROUNDS, MAX_SCORE_PER_ROUND } from "@/shared/config/constants";
+import { MAX_ROUNDS, MAX_TOTAL_SCORE } from "@/shared/config/constants";
 
 type GameSummaryProps = {
   rounds: GameRound[];
@@ -26,8 +26,7 @@ export function GameSummary({
   totalScore,
   onPlayAgain,
 }: GameSummaryProps) {
-  const maxPossible = MAX_ROUNDS * (MAX_SCORE_PER_ROUND + 1000);
-  const percentage = Math.round((totalScore / maxPossible) * 100);
+  const percentage = Math.round((totalScore / MAX_TOTAL_SCORE) * 100);
   const grade = getGrade(percentage);
 
   return (
@@ -38,7 +37,7 @@ export function GameSummary({
       <div className="glass rounded-2xl p-8 max-w-lg w-full relative animate-fade-up">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-sm font-mono font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">
+          <h1 className="text-base font-semibold text-[var(--color-text-muted)] mb-4">
             Game Complete
           </h1>
 
@@ -51,8 +50,8 @@ export function GameSummary({
               <div className="font-mono font-bold text-3xl text-white animate-score-pop">
                 {totalScore.toLocaleString()}
               </div>
-              <div className="text-xs text-slate-500">
-                / {maxPossible.toLocaleString()} ({percentage}%)
+              <div className="text-sm text-[var(--color-text-muted)]">
+                / {MAX_TOTAL_SCORE.toLocaleString()} ({percentage}%)
               </div>
             </div>
           </div>
@@ -71,7 +70,7 @@ export function GameSummary({
           {rounds.map((round) => (
             <div
               key={round.round}
-              className="flex items-center justify-between p-3 rounded-lg bg-white/3 border border-white/5 hover:bg-white/5 transition-colors animate-fade-up"
+              className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/5 transition-colors animate-fade-up"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -90,7 +89,7 @@ export function GameSummary({
               <div className="flex items-center gap-3">
                 {round.result && (
                   <>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-sm text-[var(--color-text-muted)]">
                       {countryName(round.result.guessedCountry)}
                     </span>
                     <span

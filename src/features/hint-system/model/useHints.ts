@@ -7,6 +7,8 @@ type HintResponse = {
 };
 
 const HINT_THRESHOLDS_MS = [5000, 15000, 25000];
+/** A failing hint used to be retried twice a second for the rest of the round. */
+const MAX_ATTEMPTS_PER_LEVEL = 3;
 
 export function useHints(
   gameId: string | null,
@@ -17,17 +19,24 @@ export function useHints(
   const [hintsUsed, setHintsUsed] = useState(0);
   const [loading, setLoading] = useState(false);
   const fetchedLevels = useRef(new Set<number>());
+  const attempts = useRef(new Map<number, number>());
 
   // Reset when round changes
   useEffect(() => {
     setHints([]);
     setHintsUsed(0);
     fetchedLevels.current = new Set();
+    attempts.current = new Map();
   }, [currentRound, gameId]);
 
   const fetchHint = useCallback(
     async (level: number) => {
       if (!gameId || fetchedLevels.current.has(level)) return;
+
+      const tried = attempts.current.get(level) ?? 0;
+      if (tried >= MAX_ATTEMPTS_PER_LEVEL) return;
+      attempts.current.set(level, tried + 1);
+
       fetchedLevels.current.add(level);
       setLoading(true);
       try {
@@ -41,6 +50,7 @@ export function useHints(
         });
         setHintsUsed((prev) => Math.max(prev, level));
       } catch {
+        // Allow another attempt, but only up to MAX_ATTEMPTS_PER_LEVEL
         fetchedLevels.current.delete(level);
       } finally {
         setLoading(false);
