@@ -34,6 +34,9 @@
   --color-miss: #7d3b4f;
   --color-miss-wash: rgba(125, 59, 79, 0.22);
 
+  /* The surface the notebook is lying on */
+  --color-desk: #b4bdb0;
+
   /* Time running out */
   --color-alarm: #9a4a1f;
 
@@ -73,19 +76,6 @@ body {
 .handwritten {
   font-family: var(--font-hand);
   letter-spacing: 0.01em;
-}
-
-/*
- * The stock itself. Page roots carry this instead of a flat background so the
- * graph ruling stays visible under the whole interface; an opaque background
- * on a page root hides it.
- */
-.paper-grid {
-  background-color: var(--color-paper);
-  background-image:
-    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
-  background-size: 26px 26px;
 }
 
 /*
@@ -181,4 +171,217 @@ body {
   * {
     transition-duration: 0.01ms !important;
   }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * The open notebook.
+ *
+ * Every screen of the game is set inside one, so the book is a layout
+ * primitive rather than decoration: the two pages are exactly half each,
+ * which is what lets the turning leaf land on the opposite page without
+ * anything shifting.
+ * ------------------------------------------------------------------------ */
+
+.book {
+  min-height: 100vh;
+  background: var(--color-desk);
+  display: flex;
+  justify-content: center;
+}
+
+.book__block {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  perspective: 2400px;
+}
+
+.book__page {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stacked, the plate is a fixed band and the rest of the page takes the slack */
+.book__page--left {
+  height: 46vh;
+  flex: none;
+}
+
+.book__page--right {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .book {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .book__block {
+    flex-direction: row;
+    height: calc(100vh - 40px);
+    max-width: 1480px;
+    /* The block of pages under the open spread, then the cast shadow */
+    box-shadow:
+      3px 4px 0 0 var(--color-paper-deep),
+      4px 5px 0 1px var(--color-paper-edge),
+      -3px 4px 0 0 var(--color-paper-deep),
+      -4px 5px 0 1px var(--color-paper-edge),
+      0 24px 50px -26px rgba(20, 30, 28, 0.6);
+  }
+
+  .book__page {
+    width: 50%;
+    height: 100%;
+  }
+
+  .book__page--left {
+    height: 100%;
+    flex: none;
+  }
+
+  /* Paper curving down into the gutter, which is what reads as "open book" */
+  .book__page--left::after,
+  .book__page--right::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 54px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .book__page--left::after {
+    right: 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(27, 42, 40, 0.11)
+    );
+  }
+
+  .book__page--right::after {
+    left: 0;
+    background: linear-gradient(to left, transparent, rgba(27, 42, 40, 0.11));
+  }
+}
+
+/* The sewn binding, down the fold */
+.book__stitch {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .book__stitch {
+    display: block;
+    position: absolute;
+    top: 26px;
+    bottom: 26px;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    z-index: 16;
+    opacity: 0.5;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-ink-faint) 0 9px,
+      transparent 9px 18px
+    );
+  }
+}
+
+/* A single leaf, for the screens that are not a spread */
+.book__block--single {
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .book__block--single {
+    flex-direction: column;
+    max-width: 860px;
+    height: auto;
+    min-height: calc(100vh - 40px);
+  }
+}
+
+/*
+ * The leaf. It is the right page seen from the front at rest, and the next
+ * spread's left page seen from the back once it has gone past upright.
+ */
+.book__leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  z-index: 30;
+  pointer-events: none;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation-name: leaf-turn;
+  animation-timing-function: cubic-bezier(0.46, 0.04, 0.26, 1);
+  animation-fill-mode: forwards;
+}
+
+@media (min-width: 1024px) {
+  .book__leaf {
+    width: 50%;
+  }
+}
+
+@keyframes leaf-turn {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+.book__leaf-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/*
+ * The front fades up over the outgoing page as the leaf starts to lift, so
+ * the swap underneath happens behind an opaque sheet.
+ */
+.book__leaf-face--front {
+  animation-name: leaf-front-in;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  box-shadow: inset -40px 0 44px -34px rgba(20, 30, 28, 0.55);
+}
+
+@keyframes leaf-front-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.book__leaf-face--back {
+  transform: rotateY(180deg);
+  box-shadow: inset 40px 0 44px -34px rgba(20, 30, 28, 0.5);
 }
