@@ -1,1 +1,1 @@
-export { GameBoard } from "./ui/GameBoard";
+export { GuessPage } from "./ui/GuessPage";

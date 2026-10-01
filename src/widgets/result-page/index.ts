@@ -1,1 +1,1 @@
-export { RoundResult } from "./ui/RoundResult";
+export { ResultPage, BirdAccount } from "./ui/ResultPage";

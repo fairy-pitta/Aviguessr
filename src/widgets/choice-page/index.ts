@@ -1,1 +1,1 @@
-export { ChoiceBoard } from "./ui/ChoiceBoard";
+export { ChoicePage } from "./ui/ChoicePage";

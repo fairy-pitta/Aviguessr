@@ -3,9 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
-import { GameBoard } from "@/widgets/game-board";
-import { ChoiceBoard } from "@/widgets/choice-board";
-import { RoundResult } from "@/widgets/round-result";
+import { RoundSpread } from "@/widgets/round-spread";
 import { GameSummary } from "@/widgets/game-summary";
 import type { GameRound } from "@/entities/game";
 import { useEffect } from "react";
@@ -84,47 +82,29 @@ export function GamePage() {
     );
   }
 
-  if (game.phase === "playing" && game.currentBird) {
-    if (game.mode === "multiple_choice" && game.currentChoices) {
-      return (
-        <ChoiceBoard
-          bird={game.currentBird}
-          currentRound={game.currentRound}
-          totalScore={game.totalScore}
-          choices={game.currentChoices}
-          roundStartTime={game.roundStartTime}
-          guessLoading={guessLoading}
-          onChoiceSelect={handleChoiceSelect}
-          onTimeout={handleTimeout}
-        />
-      );
-    }
+  const bird = game.currentBird;
+  const result = game.phase === "showingResult" ? game.lastResult : null;
 
+  if ((game.phase === "playing" || game.phase === "showingResult") && bird) {
     return (
-      <GameBoard
-        bird={game.currentBird}
+      <RoundSpread
+        bird={bird}
+        mode={game.mode}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
         currentStreak={game.currentStreak}
-        selectedCountry={selectedCountry}
+        choices={game.currentChoices}
         roundStartTime={game.roundStartTime}
+        result={result}
+        selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
         hintsLoading={hintsLoading}
         onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
+        onChoiceSelect={handleChoiceSelect}
         onTimeout={handleTimeout}
-      />
-    );
-  }
-
-  if (game.phase === "showingResult" && game.lastResult && game.currentBird) {
-    return (
-      <RoundResult
-        result={game.lastResult}
-        guessedCountry={selectedCountry ?? ""}
-        bird={game.currentBird}
         onNext={handleNext}
       />
     );

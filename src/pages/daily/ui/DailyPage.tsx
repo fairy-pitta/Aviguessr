@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
-import { GameBoard } from "@/widgets/game-board";
-import { RoundResult } from "@/widgets/round-result";
+import { RoundSpread } from "@/widgets/round-spread";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 import { DailyResult } from "@/widgets/daily-result";
@@ -200,16 +199,22 @@ export function DailyPage() {
     );
   }
 
-  // Active game flow (reuses same components as GamePage)
-  if (game.phase === "playing" && game.currentBird) {
+  // The same spread as the free game, so the two cannot drift apart
+  const bird = game.currentBird;
+  const result = game.phase === "showingResult" ? game.lastResult : null;
+
+  if ((game.phase === "playing" || game.phase === "showingResult") && bird) {
     return (
-      <GameBoard
-        bird={game.currentBird}
+      <RoundSpread
+        bird={bird}
+        mode={game.mode}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
         currentStreak={game.currentStreak}
-        selectedCountry={selectedCountry}
+        choices={game.currentChoices}
         roundStartTime={game.roundStartTime}
+        result={result}
+        selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
         hintsLoading={hintsLoading}
@@ -217,16 +222,6 @@ export function DailyPage() {
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
         onTimeout={handleTimeout}
-      />
-    );
-  }
-
-  if (game.phase === "showingResult" && game.lastResult && game.currentBird) {
-    return (
-      <RoundResult
-        result={game.lastResult}
-        guessedCountry={selectedCountry ?? ""}
-        bird={game.currentBird}
         onNext={handleNext}
       />
     );

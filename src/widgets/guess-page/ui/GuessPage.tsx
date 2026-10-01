@@ -1,13 +1,10 @@
 import { WorldMap } from "@/entities/country";
-import { PlatePage } from "@/entities/bird";
 import { ScorePanel } from "@/entities/game";
 import { Timer, HandRule } from "@/shared/ui";
 import { GuessButton } from "@/features/guess-country";
 import { HintPanel } from "@/features/hint-system";
-import type { Bird } from "@/entities/bird";
 
-type GameBoardProps = {
-  bird: Bird;
+type GuessPageProps = {
   currentRound: number;
   totalScore: number;
   currentStreak: number;
@@ -23,12 +20,10 @@ type GameBoardProps = {
 };
 
 /**
- * A guide spread. The plate is the left page and fills it; the right page is
- * the range map you have to fill in, with the account of the bird withheld
- * until the round resolves.
+ * The right page while the question is open: the range map you have to fill
+ * in, with the score above it and your answer below.
  */
-export function GameBoard({
-  bird,
+export function GuessPage({
   currentRound,
   totalScore,
   currentStreak,
@@ -41,54 +36,42 @@ export function GameBoard({
   onCountrySelect,
   onGuess,
   onTimeout,
-}: GameBoardProps) {
+}: GuessPageProps) {
   return (
-    <div className="min-h-screen paper-grid lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
-      <div className="lg:w-[52%] lg:h-full h-[46vh] shrink-0">
-        <PlatePage bird={bird} />
+    <>
+      <header className="flex items-baseline justify-between gap-4 px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
+        <ScorePanel
+          currentRound={currentRound}
+          totalScore={totalScore}
+          currentStreak={currentStreak}
+        />
+        <Timer startTime={roundStartTime} onTimeout={onTimeout} />
+      </header>
+      <HandRule />
+
+      <div className="h-[52vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0">
+        <WorldMap
+          onCountrySelect={onCountrySelect}
+          selectedCountry={selectedCountry}
+        />
       </div>
 
-      {/* The gutter, sewn rather than ruled */}
-      <div className="hidden lg:block w-[4px] shrink-0">
-        <HandRule vertical stitched tone="soft" />
+      <HandRule />
+      <div className="px-5 lg:px-8 py-3">
+        <HintPanel
+          hints={hints}
+          loading={hintsLoading}
+          onReveal={onRevealHint}
+        />
       </div>
-
-      <div className="flex-1 min-w-0 flex flex-col">
-        <HandRule className="lg:hidden" stitched tone="soft" />
-        <header className="flex items-baseline justify-between gap-4 px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
-          <ScorePanel
-            currentRound={currentRound}
-            totalScore={totalScore}
-            currentStreak={currentStreak}
-          />
-          <Timer startTime={roundStartTime} onTimeout={onTimeout} />
-        </header>
-        <HandRule />
-
-        <div className="h-[52vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0">
-          <WorldMap
-            onCountrySelect={onCountrySelect}
-            selectedCountry={selectedCountry}
-          />
-        </div>
-
-        <HandRule />
-        <div className="px-5 lg:px-8 py-3">
-          <HintPanel
-            hints={hints}
-            loading={hintsLoading}
-            onReveal={onRevealHint}
-          />
-        </div>
-        <HandRule />
-        <footer className="px-5 lg:px-8 py-4">
-          <GuessButton
-            selectedCountry={selectedCountry}
-            loading={guessLoading}
-            onGuess={onGuess}
-          />
-        </footer>
-      </div>
-    </div>
+      <HandRule />
+      <footer className="px-5 lg:px-8 py-4">
+        <GuessButton
+          selectedCountry={selectedCountry}
+          loading={guessLoading}
+          onGuess={onGuess}
+        />
+      </footer>
+    </>
   );
 }
