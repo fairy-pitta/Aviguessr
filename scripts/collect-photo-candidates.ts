@@ -7,24 +7,32 @@
  * checkpoint. Nothing is downloaded and nothing is chosen here: the vision
  * screen picks from these, and the upload pass fetches only the winner.
  *
+ * One species is one request, paced by a shared gate rather than by a sleep
+ * after each round trip, so the host sees a steady rate the whole way through
+ * instead of the much slower one that serialising latency behind a delay
+ * produces. A few requests are in flight at once purely to hide that latency.
+ *
  * Species are visited widest range first, so the birds most people can
  * actually go and see are in hand before the endemics. Stopping the run early
  * still leaves a usable set.
  *
  * Resumable: re-running skips every species already in the checkpoint.
  */
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { photoCandidates, type Candidate } from "./lib/photo-quality";
 import { buildSpeciesRows, type TaxonomyEntry } from "./lib/species";
+import { createGate, systemClock } from "./lib/rate-limit";
 
 const API = "https://api.inaturalist.org/v1/observations";
 const LICENCES = "cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa";
 const CHECKPOINT = "data/_cache_photo_candidates.json";
-/** iNaturalist asks for under 60 requests a minute sustained. */
-const DELAY_MS = 1100;
+/** iNaturalist asks for under 60 requests a minute sustained; this is ~55. */
+const MIN_GAP_MS = 1100;
+/** Enough to keep a slot always ready behind a ~2.5 s round trip. */
+const CONCURRENCY = 4;
 const PER_PAGE = 40;
 const KEEP = 10;
-const SAVE_EVERY = 25;
+const SAVE_EVERY = 50;
 
 type Entry = {
   taxonId: number | null;
@@ -32,11 +40,12 @@ type Entry = {
   total: number;
 };
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const gate = createGate(MIN_GAP_MS);
 
 async function getJson(url: string): Promise<any> {
   let wait = 2000;
   for (let attempt = 0; attempt < 5; attempt++) {
+    await gate();
     try {
       const res = await fetch(url, {
         headers: { "User-Agent": "AviGuessr/photo-candidates" },
@@ -45,7 +54,7 @@ async function getJson(url: string): Promise<any> {
       return await res.json();
     } catch (e) {
       if (attempt === 4) throw e;
-      await sleep(wait);
+      await systemClock.sleep(wait);
       wait *= 2;
     }
   }
@@ -66,48 +75,71 @@ const done: Record<string, Entry> = existsSync(CHECKPOINT)
   ? JSON.parse(readFileSync(CHECKPOINT, "utf8"))
   : {};
 
-const save = () => writeFileSync(CHECKPOINT, JSON.stringify(done));
-
-const pending = species.filter((s) => !done[s.speciesCode]);
-console.log(
-  `${species.length} species, ${Object.keys(done).length} already done, ` +
-    `${pending.length} to go (~${((pending.length * DELAY_MS) / 3.6e6).toFixed(1)} h)`
-);
-
-let withCandidates = 0;
-let processed = 0;
-
-for (const s of pending) {
-  const url =
-    `${API}?taxon_name=${encodeURIComponent(s.scientificName)}` +
-    `&photo_license=${LICENCES}&quality_grade=research&photos=true` +
-    `&per_page=${PER_PAGE}&order_by=votes`;
-
-  try {
-    const json = await getJson(url);
-    const results = json.results ?? [];
-    const candidates = photoCandidates(results, s.scientificName).slice(0, KEEP);
-    done[s.speciesCode] = {
-      taxonId: results[0]?.taxon?.id ?? null,
-      candidates,
-      total: json.total_results ?? 0,
-    };
-    if (candidates.length > 0) withCandidates++;
-  } catch (e) {
-    console.error(`[fail] ${s.speciesCode} ${s.scientificName}: ${String(e).slice(0, 80)}`);
-    done[s.speciesCode] = { taxonId: null, candidates: [], total: -1 };
-  }
-
-  processed++;
-  if (processed % SAVE_EVERY === 0) {
-    save();
-    const pct = ((processed / pending.length) * 100).toFixed(1);
-    console.log(
-      `${processed}/${pending.length} (${pct}%) — ${withCandidates} with candidates — last: ${s.name}`
-    );
-  }
-  await sleep(DELAY_MS);
+/**
+ * Written aside and renamed, because a run that is killed partway through a
+ * 4 MB write would otherwise leave a truncated checkpoint and lose hours.
+ */
+function save() {
+  writeFileSync(`${CHECKPOINT}.tmp`, JSON.stringify(done));
+  renameSync(`${CHECKPOINT}.tmp`, CHECKPOINT);
 }
 
+const pending = species.filter((s) => !done[s.speciesCode]);
+const projectedHours = (pending.length * MIN_GAP_MS) / 3.6e6;
+console.log(
+  `${species.length} species, ${Object.keys(done).length} already done, ` +
+    `${pending.length} to go (~${projectedHours.toFixed(1)} h at ` +
+    `${(60000 / MIN_GAP_MS).toFixed(0)}/min)`
+);
+
+const startedAt = Date.now();
+let next = 0;
+let processed = 0;
+let withCandidates = 0;
+
+async function worker() {
+  while (next < pending.length) {
+    const s = pending[next++];
+    const url =
+      `${API}?taxon_name=${encodeURIComponent(s.scientificName)}` +
+      `&photo_license=${LICENCES}&quality_grade=research&photos=true` +
+      `&per_page=${PER_PAGE}&order_by=votes`;
+
+    try {
+      const json = await getJson(url);
+      const results = json.results ?? [];
+      const candidates = photoCandidates(results, s.scientificName).slice(0, KEEP);
+      done[s.speciesCode] = {
+        taxonId: results[0]?.taxon?.id ?? null,
+        candidates,
+        total: json.total_results ?? 0,
+      };
+      if (candidates.length > 0) withCandidates++;
+    } catch (e) {
+      console.error(
+        `[fail] ${s.speciesCode} ${s.scientificName}: ${String(e).slice(0, 80)}`
+      );
+      done[s.speciesCode] = { taxonId: null, candidates: [], total: -1 };
+    }
+
+    processed++;
+    if (processed % SAVE_EVERY === 0) {
+      save();
+      const mins = (Date.now() - startedAt) / 60000;
+      const rate = processed / mins;
+      const left = (pending.length - processed) / rate / 60;
+      console.log(
+        `${processed}/${pending.length} (${((processed / pending.length) * 100).toFixed(1)}%) — ` +
+          `${withCandidates} with candidates — ${rate.toFixed(1)}/min — ` +
+          `${left.toFixed(1)} h left — last: ${s.name}`
+      );
+    }
+  }
+}
+
+await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
 save();
-console.log(`done: ${processed} queried, ${withCandidates} have at least one candidate`);
+console.log(
+  `done: ${processed} queried, ${withCandidates} have at least one candidate`
+);
