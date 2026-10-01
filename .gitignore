@@ -31,3 +31,4 @@ data/update-image-metadata.sql
 
 # generated world species import
 data/world-species/
+data/screen-sheets/

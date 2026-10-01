@@ -87,7 +87,7 @@ export type PickedPhoto = {
  * fall back to the uploader named in the string, then to the observer. Never
  * return the licence phrase itself as if it were a person.
  */
-function photographer(
+export function photographer(
   attribution: string,
   user: InatObservation["user"]
 ): string {

@@ -16,7 +16,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:species-sql": "npx tsx scripts/build-species-sql.ts",
-    "import:species": "./scripts/import-species.sh"
+    "import:species": "./scripts/import-species.sh",
+    "collect:photo-candidates": "npx tsx scripts/collect-photo-candidates.ts",
+    "collect:curated-photos": "npx tsx scripts/collect-curated-photos.ts",
+    "build:screen-sheets": "npx tsx scripts/build-screen-sheets.ts"
   },
   "dependencies": {
     "hono": "^4.7.0",
