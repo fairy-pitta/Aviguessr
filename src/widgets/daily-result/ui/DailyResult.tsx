@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui";
+import { Button, HandRule } from "@/shared/ui";
 import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 import type { GameRound } from "@/entities/game";
 
@@ -34,9 +34,9 @@ export function DailyResult({
   onHome,
 }: DailyResultProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-paper)] flex justify-center px-5 py-10 lg:py-16">
+    <div className="min-h-screen paper-grid flex justify-center px-5 py-10 lg:py-16">
       <div className="w-full max-w-2xl">
-        <header className="border-b rule pb-6">
+        <header className="pb-5">
           <p className="text-base text-[var(--color-ink-soft)] tabular">
             {date}
           </p>
@@ -49,32 +49,33 @@ export function DailyResult({
             </span>
           </p>
         </header>
+        <HandRule />
 
         {rounds && rounds.length > 0 && (
           <ol className="mt-2">
             {rounds.map((round) => (
-              <li
-                key={round.round}
-                className="flex items-baseline gap-4 py-4 border-b rule"
-              >
-                <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
-                  {round.round}
-                </span>
-                <span className="min-w-0 flex-1 text-lg font-medium">
-                  {round.bird.name}
-                </span>
-                {round.result && (
-                  <span
-                    className="shrink-0 text-lg font-semibold tabular"
-                    style={{
-                      color: round.result.isCorrect
-                        ? "var(--color-range)"
-                        : "var(--color-miss)",
-                    }}
-                  >
-                    {round.result.score.toLocaleString()}
+              <li key={round.round}>
+                <div className="flex items-baseline gap-4 py-3.5">
+                  <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
+                    {round.round}
                   </span>
-                )}
+                  <span className="min-w-0 flex-1 text-lg font-medium">
+                    {round.bird.name}
+                  </span>
+                  {round.result && (
+                    <span
+                      className="shrink-0 text-lg font-semibold tabular"
+                      style={{
+                        color: round.result.isCorrect
+                          ? "var(--color-range)"
+                          : "var(--color-miss)",
+                      }}
+                    >
+                      {round.result.score.toLocaleString()}
+                    </span>
+                  )}
+                </div>
+                <HandRule />
               </li>
             ))}
           </ol>
@@ -82,32 +83,31 @@ export function DailyResult({
 
         {leaderboard.length > 0 && (
           <section className="mt-10">
-            <h2 className="text-lg font-semibold border-b rule pb-2">
-              Today's highest
-            </h2>
+            <h2 className="text-lg font-semibold pb-1.5">Today's highest</h2>
+            <HandRule />
             <ol>
               {leaderboard.map((entry, i) => {
                 const isYou = entry.playerId === playerId;
                 return (
-                  <li
-                    key={entry.playerId}
-                    className="flex items-baseline gap-4 py-3 border-b rule"
-                  >
-                    <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
-                      {i + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 text-base">
-                      {isYou ? (
-                        <span className="font-semibold">You</span>
-                      ) : (
-                        <span className="text-[var(--color-ink-soft)]">
-                          Another birder
-                        </span>
-                      )}
-                    </span>
-                    <span className="shrink-0 text-base font-semibold tabular">
-                      {entry.totalScore.toLocaleString()}
-                    </span>
+                  <li key={entry.playerId}>
+                    <div className="flex items-baseline gap-4 py-2.5">
+                      <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
+                        {i + 1}
+                      </span>
+                      <span className="min-w-0 flex-1 text-base">
+                        {isYou ? (
+                          <span className="handwritten text-xl">You</span>
+                        ) : (
+                          <span className="text-[var(--color-ink-soft)]">
+                            Another birder
+                          </span>
+                        )}
+                      </span>
+                      <span className="shrink-0 text-base font-semibold tabular">
+                        {entry.totalScore.toLocaleString()}
+                      </span>
+                    </div>
+                    <HandRule />
                   </li>
                 );
               })}

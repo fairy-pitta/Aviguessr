@@ -1,6 +1,6 @@
 import { WorldMap, COUNTRY_NAMES } from "@/entities/country";
 import { PlatePage } from "@/entities/bird";
-import { Button } from "@/shared/ui";
+import { Button, HandRule } from "@/shared/ui";
 import type { GuessResponse } from "@/entities/game";
 import type { Bird } from "@/entities/bird";
 
@@ -31,7 +31,7 @@ export function RoundResult({
   const rest = range.length - shown.length;
 
   return (
-    <div className="min-h-screen bg-[var(--color-paper)] lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
+    <div className="min-h-screen paper-grid lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
       <div className="lg:w-[52%] lg:h-full h-[46vh] shrink-0">
         <PlatePage
           bird={bird}
@@ -58,8 +58,13 @@ export function RoundResult({
         />
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col border-t lg:border-t-0 lg:border-l rule">
-        <header className="px-5 lg:px-8 pt-5 lg:pt-6 pb-4 border-b rule">
+      <div className="hidden lg:block w-[10px] shrink-0">
+        <HandRule vertical stitched tone="soft" />
+      </div>
+
+      <div className="flex-1 min-w-0 flex flex-col">
+        <HandRule className="lg:hidden" stitched tone="soft" />
+        <header className="px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
           <p
             className="text-lg font-semibold"
             style={{
@@ -77,8 +82,9 @@ export function RoundResult({
             {rest > 0 && ` and ${rest} more`}
           </p>
         </header>
+        <HandRule />
 
-        <div className="flex-1 min-h-[38vh] lg:min-h-0">
+        <div className="h-[46vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0">
           <WorldMap
             resultMode
             highlightCountries={{
@@ -88,7 +94,8 @@ export function RoundResult({
           />
         </div>
 
-        <footer className="px-5 lg:px-8 py-4 border-t rule">
+        <HandRule />
+        <footer className="px-5 lg:px-8 py-4">
           <dl className="flex items-baseline gap-6">
             <div>
               <dt className="text-sm text-[var(--color-ink-soft)]">Distance</dt>

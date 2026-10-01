@@ -1,7 +1,7 @@
 import { WorldMap } from "@/entities/country";
 import { PlatePage } from "@/entities/bird";
 import { ScorePanel } from "@/entities/game";
-import { Timer } from "@/shared/ui";
+import { Timer, HandRule } from "@/shared/ui";
 import { GuessButton } from "@/features/guess-country";
 import { HintPanel } from "@/features/hint-system";
 import type { Bird } from "@/entities/bird";
@@ -43,13 +43,19 @@ export function GameBoard({
   onTimeout,
 }: GameBoardProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-paper)] lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
+    <div className="min-h-screen paper-grid lg:h-screen lg:overflow-hidden flex flex-col lg:flex-row">
       <div className="lg:w-[52%] lg:h-full h-[46vh] shrink-0">
         <PlatePage bird={bird} />
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col border-t lg:border-t-0 lg:border-l rule">
-        <header className="flex items-baseline justify-between gap-4 px-5 lg:px-8 pt-5 lg:pt-6 pb-4 border-b rule">
+      {/* The gutter, sewn rather than ruled */}
+      <div className="hidden lg:block w-[4px] shrink-0">
+        <HandRule vertical stitched tone="soft" />
+      </div>
+
+      <div className="flex-1 min-w-0 flex flex-col">
+        <HandRule className="lg:hidden" stitched tone="soft" />
+        <header className="flex items-baseline justify-between gap-4 px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
           <ScorePanel
             currentRound={currentRound}
             totalScore={totalScore}
@@ -57,22 +63,25 @@ export function GameBoard({
           />
           <Timer startTime={roundStartTime} onTimeout={onTimeout} />
         </header>
+        <HandRule />
 
-        <div className="flex-1 min-h-[42vh] lg:min-h-0 relative">
+        <div className="h-[52vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0">
           <WorldMap
             onCountrySelect={onCountrySelect}
             selectedCountry={selectedCountry}
           />
-          <div className="absolute bottom-4 left-4 z-10 max-w-[18rem]">
-            <HintPanel
-              hints={hints}
-              loading={hintsLoading}
-              onReveal={onRevealHint}
-            />
-          </div>
         </div>
 
-        <footer className="px-5 lg:px-8 py-4 border-t rule">
+        <HandRule />
+        <div className="px-5 lg:px-8 py-3">
+          <HintPanel
+            hints={hints}
+            loading={hintsLoading}
+            onReveal={onRevealHint}
+          />
+        </div>
+        <HandRule />
+        <footer className="px-5 lg:px-8 py-4">
           <GuessButton
             selectedCountry={selectedCountry}
             loading={guessLoading}

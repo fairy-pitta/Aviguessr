@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useStartGame } from "@/features/start-game";
-import { FieldKit } from "@/shared/ui";
+import { FieldKit, HandRule } from "@/shared/ui";
 
 /**
  * The title page of the guide — the one screen in the book that is centred.
@@ -22,7 +22,7 @@ export function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-paper)] flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen paper-grid flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-lg">
         <FieldKit className="mx-auto w-[288px] sm:w-[368px] h-auto" />
 
@@ -36,12 +36,13 @@ export function HomePage() {
           </p>
         </div>
 
-        <div className="mt-9 border-t rule">
+        <div className="mt-8">
+          <HandRule />
           <button
             type="button"
             disabled={loading}
             onClick={() => begin("classic")}
-            className="w-full text-left py-4 border-b rule disabled:opacity-50"
+            className="w-full text-left py-4 disabled:opacity-50"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Name the country</span>
@@ -53,12 +54,13 @@ export function HomePage() {
               Pick the country on the map. Closer guesses still score.
             </span>
           </button>
+          <HandRule />
 
           <button
             type="button"
             disabled={loading}
             onClick={() => begin("multiple_choice")}
-            className="w-full text-left py-4 border-b rule disabled:opacity-50"
+            className="w-full text-left py-4 disabled:opacity-50"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Four choices</span>
@@ -70,11 +72,12 @@ export function HomePage() {
               One country out of four. No partial credit.
             </span>
           </button>
+          <HandRule />
 
           <button
             type="button"
             onClick={() => navigate("/daily")}
-            className="w-full text-left py-4 border-b rule"
+            className="w-full text-left py-4"
           >
             <span className="flex items-baseline justify-between gap-4">
               <span className="text-2xl font-medium">Today's five</span>
@@ -86,6 +89,7 @@ export function HomePage() {
               The same five birds for everyone, with a leaderboard.
             </span>
           </button>
+          <HandRule />
         </div>
 
         <p className="mt-6 text-center text-base text-[var(--color-ink-faint)]">

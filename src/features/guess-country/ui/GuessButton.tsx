@@ -22,7 +22,7 @@ export function GuessButton({
         {countryName ? (
           <>
             Your answer:{" "}
-            <span className="font-semibold text-[var(--color-ink)]">
+            <span className="handwritten text-2xl text-[var(--color-ink)] leading-none">
               {countryName}
             </span>
           </>
