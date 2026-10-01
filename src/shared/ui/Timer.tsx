@@ -52,17 +52,28 @@ export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
         </span>
         <span className="text-sm text-[var(--color-ink-soft)]">s</span>
       </div>
-      <div
-        className="mt-2 h-px w-28 ml-auto bg-[var(--color-paper-edge)]"
+      <svg
         aria-hidden="true"
+        focusable="false"
+        className="mt-1 ml-auto block h-[12px] w-28"
       >
-        <div
-          className={`h-px transition-all duration-100 ${
-            urgent ? "bg-[var(--color-alarm)]" : "bg-[var(--color-ink)]"
-          }`}
-          style={{ width: `${fraction * 100}%` }}
+        <rect
+          x="0"
+          y="5"
+          width="100%"
+          height="1.6"
+          fill="var(--color-paper-edge)"
+          filter="url(#ink-stroke)"
         />
-      </div>
+        <rect
+          x="0"
+          y="5"
+          width={`${fraction * 100}%`}
+          height="2.4"
+          fill={urgent ? "var(--color-alarm)" : "var(--color-ink)"}
+          filter="url(#ink-stroke)"
+        />
+      </svg>
     </div>
   );
 }

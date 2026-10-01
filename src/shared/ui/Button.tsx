@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { InkFrame } from "./InkFrame";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost";
@@ -7,9 +8,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 /**
- * Ink on paper. The primary action is solid ink, the secondary is an outline,
- * and neither carries a gradient or a shadow — the page is structured by rules
- * and weight, not by raised surfaces.
+ * Ink on paper. The primary action is a box inked in solid, the secondary is
+ * the same box left as an outline, and both are drawn rather than bordered —
+ * the page is structured by pen strokes, not by raised surfaces.
  */
 export function Button({
   variant = "primary",
@@ -19,7 +20,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "font-display font-semibold rounded transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer select-none";
+    "relative font-display font-semibold transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer select-none";
 
   const sizes = {
     sm: "px-3.5 py-2 text-sm",
@@ -27,21 +28,20 @@ export function Button({
     lg: "px-6 py-3.5 text-lg",
   };
 
-  const variants = {
-    primary:
-      "bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[#27403c] disabled:hover:bg-[var(--color-ink)]",
-    secondary:
-      "bg-transparent text-[var(--color-ink)] border border-[var(--color-paper-edge)] hover:border-[var(--color-ink)]",
+  const text = {
+    primary: "text-[var(--color-paper)]",
+    secondary: "text-[var(--color-ink)]",
     ghost:
-      "bg-transparent text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] underline decoration-[var(--color-paper-edge)] underline-offset-4 hover:decoration-[var(--color-ink)]",
+      "text-[var(--color-ink-soft)] hover:text-[var(--color-ink)] underline decoration-[var(--color-paper-edge)] underline-offset-4 hover:decoration-[var(--color-ink)]",
   };
 
   return (
     <button
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`${base} ${sizes[size]} ${text[variant]} ${className}`}
       {...props}
     >
-      {children}
+      {variant !== "ghost" && <InkFrame solid={variant === "primary"} />}
+      <span className="relative">{children}</span>
     </button>
   );
 }

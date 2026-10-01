@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap');
 
 /*
  * AviGuessr — a field guide you read backwards.
@@ -20,6 +20,8 @@
   --color-paper: #edefea;
   --color-paper-deep: #e1e5dd;
   --color-paper-edge: #cfd6cc;
+  /* Drawn ruling sits a shade darker than a CSS hairline needed to */
+  --color-rule: #bcc7ba;
 
   /* Ink, never pure black */
   --color-ink: #1b2a28;
@@ -35,8 +37,12 @@
   /* Time running out */
   --color-alarm: #9a4a1f;
 
+  /* Faint graph ruling, the stock a field notebook is actually printed on */
+  --color-grid: rgba(27, 42, 40, 0.05);
+
   --font-display: 'Instrument Sans', system-ui, sans-serif;
   --font-binomial: 'Newsreader', Georgia, serif;
+  --font-hand: 'Architects Daughter', 'Bradley Hand', cursive;
 }
 
 :root {
@@ -46,11 +52,40 @@
 }
 
 body {
-  background: var(--color-paper);
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
   color: var(--color-ink);
   font-family: var(--font-display);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * The one rule the whole interface follows: the guide is printed, and
+ * anything the player puts on the page is handwritten. The chosen country,
+ * the hints they paid for, their own line on the leaderboard — those are in
+ * the hand. Everything that was already in the book stays set in type, so
+ * nothing anyone has to read in a hurry is written by hand.
+ */
+.handwritten {
+  font-family: var(--font-hand);
+  letter-spacing: 0.01em;
+}
+
+/*
+ * The stock itself. Page roots carry this instead of a flat background so the
+ * graph ruling stays visible under the whole interface; an opaque background
+ * on a page root hides it.
+ */
+.paper-grid {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 
 /*
@@ -83,6 +118,20 @@ body {
 /* The map is a range map: no imagery, no attribution furniture to fight */
 .leaflet-control-container {
   display: none;
+}
+
+/* Coastlines drawn with the same pen as the rest of the interface */
+.leaflet-overlay-pane svg {
+  filter: url(#ink-coast);
+}
+
+/*
+ * The ocean is the page. Leaving the map container transparent puts the
+ * coastlines straight onto the graph ruling, so the map reads as drawn on the
+ * notebook rather than as a panel laid over it.
+ */
+.leaflet-container {
+  background: transparent;
 }
 
 /*
