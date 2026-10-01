@@ -37,6 +37,10 @@ const MISS = "#7d3b4f";
  * world rather than given a fixed centre and zoom: at a fixed zoom a wide,
  * short page cropped Australia off the bottom and Asia off the right.
  */
+/*
+ * minZoom has to allow below 1: a phone is narrower than a zoom-1 world, and
+ * clamping the fit there cut the Americas off the left edge.
+ */
 const WORLD: [[number, number], [number, number]] = [
   [-57, -169],
   [78, 179],
@@ -178,7 +182,7 @@ export function WorldMap({
     <MapContainer
       center={[14, 8]}
       zoom={2}
-      minZoom={1}
+      minZoom={0}
       maxZoom={6}
       zoomSnap={0}
       zoomControl={false}
