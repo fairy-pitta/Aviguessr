@@ -14,7 +14,9 @@
     "collect:inat-images": "npx tsx scripts/collect-inat-images.ts",
     "apply:image-metadata": "npx tsx scripts/apply-image-metadata.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:species-sql": "npx tsx scripts/build-species-sql.ts",
+    "import:species": "./scripts/import-species.sh"
   },
   "dependencies": {
     "hono": "^4.7.0",
