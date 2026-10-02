@@ -6,7 +6,11 @@
  * collected previously. Run with `npm run build:species-sql`.
  */
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { buildSpeciesRows, type TaxonomyEntry } from "./lib/species";
+import {
+  buildSpeciesRows,
+  guessableSpecies,
+  type TaxonomyEntry,
+} from "./lib/species";
 
 const OUT_DIR = "data/world-species";
 /*
@@ -36,7 +40,9 @@ const countryMap: Record<string, string[]> = JSON.parse(
   readFileSync("data/_cache_species_country_map.json", "utf8")
 );
 
-const rows = buildSpeciesRows(taxonomy, countryMap);
+// Extinct birds are in the eBird taxonomy but no country list places them,
+// and a game about where a bird lives cannot ask about them.
+const rows = guessableSpecies(buildSpeciesRows(taxonomy, countryMap));
 const pairs = rows.flatMap((r) =>
   r.countries.map((code) => ({ speciesCode: r.speciesCode, code }))
 );

@@ -11,7 +11,13 @@
  *   npm run upload:photos                upload (needs `wrangler login`)
  */
 import { execFile } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { promisify } from "node:util";
 import sharp from "sharp";
 import { chosenPhotos, type Verdicts } from "./lib/screening";
@@ -50,7 +56,16 @@ console.log(
 let done = 0;
 let failed = 0;
 let bytes = 0;
-const save = () => writeFileSync(UPLOADED, JSON.stringify(uploaded));
+/**
+ * The record is of what is in the bucket, so a dry run must not write it. It
+ * used to, which marked all 956 photographs done without a single byte
+ * reaching R2, and the next real run then had nothing left to do.
+ */
+const save = () => {
+  if (dryRun) return;
+  writeFileSync(`${UPLOADED}.tmp`, JSON.stringify(uploaded));
+  renameSync(`${UPLOADED}.tmp`, UPLOADED);
+};
 
 async function handle(photo: (typeof chosen)[number]) {
   const key = `birds/${photo.speciesCode}.webp`;
@@ -75,6 +90,8 @@ async function handle(photo: (typeof chosen)[number]) {
     ]);
   }
 
+  // Held in memory either way, because the SQL is written from it and a dry
+  // run is how that SQL gets checked; only persisting it is gated above.
   uploaded[photo.speciesCode] = {
     key,
     license: photo.license,
