@@ -29,7 +29,7 @@ export const LICENCE_LABELS: Record<string, string> = {
 };
 
 /** Licences that also permit commercial use. */
-const COMMERCIAL = new Set(["CC0", "CC BY", "CC BY-SA"]);
+export const COMMERCIAL = new Set(["CC0", "CC BY", "CC BY-SA"]);
 
 /**
  * The plate is shown full bleed across half of a large screen, so it is served
@@ -117,7 +117,7 @@ function isJuvenile(obs: InatObservation): boolean {
   );
 }
 
-function passesFloors(photo: InatPhoto): boolean {
+export function passesFloors(photo: InatPhoto): boolean {
   const d = photo.original_dimensions;
   if (!d?.width || !d?.height) return false;
   if (Math.max(d.width, d.height) < MIN_LONG_SIDE) return false;
