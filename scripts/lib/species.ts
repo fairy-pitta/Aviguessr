@@ -113,3 +113,17 @@ export function pendingSpecies<T extends CollectedEntry>(
     return entry === undefined || entry.total === -1;
   });
 }
+
+/**
+ * eBird's taxonomy carries species no country list mentions: 185 of them,
+ * which are the extinct birds — the Mauritius Shelduck, Finsch's Duck, the
+ * Amsterdam Duck. A game that asks where a bird lives has no answer for a
+ * bird that lives nowhere, and no photograph will ever be collected for one,
+ * so they are dropped before any of that work starts.
+ *
+ * `XX` appears in the country lists for records that could not be placed in a
+ * country; it is not somewhere a player can point to either.
+ */
+export function guessableSpecies(species: SpeciesRow[]): SpeciesRow[] {
+  return species.filter((s) => s.countries.some((c) => c !== "XX"));
+}

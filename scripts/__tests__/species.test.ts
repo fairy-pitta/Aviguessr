@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupWord, genusOf, difficultyFor, buildSpeciesRows, type TaxonomyEntry, pendingSpecies, type SpeciesRow } from "../lib/species";
+import { groupWord, genusOf, difficultyFor, buildSpeciesRows, type TaxonomyEntry, pendingSpecies, type SpeciesRow, guessableSpecies } from "../lib/species";
 
 describe("groupWord", () => {
   it("test_group_word_of_two_word_name_returns_the_last_word", () => {
@@ -140,5 +140,28 @@ describe("pendingSpecies", () => {
       "b",
       "d",
     ]);
+  });
+});
+
+describe("guessableSpecies", () => {
+  const row = (speciesCode: string, countries: string[]) =>
+    ({ speciesCode, countries, rangeSize: countries.length }) as SpeciesRow;
+
+  it("test_guessable_keeps_a_species_that_lives_somewhere", () => {
+    const rows = [row("a", ["JP"]), row("b", ["BR", "CO"])];
+
+    expect(guessableSpecies(rows).map((s) => s.speciesCode)).toEqual(["a", "b"]);
+  });
+
+  it("test_guessable_drops_a_species_recorded_in_no_country", () => {
+    const rows = [row("a", ["JP"]), row("extinct", []), row("b", ["BR"])];
+
+    expect(guessableSpecies(rows).map((s) => s.speciesCode)).toEqual(["a", "b"]);
+  });
+
+  it("test_guessable_drops_a_species_whose_only_country_is_the_unknown_code", () => {
+    const rows = [row("a", ["JP"]), row("bogus", ["XX"])];
+
+    expect(guessableSpecies(rows).map((s) => s.speciesCode)).toEqual(["a"]);
   });
 });
