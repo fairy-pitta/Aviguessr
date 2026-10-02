@@ -21,7 +21,9 @@
     "collect:curated-photos": "npx tsx scripts/collect-curated-photos.ts",
     "build:screen-sheets": "npx tsx scripts/build-screen-sheets.ts",
     "apply:screen-verdicts": "npx tsx scripts/apply-screen-verdicts.ts",
-    "upload:photos": "npx tsx scripts/upload-photos.ts"
+    "upload:photos": "npx tsx scripts/upload-photos.ts",
+    "build:taxon-ids": "npx tsx scripts/build-taxon-ids.ts",
+    "collect:curated": "npx tsx scripts/collect-curated.ts"
   },
   "dependencies": {
     "hono": "^4.7.0",

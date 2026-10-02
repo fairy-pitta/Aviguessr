@@ -34,3 +34,6 @@ data/world-species/
 data/screen-sheets/
 data/photo-tmp/
 data/update-photos.sql
+
+# iNaturalist taxonomy archive (80 MB zip, 414 MB csv; rebuild with npm run build:taxon-ids)
+/data/_dwca
