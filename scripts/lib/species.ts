@@ -88,3 +88,28 @@ export function buildSpeciesRows(
 
   return rows;
 }
+
+/**
+ * A checkpoint entry records how many observations the host reported, and
+ * uses -1 to mean the request never got an answer.
+ */
+export type CollectedEntry = { total: number };
+
+/**
+ * The species a resumed run still has to fetch.
+ *
+ * A failed request and a species the host genuinely has no usable photograph
+ * of both land in the checkpoint with no candidates, and treating them alike
+ * is how a throttled afternoon turns into thousands of birds permanently
+ * recorded as unphotographed. Only a request that was actually answered
+ * counts as done.
+ */
+export function pendingSpecies<T extends CollectedEntry>(
+  species: SpeciesRow[],
+  done: Record<string, T>
+): SpeciesRow[] {
+  return species.filter((s) => {
+    const entry = done[s.speciesCode];
+    return entry === undefined || entry.total === -1;
+  });
+}

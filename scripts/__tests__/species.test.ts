@@ -1,11 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  groupWord,
-  genusOf,
-  difficultyFor,
-  buildSpeciesRows,
-  type TaxonomyEntry,
-} from "../lib/species";
+import { groupWord, genusOf, difficultyFor, buildSpeciesRows, type TaxonomyEntry, pendingSpecies, type SpeciesRow } from "../lib/species";
 
 describe("groupWord", () => {
   it("test_group_word_of_two_word_name_returns_the_last_word", () => {
@@ -103,5 +97,48 @@ describe("buildSpeciesRows", () => {
         {}
       )
     ).toThrow(/duplicate/i);
+  });
+});
+
+describe("pendingSpecies", () => {
+  const row = (speciesCode: string) => ({ speciesCode }) as SpeciesRow;
+  const all = [row("a"), row("b"), row("c"), row("d")];
+
+  it("test_pending_with_an_empty_checkpoint_returns_every_species", () => {
+    expect(pendingSpecies(all, {}).map((s) => s.speciesCode)).toEqual([
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("test_pending_skips_a_species_that_was_collected", () => {
+    const done = { b: { total: 120 } };
+
+    expect(pendingSpecies(all, done).map((s) => s.speciesCode)).toEqual([
+      "a",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("test_pending_skips_a_species_the_host_genuinely_had_none_of", () => {
+    const done = { b: { total: 0 } };
+
+    expect(pendingSpecies(all, done).map((s) => s.speciesCode)).toEqual([
+      "a",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("test_pending_retries_a_species_whose_request_failed", () => {
+    const done = { a: { total: 40 }, b: { total: -1 }, c: { total: 0 } };
+
+    expect(pendingSpecies(all, done).map((s) => s.speciesCode)).toEqual([
+      "b",
+      "d",
+    ]);
   });
 });

@@ -12,6 +12,12 @@
  * instead of the much slower one that serialising latency behind a delay
  * produces. A few requests are in flight at once purely to hide that latency.
  *
+ * The rate is not fixed. iNaturalist publishes 60 requests a minute but
+ * enforces something tighter: a steady 48/min ran clean for an hour and was
+ * then refused with `429 normal_throttling` for everything that followed. The
+ * gate widens on refusal and eases back down, so the run settles at whatever
+ * the host is actually willing to serve today.
+ *
  * Species are visited widest range first, so the birds most people can
  * actually go and see are in hand before the endemics. Stopping the run early
  * still leaves a usable set.
@@ -20,16 +26,30 @@
  */
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { photoCandidates, type Candidate } from "./lib/photo-quality";
-import { buildSpeciesRows, type TaxonomyEntry } from "./lib/species";
-import { createGate, systemClock } from "./lib/rate-limit";
+import {
+  buildSpeciesRows,
+  pendingSpecies,
+  type TaxonomyEntry,
+} from "./lib/species";
+import { createAdaptiveGate, systemClock } from "./lib/rate-limit";
 
 const API = "https://api.inaturalist.org/v1/observations";
 const LICENCES = "cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa";
 const CHECKPOINT = "data/_cache_photo_candidates.json";
-/** iNaturalist asks for under 60 requests a minute sustained; this is ~55. */
-const MIN_GAP_MS = 1100;
+/**
+ * Opening pace, and the band the gate is allowed to move within: between 40
+ * and 7 requests a minute. It starts at 20/min — below the 48/min that was
+ * eventually refused — and climbs only if the host keeps answering.
+ */
+const START_GAP_MS = 3000;
+const MIN_GAP_MS = 1500;
+const MAX_GAP_MS = 9000;
+/** How long every worker stands down after a refusal. */
+const COOLDOWN_MS = 60_000;
+/** Successes before the gate is allowed to speed up again. */
+const EASE_AFTER = 40;
 /** Enough to keep a slot always ready behind a ~2.5 s round trip. */
-const CONCURRENCY = 4;
+const CONCURRENCY = 3;
 const PER_PAGE = 40;
 const KEEP = 10;
 const SAVE_EVERY = 50;
@@ -40,24 +60,54 @@ type Entry = {
   total: number;
 };
 
-const gate = createGate(MIN_GAP_MS);
+const gate = createAdaptiveGate({
+  startGapMs: START_GAP_MS,
+  minGapMs: MIN_GAP_MS,
+  maxGapMs: MAX_GAP_MS,
+  cooldownMs: COOLDOWN_MS,
+  easeAfter: EASE_AFTER,
+});
+
+let throttleEvents = 0;
+
+/** Seconds, or an HTTP date; absent on iNaturalist but honoured if it appears. */
+function retryAfterMs(res: Response): number | undefined {
+  const raw = res.headers.get("retry-after");
+  if (!raw) return undefined;
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds)) return seconds * 1000;
+  const at = Date.parse(raw);
+  return Number.isNaN(at) ? undefined : Math.max(0, at - Date.now());
+}
 
 async function getJson(url: string): Promise<any> {
-  let wait = 2000;
-  for (let attempt = 0; attempt < 5; attempt++) {
-    await gate();
+  let backoff = 2000;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    await gate.wait();
     try {
       const res = await fetch(url, {
         headers: { "User-Agent": "AviGuessr/photo-candidates" },
       });
-      if (res.status === 429 || res.status >= 500) throw new Error(`http ${res.status}`);
-      return await res.json();
+
+      // A refusal is the host's business, not this request's: the gate holds
+      // every worker back rather than this one retrying into the same wall.
+      if (res.status === 429) {
+        throttleEvents++;
+        gate.throttled(retryAfterMs(res));
+        continue;
+      }
+      if (res.status >= 500) throw new Error(`http ${res.status}`);
+
+      const json = await res.json();
+      gate.succeeded();
+      return json;
     } catch (e) {
-      if (attempt === 4) throw e;
-      await systemClock.sleep(wait);
-      wait *= 2;
+      if (attempt === 5) throw e;
+      await systemClock.sleep(backoff);
+      backoff *= 2;
     }
   }
+  throw new Error("still refused after six attempts");
 }
 
 const taxonomy: TaxonomyEntry[] = JSON.parse(
@@ -84,12 +134,12 @@ function save() {
   renameSync(`${CHECKPOINT}.tmp`, CHECKPOINT);
 }
 
-const pending = species.filter((s) => !done[s.speciesCode]);
-const projectedHours = (pending.length * MIN_GAP_MS) / 3.6e6;
+const pending = pendingSpecies(species, done);
+const retrying = pending.filter((s) => done[s.speciesCode] !== undefined).length;
 console.log(
-  `${species.length} species, ${Object.keys(done).length} already done, ` +
-    `${pending.length} to go (~${projectedHours.toFixed(1)} h at ` +
-    `${(60000 / MIN_GAP_MS).toFixed(0)}/min)`
+  `${species.length} species, ${Object.keys(done).length - retrying} collected, ` +
+    `${pending.length} to go (${retrying} of them retries of failed requests), ` +
+    `starting at ${(60000 / START_GAP_MS).toFixed(0)}/min`
 );
 
 const startedAt = Date.now();
@@ -131,6 +181,7 @@ async function worker() {
       console.log(
         `${processed}/${pending.length} (${((processed / pending.length) * 100).toFixed(1)}%) — ` +
           `${withCandidates} with candidates — ${rate.toFixed(1)}/min — ` +
+          `gap ${(gate.gapMs() / 1000).toFixed(1)}s — ${throttleEvents} refusals — ` +
           `${left.toFixed(1)} h left — last: ${s.name}`
       );
     }
@@ -140,6 +191,9 @@ async function worker() {
 await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
 save();
+const stillFailed = pending.filter((s) => done[s.speciesCode]?.total === -1).length;
 console.log(
-  `done: ${processed} queried, ${withCandidates} have at least one candidate`
+  `done: ${processed} queried, ${withCandidates} have at least one candidate, ` +
+    `${stillFailed} still failing (re-run to retry them), ` +
+    `${throttleEvents} refusals`
 );
