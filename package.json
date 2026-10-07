@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:worker": "wrangler dev worker/index.ts --port 8787",
     "build": "vite build",
-    "deploy": "wrangler deploy",
+    "deploy": "npm run build && wrangler deploy",
     "generate:centroids": "npx tsx scripts/generate-centroids.ts",
     "seed": "npx tsx scripts/seed.ts",
     "populate:fun-facts": "npx tsx scripts/populate-fun-facts.ts",
