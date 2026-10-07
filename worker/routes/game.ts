@@ -7,6 +7,7 @@ import {
   maskWithLevel,
   hintCountFromMask,
   HINT_PENALTIES,
+  parseGuessBody,
 } from "../services/game";
 import type { GameMode } from "../services/game";
 import { getHintsForBird } from "../services/hints";
@@ -80,12 +81,16 @@ gameRoutes.post("/:id/guess", async (c) => {
   const gameId = c.req.param("id");
   // timeMs and hintsUsed are deliberately not accepted: the server derives
   // both from game_rounds so they cannot be self-reported.
-  const body = await c.req.json<{ round: number; countryCode: string }>();
+  const guess = parseGuessBody(await c.req.json().catch(() => null));
+  if (!guess) {
+    return c.json({ error: "round and countryCode are required" }, 400);
+  }
+
   const result = await submitGuess(
     c.env.DB,
     gameId,
-    body.round,
-    body.countryCode
+    guess.round,
+    guess.countryCode
   );
   if (!result) {
     return c.json({ error: "Invalid game or round" }, 400);

@@ -29,6 +29,25 @@ function calculateScore(distanceKm: number): number {
   return Math.round(5000 * Math.exp(-distanceKm / 2000));
 }
 
+/** What a guess may carry. Everything else about a round the server decides. */
+export type GuessBody = { round: number; countryCode: string };
+
+/**
+ * The guess in a request body, or null when the body is not one.
+ *
+ * A malformed body used to reach submitGuess and fail there as a 500, which
+ * tells a caller nothing about what was wrong with their request.
+ */
+export function parseGuessBody(raw: unknown): GuessBody | null {
+  if (typeof raw !== "object" || raw === null) return null;
+
+  const { round, countryCode } = raw as Record<string, unknown>;
+  if (!Number.isInteger(round) || (round as number) < 1) return null;
+  if (typeof countryCode !== "string" || countryCode.trim() === "") return null;
+
+  return { round: round as number, countryCode };
+}
+
 const TIME_LIMIT_MS = 30000;
 
 export function calculateTimeBonus(timeMs: number): number {
