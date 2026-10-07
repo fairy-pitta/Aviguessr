@@ -1,6 +1,7 @@
 import { CENTROIDS } from "../data/centroids";
 import { REGIONS } from "../data/regions";
 import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
+import { describeRange } from "./range";
 
 const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
 
@@ -437,7 +438,7 @@ export async function submitGuess(
     streakBonus,
     totalScore: newTotalScore,
     gameFinished: isLastRound,
-    rangeDescription: birdData.bird.range_description ?? null,
+    rangeDescription: describeRange(birdData.countries),
     funFact: birdData.bird.fun_fact ?? null,
   };
 }
