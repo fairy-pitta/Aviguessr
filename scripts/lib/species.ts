@@ -127,3 +127,18 @@ export function pendingSpecies<T extends CollectedEntry>(
 export function guessableSpecies(species: SpeciesRow[]): SpeciesRow[] {
   return species.filter((s) => s.countries.some((c) => c !== "XX"));
 }
+
+/**
+ * The species the game can actually put in front of a player: the ones a
+ * photograph was uploaded for.
+ *
+ * Enrichment work — fun facts above all — is per-species network traffic, and
+ * spending it on a species no round can ever show is wasted. The world list
+ * is 10,982 birds; the photographed set is a fraction of that.
+ */
+export function photographedSpecies(
+  species: SpeciesRow[],
+  uploaded: Record<string, unknown>
+): SpeciesRow[] {
+  return species.filter((s) => s.speciesCode in uploaded);
+}

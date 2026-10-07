@@ -6,6 +6,11 @@
  * Progress is checkpointed, so the script can be re-run after an interruption
  * and will only fetch the birds it has not resolved yet.
  *
+ * The birds are the photographed ones from the world list, not the original
+ * 939-species sample: a fact is shown on the round-end page, so a species the
+ * game cannot put on screen has no use for one, and fetching all 10,982 would
+ * be four hours of requests for facts nobody reads.
+ *
  * Usage: npx tsx scripts/populate-fun-facts.ts [--dry-run] [--limit=N]
  */
 
@@ -14,6 +19,12 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { pickFunFact, titleCandidates } from "./lib/fun-facts";
+import {
+  buildSpeciesRows,
+  guessableSpecies,
+  photographedSpecies,
+  type TaxonomyEntry,
+} from "./lib/species";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -108,9 +119,22 @@ async function resolveFunFact(bird: BirdEntry): Promise<string | null> {
   return null;
 }
 
-const birds: BirdEntry[] = JSON.parse(
-  readFileSync(resolve(__dirname, "../data/birds.json"), "utf-8")
+function readCache<T>(name: string): T {
+  return JSON.parse(readFileSync(resolve(__dirname, `../data/${name}`), "utf-8"));
+}
+
+const birds: BirdEntry[] = photographedSpecies(
+  guessableSpecies(
+    buildSpeciesRows(
+      readCache<TaxonomyEntry[]>("_cache_taxonomy.json"),
+      readCache<Record<string, string[]>>("_cache_species_country_map.json")
+    )
+  ),
+  readCache<Record<string, unknown>>("_cache_uploaded_photos.json")
 );
+
+/** Only these species are written back; the rest of the checkpoint is history. */
+const target = new Set(birds.map((b) => b.speciesCode));
 
 const checkpoint = loadCheckpoint();
 const pending = birds
@@ -118,7 +142,7 @@ const pending = birds
   .slice(0, limit === Infinity ? undefined : limit);
 
 console.log(
-  `${birds.length} birds total, ${Object.keys(checkpoint).length} already resolved, ${pending.length} to fetch`
+  `${birds.length} photographed birds, ${Object.keys(checkpoint).length} already resolved, ${pending.length} to fetch`
 );
 
 let fetched = 0;
@@ -134,11 +158,11 @@ for (const bird of pending) {
 saveCheckpoint(checkpoint);
 
 const facts = Object.entries(checkpoint).filter(
-  (entry): entry is [string, string] => entry[1] !== null
+  (entry): entry is [string, string] => entry[1] !== null && target.has(entry[0])
 );
 
 console.log(
-  `Resolved ${facts.length}/${Object.keys(checkpoint).length} birds (${Object.keys(checkpoint).length - facts.length} without a usable summary)`
+  `Resolved ${facts.length}/${target.size} birds (${target.size - facts.length} without a usable summary)`
 );
 
 const sqls = facts.map(

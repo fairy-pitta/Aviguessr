@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupWord, genusOf, difficultyFor, buildSpeciesRows, type TaxonomyEntry, pendingSpecies, type SpeciesRow, guessableSpecies } from "../lib/species";
+import { groupWord, genusOf, difficultyFor, buildSpeciesRows, type TaxonomyEntry, pendingSpecies, type SpeciesRow, guessableSpecies, photographedSpecies } from "../lib/species";
 
 describe("groupWord", () => {
   it("test_group_word_of_two_word_name_returns_the_last_word", () => {
@@ -163,5 +163,21 @@ describe("guessableSpecies", () => {
     const rows = [row("a", ["JP"]), row("bogus", ["XX"])];
 
     expect(guessableSpecies(rows).map((s) => s.speciesCode)).toEqual(["a"]);
+  });
+});
+
+describe("photographedSpecies", () => {
+  const rows = [
+    { speciesCode: "comter", name: "Common Tern" },
+    { speciesCode: "sttful1", name: "Gray-hooded Fulvetta" },
+  ] as SpeciesRow[];
+
+  it("test_photographed_species_keeps_only_the_species_a_photo_was_uploaded_for", () => {
+    const kept = photographedSpecies(rows, { comter: { key: "birds/comter.webp" } });
+    expect(kept.map((r) => r.speciesCode)).toEqual(["comter"]);
+  });
+
+  it("test_photographed_species_with_no_uploads_returns_nothing", () => {
+    expect(photographedSpecies(rows, {})).toEqual([]);
   });
 });
