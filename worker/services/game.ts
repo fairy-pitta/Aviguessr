@@ -1,6 +1,7 @@
 import { CENTROIDS } from "../data/centroids";
 import { REGIONS } from "../data/regions";
 import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
+import { describeRange } from "./range";
 
 const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
 
@@ -29,8 +30,83 @@ function calculateScore(distanceKm: number): number {
   return Math.round(5000 * Math.exp(-distanceKm / 2000));
 }
 
-function calculateTimeBonus(timeMs: number): number {
-  return Math.max(0, Math.round(1000 * (1 - timeMs / 30000)));
+/** What a guess may carry. Everything else about a round the server decides. */
+export type GuessBody = { round: number; countryCode: string };
+
+/**
+ * The guess in a request body, or null when the body is not one.
+ *
+ * A malformed body used to reach submitGuess and fail there as a 500, which
+ * tells a caller nothing about what was wrong with their request.
+ */
+export function parseGuessBody(raw: unknown): GuessBody | null {
+  if (typeof raw !== "object" || raw === null) return null;
+
+  const { round, countryCode } = raw as Record<string, unknown>;
+  if (!Number.isInteger(round) || (round as number) < 1) return null;
+  if (typeof countryCode !== "string" || countryCode.trim() === "") return null;
+
+  return { round: round as number, countryCode };
+}
+
+const TIME_LIMIT_MS = 30000;
+
+export function calculateTimeBonus(timeMs: number): number {
+  return Math.max(0, Math.round(1000 * (1 - timeMs / TIME_LIMIT_MS)));
+}
+
+/**
+ * How long the player actually had the round in front of them, from the
+ * server's own clock. The client used to send this, which let it claim the
+ * full time bonus every round.
+ *
+ * A missing start time yields the full limit (no bonus) rather than zero,
+ * so a row written before this was recorded cannot be turned into points.
+ */
+export function elapsedMs(startedAt: string | null, nowIso: string): number {
+  if (!startedAt) return TIME_LIMIT_MS;
+
+  // SQLite's datetime('now') is UTC but carries no timezone suffix
+  const start = Date.parse(
+    startedAt.includes("T") ? startedAt : `${startedAt.replace(" ", "T")}Z`
+  );
+  const now = Date.parse(nowIso);
+  if (Number.isNaN(start) || Number.isNaN(now)) return TIME_LIMIT_MS;
+
+  return Math.min(TIME_LIMIT_MS, Math.max(0, now - start));
+}
+
+/**
+ * Fraction of the round's score each hint costs, by level.
+ * Hints are opt-in, so the price is shown before the player commits.
+ */
+export const HINT_PENALTIES = [0.15, 0.3];
+
+/** Which hints were taken, as a bit per level (bit 0 = level 1). */
+export function maskWithLevel(mask: number, level: number): number {
+  return mask | (1 << (level - 1));
+}
+
+/**
+ * Total penalty for the hints taken. Charging per level matters because hints
+ * are opt-in: taking only the second one should cost its own price, not the
+ * price of working up to it.
+ */
+export function hintPenaltyFromMask(mask: number): number {
+  let penalty = 0;
+  for (let i = 0; i < HINT_PENALTIES.length; i++) {
+    if (mask & (1 << i)) penalty += HINT_PENALTIES[i];
+  }
+  return Math.min(1, penalty);
+}
+
+/** How many hints were taken, for the record kept on the round. */
+export function hintCountFromMask(mask: number): number {
+  let count = 0;
+  for (let i = 0; i < HINT_PENALTIES.length; i++) {
+    if (mask & (1 << i)) count++;
+  }
+  return count;
 }
 
 function getMinDistanceToCorrectCountry(
@@ -118,7 +194,8 @@ function generateChoices(correctCodes: string[]): string[] {
 
 export async function createGame(
   db: D1Database,
-  mode: GameMode = "classic"
+  mode: GameMode = "classic",
+  playerId: string | null = null
 ) {
   const gameId = generateId();
   const birds = await getRandomBirdsByDifficulty(db, ROUND_DIFFICULTIES);
@@ -128,8 +205,8 @@ export async function createGame(
   }
 
   await db
-    .prepare("INSERT INTO games (id, mode) VALUES (?, ?)")
-    .bind(gameId, mode)
+    .prepare("INSERT INTO games (id, mode, player_id) VALUES (?, ?, ?)")
+    .bind(gameId, mode, playerId)
     .run();
 
   // For multiple choice, we need country data per bird to generate choices
@@ -147,14 +224,16 @@ export async function createGame(
   const stmts = birds.map((bird, i) =>
     db
       .prepare(
-        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, choices) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, choices, started_at) VALUES (?, ?, ?, ?, ?, ?)"
       )
       .bind(
         gameId,
         i + 1,
         bird.id,
         bird.difficulty,
-        roundChoices[i] ? JSON.stringify(roundChoices[i]) : null
+        roundChoices[i] ? JSON.stringify(roundChoices[i]) : null,
+        // Round 1 is on screen as soon as the game is handed over
+        i === 0 ? new Date().toISOString() : null
       )
   );
   await db.batch(stmts);
@@ -244,9 +323,7 @@ export async function submitGuess(
   db: D1Database,
   gameId: string,
   round: number,
-  countryCode: string,
-  timeMs: number,
-  hintsUsed: number = 0
+  countryCode: string
 ) {
   const game = await db
     .prepare("SELECT * FROM games WHERE id = ? AND status = 'playing'")
@@ -257,12 +334,17 @@ export async function submitGuess(
 
   const roundRow = await db
     .prepare(
-      "SELECT bird_id FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
+      "SELECT bird_id, started_at, hint_mask FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
     )
     .bind(gameId, round)
-    .first<{ bird_id: number }>();
+    .first<{ bird_id: number; started_at: string | null; hint_mask: number | null }>();
 
   if (!roundRow) return null;
+
+  // Both of these used to come from the request body, which let the client
+  // award itself the full time bonus and waive the hint penalty.
+  const timeMs = elapsedMs(roundRow.started_at, new Date().toISOString());
+  const hintMask = roundRow.hint_mask ?? 0;
 
   const birdData = await getBirdWithCountries(db, roundRow.bird_id);
   if (!birdData) return null;
@@ -277,7 +359,7 @@ export async function submitGuess(
   if (isMultipleChoice) {
     score = isCorrect ? 5000 : 0;
   } else {
-    const hintPenalty = Math.max(0, 1 - hintsUsed * 0.15);
+    const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
     const maxDistanceScore = Math.round(5000 * hintPenalty);
     const rawScore = isCorrect ? 5000 : calculateScore(distance);
     score = Math.min(rawScore, maxDistanceScore);
@@ -316,7 +398,7 @@ export async function submitGuess(
     db
       .prepare(
         `UPDATE game_rounds
-         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?, hints_used = ?
+         SET guessed_country = ?, is_correct = ?, distance_km = ?, score = ?, time_ms = ?
          WHERE game_id = ? AND round = ?`
       )
       .bind(
@@ -325,7 +407,6 @@ export async function submitGuess(
         Math.round(distance),
         totalRoundScore,
         timeMs,
-        hintsUsed,
         gameId,
         round
       ),
@@ -339,6 +420,12 @@ export async function submitGuess(
         isLastRound ? "finished" : "playing",
         gameId
       ),
+    // The next round goes in front of the player now, so its clock starts here
+    db
+      .prepare(
+        "UPDATE game_rounds SET started_at = datetime('now') WHERE game_id = ? AND round = ?"
+      )
+      .bind(gameId, round + 1),
   ]);
 
   return {
@@ -351,7 +438,7 @@ export async function submitGuess(
     streakBonus,
     totalScore: newTotalScore,
     gameFinished: isLastRound,
-    rangeDescription: birdData.bird.range_description ?? null,
+    rangeDescription: describeRange(birdData.countries),
     funFact: birdData.bird.fun_fact ?? null,
   };
 }

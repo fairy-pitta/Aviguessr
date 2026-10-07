@@ -3,7 +3,13 @@
   "main": "worker/index.ts",
   "compatibility_date": "2025-03-31",
   "assets": {
-    "directory": "dist"
+    "directory": "dist",
+    // Client-side routes: /daily and /game/:id are React Router paths, not
+    // files. Without this, opening, refreshing or sharing one is a 404.
+    "not_found_handling": "single-page-application",
+    // ...but the SPA fallback would swallow the API too, so those paths reach
+    // the Worker first.
+    "run_worker_first": ["/api/*"]
   },
   "d1_databases": [
     {

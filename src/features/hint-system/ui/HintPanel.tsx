@@ -1,60 +1,76 @@
 type HintPanelProps = {
   hints: string[];
-  loading: boolean;
+  loading: number | null;
+  onReveal: (level: number) => void;
 };
 
+/** Cost per level, matching HINT_PENALTIES on the server. */
 const HINT_LEVELS = [
-  { label: "Continent", time: "5s" },
-  { label: "Region", time: "15s" },
-  { label: "Country", time: "25s" },
+  { label: "Which continents", cost: 15 },
+  { label: "Which regions", cost: 30 },
 ];
 
-export function HintPanel({ hints, loading }: HintPanelProps) {
+/**
+ * A strip in the margin rather than a panel over the map — a hint that named
+ * South America used to sit on top of South America.
+ *
+ * An unbought hint is printed as an offer. Once bought it becomes a note the
+ * player wrote themselves, so it switches to the hand.
+ */
+export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
   return (
-    <div className="glass rounded-xl p-3 w-64 animate-fade-up">
-      <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mb-2">
-        Hints
-      </h3>
-      <div className="flex flex-col gap-2">
-        {HINT_LEVELS.map((level, i) => {
-          const unlocked = hints[i] != null;
+    <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
+      {HINT_LEVELS.map((level, i) => {
+        const hint = hints[i];
+        const isLoading = loading === i + 1;
+
+        if (hint != null) {
           return (
-            <div
-              key={i}
-              className={`flex items-center gap-2 text-sm transition-opacity duration-300 ${
-                unlocked ? "" : "opacity-40"
-              }`}
-            >
-              <span
-                className={`w-6 h-6 flex-shrink-0 rounded-lg flex items-center justify-center text-[10px] font-bold ${
-                  unlocked
-                    ? "bg-teal-500/20 text-teal-300 border border-teal-500/40"
-                    : "bg-white/5 text-slate-600 border border-white/5"
-                }`}
+            <p key={level.label} className="relative pl-4">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                className="absolute inset-y-0 left-0 w-[10px] h-full"
               >
-                {i + 1}
+                <rect
+                  x="4"
+                  y="0"
+                  width="2"
+                  height="100%"
+                  fill="var(--color-range)"
+                  filter="url(#ink-stroke-v)"
+                />
+              </svg>
+              <span className="handwritten text-lg leading-snug text-[var(--color-ink)]">
+                {hint}
               </span>
-              <div className="min-w-0 flex-1">
-                {unlocked ? (
-                  <span className="text-white font-medium text-sm">
-                    {hints[i]}
-                  </span>
-                ) : (
-                  <span className="text-slate-500 text-xs">
-                    {level.label} — {level.time}
-                  </span>
-                )}
-              </div>
-            </div>
+            </p>
           );
-        })}
-      </div>
-      {loading && (
-        <div className="mt-2 flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-[10px] text-slate-500">Loading...</span>
-        </div>
-      )}
+        }
+
+        return (
+          <button
+            key={level.label}
+            type="button"
+            disabled={isLoading}
+            onClick={() => onReveal(i + 1)}
+            className="group text-left disabled:opacity-50"
+          >
+            <span className="flex items-baseline gap-2">
+              <span className="text-sm font-medium text-[var(--color-ink)]">
+                {isLoading ? "Revealing" : level.label}
+              </span>
+              <span className="text-sm text-[var(--color-ink-soft)] tabular">
+                costs {level.cost}%
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="block mt-0.5 h-[2px] bg-[var(--color-paper-edge)] group-hover:bg-[var(--color-ink)] transition-colors"
+            />
+          </button>
+        );
+      })}
     </div>
   );
 }

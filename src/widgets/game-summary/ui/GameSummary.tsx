@@ -1,7 +1,7 @@
 import { COUNTRY_NAMES } from "@/entities/country";
-import { Button } from "@/shared/ui";
+import { Button, HandRule, BookPage } from "@/shared/ui";
 import type { GameRound } from "@/entities/game";
-import { MAX_ROUNDS, MAX_SCORE_PER_ROUND } from "@/shared/config/constants";
+import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 
 type GameSummaryProps = {
   rounds: GameRound[];
@@ -10,112 +10,84 @@ type GameSummaryProps = {
 };
 
 function countryName(code: string): string {
-  return COUNTRY_NAMES[code] || code;
+  return COUNTRY_NAMES[code] ?? code;
 }
 
-function getGrade(percentage: number): { label: string; color: string } {
-  if (percentage >= 90) return { label: "S", color: "text-gradient-gold" };
-  if (percentage >= 75) return { label: "A", color: "text-gradient-accent" };
-  if (percentage >= 60) return { label: "B", color: "text-teal-400" };
-  if (percentage >= 40) return { label: "C", color: "text-amber-400" };
-  return { label: "D", color: "text-slate-400" };
-}
-
+/**
+ * The day's list. A birder's tally is a ruled column of species and where they
+ * were seen, so the summary is set as one — no cards, no grade badge.
+ */
 export function GameSummary({
   rounds,
   totalScore,
   onPlayAgain,
 }: GameSummaryProps) {
-  const maxPossible = MAX_ROUNDS * (MAX_SCORE_PER_ROUND + 1000);
-  const percentage = Math.round((totalScore / maxPossible) * 100);
-  const grade = getGrade(percentage);
+  const correct = rounds.filter((r) => r.result?.isCorrect).length;
 
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-teal-500/5 blur-[120px]" />
-
-      <div className="glass rounded-2xl p-8 max-w-lg w-full relative animate-fade-up">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-sm font-mono font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">
-            Game Complete
-          </h1>
-
-          {/* Grade + Score */}
-          <div className="flex items-center justify-center gap-4 mb-2">
-            <span className={`text-6xl font-black ${grade.color}`}>
-              {grade.label}
-            </span>
-            <div className="text-left">
-              <div className="font-mono font-bold text-3xl text-white animate-score-pop">
+    <BookPage>
+      <div className="flex-1 flex justify-center px-5 py-10 lg:py-16">
+        <div className="w-full max-w-2xl">
+          <header className="pb-5">
+            <p className="text-base text-[var(--color-ink-soft)]">
+              {correct} of {rounds.length} within range
+            </p>
+            <p className="mt-2 flex items-baseline gap-3">
+              <span className="text-6xl font-semibold tabular leading-none">
                 {totalScore.toLocaleString()}
-              </div>
-              <div className="text-xs text-slate-500">
-                / {maxPossible.toLocaleString()} ({percentage}%)
-              </div>
-            </div>
-          </div>
+              </span>
+              <span className="text-base text-[var(--color-ink-soft)] tabular">
+                of {MAX_TOTAL_SCORE.toLocaleString()}
+              </span>
+            </p>
+          </header>
+          <HandRule />
 
-          {/* Progress bar */}
-          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mt-4">
-            <div
-              className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-1000"
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
-        </div>
+          <ol className="mt-2">
+            {rounds.map((round) => (
+              <li key={round.round}>
+                <div className="flex items-baseline gap-4 py-3.5">
+                  <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
+                    {round.round}
+                  </span>
 
-        {/* Round breakdown */}
-        <div className="space-y-2 mb-8 stagger">
-          {rounds.map((round) => (
-            <div
-              key={round.round}
-              className="flex items-center justify-between p-3 rounded-lg bg-white/3 border border-white/5 hover:bg-white/5 transition-colors animate-fade-up"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
-                    round.result?.isCorrect
-                      ? "bg-teal-500/20 text-teal-300"
-                      : "bg-rose-500/20 text-rose-300"
-                  }`}
-                >
-                  {round.round}
-                </div>
-                <span className="font-medium text-sm text-slate-200">
-                  {round.bird.name}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                {round.result && (
-                  <>
-                    <span className="text-xs text-slate-500">
-                      {countryName(round.result.guessedCountry)}
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-lg font-medium leading-snug">
+                      {round.bird.name}
                     </span>
+                    {round.result && (
+                      <span className="block mt-0.5 text-base text-[var(--color-ink-soft)]">
+                        You said{" "}
+                        <span className="handwritten text-lg text-[var(--color-ink)]">
+                          {countryName(round.result.guessedCountry)}
+                        </span>
+                      </span>
+                    )}
+                  </span>
+
+                  {round.result && (
                     <span
-                      className={`font-mono font-bold text-sm ${
-                        round.result.isCorrect
-                          ? "text-teal-300"
-                          : "text-rose-400"
-                      }`}
+                      className="shrink-0 text-lg font-semibold tabular"
+                      style={{
+                        color: round.result.isCorrect
+                          ? "var(--color-range)"
+                          : "var(--color-miss)",
+                      }}
                     >
                       {round.result.score.toLocaleString()}
                     </span>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+                  )}
+                </div>
+                <HandRule />
+              </li>
+            ))}
+          </ol>
 
-        {/* Action */}
-        <div className="text-center">
-          <Button onClick={onPlayAgain} size="lg" className="w-full">
-            Play Again
-          </Button>
+          <div className="mt-8 flex items-center gap-4">
+            <Button onClick={onPlayAgain}>Start a new round</Button>
+          </div>
         </div>
       </div>
-    </div>
+    </BookPage>
   );
 }

@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
-import { GameBoard } from "@/widgets/game-board";
-import { RoundResult } from "@/widgets/round-result";
-import { GameSummary } from "@/widgets/game-summary";
-import { TIME_LIMIT_MS } from "@/shared/config/constants";
+import { RoundSpread } from "@/widgets/round-spread";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
+import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
+import { DailyResult } from "@/widgets/daily-result";
 import {
   getDailyChallenge,
   getDailyStatus,
@@ -38,7 +37,7 @@ function generateShareText(
     })
     .join("");
 
-  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/30,000\n${roundEmojis}`;
+  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/${MAX_TOTAL_SCORE.toLocaleString()}\n${roundEmojis}`;
 }
 
 export function DailyPage() {
@@ -46,10 +45,9 @@ export function DailyPage() {
   const game = useGame();
   const [gameId, setGameId] = useState<string | null>(null);
   const { guess, loading: guessLoading } = useGuess(gameId);
-  const { hints, hintsUsed, loading: hintsLoading } = useHints(
+  const { hints, revealHint, loading: hintsLoading } = useHints(
     gameId,
-    game.currentRound,
-    game.roundStartTime
+    game.currentRound
   );
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [dailyDate, setDailyDate] = useState<string>("");
@@ -115,11 +113,11 @@ export function DailyPage() {
   useEffect(() => {
     if (game.phase === "finished" && !scoreSubmitted && gameId) {
       const playerId = getOrCreatePlayerId();
-      const roundsJson = JSON.stringify(game.rounds);
-      submitDailyScore(playerId, game.totalScore, roundsJson)
-        .then(async () => {
+      submitDailyScore(playerId)
+        .then(async (res) => {
           setScoreSubmitted(true);
-          setCompletedScore(game.totalScore);
+          // The server's total is authoritative
+          setCompletedScore(res.totalScore);
           setCompletedRounds(game.rounds);
           const lb = await getDailyLeaderboard();
           setLeaderboard(lb.leaderboard);
@@ -132,24 +130,18 @@ export function DailyPage() {
 
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
-    const timeMs = Date.now() - game.roundStartTime;
-    const result = await guess(game.currentRound, selectedCountry, timeMs, hintsUsed);
+    const result = await guess(game.currentRound, selectedCountry);
     if (result) {
       game.showResult(result);
     }
-  }, [selectedCountry, game.roundStartTime, game.currentRound, guess, game.showResult, hintsUsed]);
+  }, [selectedCountry, game.currentRound, guess, game.showResult]);
 
   const handleTimeout = useCallback(async () => {
-    const result = await guess(
-      game.currentRound,
-      selectedCountry ?? "__TIMEOUT__",
-      TIME_LIMIT_MS,
-      hintsUsed
-    );
+    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__");
     if (result) {
       game.showResult(result);
     }
-  }, [game.currentRound, selectedCountry, guess, game.showResult, hintsUsed]);
+  }, [game.currentRound, selectedCountry, guess, game.showResult]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);
@@ -177,7 +169,7 @@ export function DailyPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading daily challenge...</p>
+        <p className="text-[var(--color-ink-soft)]">Loading daily challenge</p>
       </div>
     );
   }
@@ -194,113 +186,42 @@ export function DailyPage() {
   // Already completed view
   if (completedScore !== null) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Daily Challenge
-          </h1>
-          <p className="text-center text-gray-500 mb-4">{dailyDate}</p>
-          <div className="text-center mb-6">
-            <div className="text-5xl font-bold text-emerald-600">
-              {completedScore.toLocaleString()}
-            </div>
-            <div className="text-gray-500">/ 30,000</div>
-          </div>
-
-          {completedRounds && (
-            <div className="space-y-3 mb-6">
-              {completedRounds.map((round) => (
-                <div
-                  key={round.round}
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-400">
-                      R{round.round}
-                    </span>
-                    <span className="font-medium">{round.bird.name}</span>
-                  </div>
-                  <div>
-                    {round.result && (
-                      <span
-                        className={`font-semibold ${
-                          round.result.score >= 4000
-                            ? "text-emerald-600"
-                            : round.result.score >= 2000
-                              ? "text-yellow-600"
-                              : "text-red-600"
-                        }`}
-                      >
-                        {round.result.score.toLocaleString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {leaderboard.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3">Leaderboard</h2>
-              <div className="space-y-2">
-                {leaderboard.map((entry, i) => (
-                  <div
-                    key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-gray-50"
-                  >
-                    <span className="text-sm text-gray-500">#{i + 1}</span>
-                    <span className="text-sm font-mono">
-                      {entry.playerId.slice(0, 8)}...
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      {entry.totalScore.toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 justify-center">
-            <Button onClick={handleShare}>
-              {copied ? "Copied!" : "Share Result"}
-            </Button>
-            <Button variant="secondary" onClick={handleHome}>
-              Home
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Active game flow (reuses same components as GamePage)
-  if (game.phase === "playing" && game.currentBird) {
-    return (
-      <GameBoard
-        bird={game.currentBird}
-        currentRound={game.currentRound}
-        totalScore={game.totalScore}
-        currentStreak={game.currentStreak}
-        selectedCountry={selectedCountry}
-        roundStartTime={game.roundStartTime}
-        guessLoading={guessLoading}
-        hints={hints}
-        hintsLoading={hintsLoading}
-        onCountrySelect={setSelectedCountry}
-        onGuess={handleGuess}
-        onTimeout={handleTimeout}
+      <DailyResult
+        date={dailyDate}
+        totalScore={completedScore}
+        rounds={completedRounds}
+        leaderboard={leaderboard}
+        playerId={getOrCreatePlayerId()}
+        copied={copied}
+        onShare={handleShare}
+        onHome={handleHome}
       />
     );
   }
 
-  if (game.phase === "showingResult" && game.lastResult && game.currentBird) {
+  // The same spread as the free game, so the two cannot drift apart
+  const bird = game.currentBird;
+  const result = game.phase === "showingResult" ? game.lastResult : null;
+
+  if ((game.phase === "playing" || game.phase === "showingResult") && bird) {
     return (
-      <RoundResult
-        result={game.lastResult}
-        guessedCountry={selectedCountry ?? ""}
-        bird={game.currentBird}
+      <RoundSpread
+        bird={bird}
+        mode={game.mode}
+        currentRound={game.currentRound}
+        totalScore={game.totalScore}
+        currentStreak={game.currentStreak}
+        choices={game.currentChoices}
+        roundStartTime={game.roundStartTime}
+        result={result}
+        selectedCountry={selectedCountry}
+        guessLoading={guessLoading}
+        hints={hints}
+        hintsLoading={hintsLoading}
+        onRevealHint={revealHint}
+        onCountrySelect={setSelectedCountry}
+        onGuess={handleGuess}
+        onTimeout={handleTimeout}
         onNext={handleNext}
       />
     );
@@ -308,57 +229,16 @@ export function DailyPage() {
 
   if (game.phase === "finished") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full">
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Daily Challenge Complete!
-          </h1>
-          <p className="text-center text-gray-500 mb-4">{dailyDate}</p>
-          <div className="text-center mb-6">
-            <div className="text-5xl font-bold text-emerald-600">
-              {game.totalScore.toLocaleString()}
-            </div>
-            <div className="text-gray-500">/ 30,000</div>
-          </div>
-
-          <GameSummary
-            rounds={game.rounds}
-            totalScore={game.totalScore}
-            onPlayAgain={handleHome}
-          />
-
-          {leaderboard.length > 0 && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3">Leaderboard</h2>
-              <div className="space-y-2">
-                {leaderboard.map((entry, i) => (
-                  <div
-                    key={entry.playerId}
-                    className="flex items-center justify-between p-2 rounded bg-gray-50"
-                  >
-                    <span className="text-sm text-gray-500">#{i + 1}</span>
-                    <span className="text-sm font-mono">
-                      {entry.playerId.slice(0, 8)}...
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      {entry.totalScore.toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 justify-center mt-4">
-            <Button onClick={handleShare}>
-              {copied ? "Copied!" : "Share Result"}
-            </Button>
-            <Button variant="secondary" onClick={handleHome}>
-              Home
-            </Button>
-          </div>
-        </div>
-      </div>
+      <DailyResult
+        date={dailyDate}
+        totalScore={game.totalScore}
+        rounds={game.rounds}
+        leaderboard={leaderboard}
+        playerId={getOrCreatePlayerId()}
+        copied={copied}
+        onShare={handleShare}
+        onHome={handleHome}
+      />
     );
   }
 

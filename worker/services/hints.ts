@@ -1,27 +1,25 @@
 import { REGIONS } from "../data/regions";
 
-export async function getHintsForBird(
-  db: D1Database,
-  birdId: number,
-  hintLevel: number
-): Promise<string> {
-  const countries = await db
-    .prepare("SELECT country_code FROM bird_countries WHERE bird_id = ?")
-    .bind(birdId)
-    .all<{ country_code: string }>();
+const NO_DATA = "No habitat data available";
 
-  const codes = countries.results.map((r) => r.country_code);
-
-  if (codes.length === 0) {
-    return "No habitat data available";
+/**
+ * Builds the player-facing hint text for a bird's country list.
+ * Level 1 reveals continents, level 2 subregions.
+ *
+ * There is deliberately no level that names a correct country: the game asks
+ * which country the bird lives in, so that hint was the answer itself.
+ */
+export function formatHint(countryCodes: string[], hintLevel: number): string {
+  if (countryCodes.length === 0) {
+    return NO_DATA;
   }
 
   if (hintLevel === 1) {
     const continents = [
       ...new Set(
-        codes
+        countryCodes
           .map((c) => REGIONS[c]?.continent)
-          .filter((v): v is string => v != null)
+          .filter((v): v is string => v != null && v !== "")
       ),
     ];
     return continents.length > 0
@@ -32,9 +30,9 @@ export async function getHintsForBird(
   if (hintLevel === 2) {
     const subregions = [
       ...new Set(
-        codes
+        countryCodes
           .map((c) => REGIONS[c]?.subregion)
-          .filter((v): v is string => v != null)
+          .filter((v): v is string => v != null && v !== "")
       ),
     ];
     return subregions.length > 0
@@ -42,12 +40,21 @@ export async function getHintsForBird(
       : "Subregion data unavailable";
   }
 
-  if (hintLevel === 3) {
-    // Return one random correct country name
-    // Use the country_code and look up a display name via DB or just return the code
-    const randomCode = codes[Math.floor(Math.random() * codes.length)];
-    return `One correct country: ${randomCode}`;
-  }
-
   return "Invalid hint level";
+}
+
+export async function getHintsForBird(
+  db: D1Database,
+  birdId: number,
+  hintLevel: number
+): Promise<string> {
+  const countries = await db
+    .prepare("SELECT country_code FROM bird_countries WHERE bird_id = ?")
+    .bind(birdId)
+    .all<{ country_code: string }>();
+
+  return formatHint(
+    countries.results.map((r) => r.country_code),
+    hintLevel
+  );
 }

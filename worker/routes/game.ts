@@ -1,6 +1,14 @@
 import { Hono } from "hono";
 import type { Bindings } from "../types";
-import { createGame, getGameState, submitGuess } from "../services/game";
+import {
+  createGame,
+  getGameState,
+  submitGuess,
+  maskWithLevel,
+  hintCountFromMask,
+  HINT_PENALTIES,
+  parseGuessBody,
+} from "../services/game";
 import type { GameMode } from "../services/game";
 import { getHintsForBird } from "../services/hints";
 
@@ -8,7 +16,8 @@ export const gameRoutes = new Hono<{ Bindings: Bindings }>();
 
 gameRoutes.get("/new", async (c) => {
   const mode = (c.req.query("mode") ?? "classic") as GameMode;
-  const result = await createGame(c.env.DB, mode);
+  const playerId = c.req.header("X-Player-Id") ?? null;
+  const result = await createGame(c.env.DB, mode, playerId);
   return c.json(result);
 });
 
@@ -26,8 +35,11 @@ gameRoutes.get("/:id/hint", async (c) => {
   const round = Number(c.req.query("round"));
   const level = Number(c.req.query("level"));
 
-  if (!round || !level || level < 1 || level > 3) {
-    return c.json({ error: "Invalid round or level (1-3)" }, 400);
+  if (!round || !level || level < 1 || level > HINT_PENALTIES.length) {
+    return c.json(
+      { error: `Invalid round or level (1-${HINT_PENALTIES.length})` },
+      400
+    );
   }
 
   const game = await c.env.DB
@@ -41,34 +53,44 @@ gameRoutes.get("/:id/hint", async (c) => {
 
   const roundRow = await c.env.DB
     .prepare(
-      "SELECT bird_id FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
+      "SELECT bird_id, hint_mask FROM game_rounds WHERE game_id = ? AND round = ? AND guessed_country IS NULL"
     )
     .bind(gameId, round)
-    .first<{ bird_id: number }>();
+    .first<{ bird_id: number; hint_mask: number | null }>();
 
   if (!roundRow) {
     return c.json({ error: "Round already answered" }, 400);
   }
 
   const hint = await getHintsForBird(c.env.DB, roundRow.bird_id, level);
-  return c.json({ level, hint });
+
+  // Record that the hint was handed over, so the penalty cannot be waived by
+  // simply not reporting it. The OR makes a repeat reveal free.
+  const mask = maskWithLevel(roundRow.hint_mask ?? 0, level);
+  await c.env.DB
+    .prepare(
+      "UPDATE game_rounds SET hint_mask = ?, hints_used = ? WHERE game_id = ? AND round = ?"
+    )
+    .bind(mask, hintCountFromMask(mask), gameId, round)
+    .run();
+
+  return c.json({ level, hint, penalty: HINT_PENALTIES[level - 1] });
 });
 
 gameRoutes.post("/:id/guess", async (c) => {
   const gameId = c.req.param("id");
-  const body = await c.req.json<{
-    round: number;
-    countryCode: string;
-    timeMs: number;
-    hintsUsed?: number;
-  }>();
+  // timeMs and hintsUsed are deliberately not accepted: the server derives
+  // both from game_rounds so they cannot be self-reported.
+  const guess = parseGuessBody(await c.req.json().catch(() => null));
+  if (!guess) {
+    return c.json({ error: "round and countryCode are required" }, 400);
+  }
+
   const result = await submitGuess(
     c.env.DB,
     gameId,
-    body.round,
-    body.countryCode,
-    body.timeMs,
-    body.hintsUsed ?? 0
+    guess.round,
+    guess.countryCode
   );
   if (!result) {
     return c.json({ error: "Invalid game or round" }, 400);

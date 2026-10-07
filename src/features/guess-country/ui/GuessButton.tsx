@@ -12,22 +12,32 @@ export function GuessButton({
   loading,
   onGuess,
 }: GuessButtonProps) {
-  const countryDisplay = selectedCountry
-    ? COUNTRY_NAMES[selectedCountry] || selectedCountry
+  const countryName = selectedCountry
+    ? (COUNTRY_NAMES[selectedCountry] ?? selectedCountry)
     : null;
 
   return (
-    <Button
-      size="lg"
-      disabled={!selectedCountry || loading}
-      onClick={onGuess}
-      className={selectedCountry ? "animate-pulse-glow" : ""}
-    >
-      {loading
-        ? "Submitting..."
-        : countryDisplay
-          ? `Guess — ${countryDisplay}`
-          : "Select a country on the map"}
-    </Button>
+    <div className="flex items-center justify-between gap-4">
+      <p className="text-base text-[var(--color-ink-soft)] min-w-0">
+        {countryName ? (
+          <>
+            Your answer:{" "}
+            <span className="handwritten text-2xl text-[var(--color-ink)] leading-none">
+              {countryName}
+            </span>
+          </>
+        ) : (
+          "Pick a country on the map"
+        )}
+      </p>
+      <Button
+        size="md"
+        disabled={!selectedCountry || loading}
+        onClick={onGuess}
+        className="shrink-0"
+      >
+        {loading ? "Submitting" : "Submit answer"}
+      </Button>
+    </div>
   );
 }

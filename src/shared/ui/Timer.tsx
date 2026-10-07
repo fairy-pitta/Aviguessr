@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TIME_LIMIT_MS } from "../config/constants";
 
 type TimerProps = {
@@ -7,17 +7,25 @@ type TimerProps = {
   paused?: boolean;
 };
 
+/**
+ * The countdown, set as the largest figure on the right page. A ruled bar
+ * underneath carries the same information for anyone who reads shape faster
+ * than digits.
+ */
 export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const [elapsed, setElapsed] = useState(0);
+  // The tick keeps running after the limit, so the round must only be
+  // submitted once — without this it fired ten times a second.
+  const firedFor = useRef<number | null>(null);
 
   useEffect(() => {
     if (paused) return;
 
     const interval = setInterval(() => {
-      const now = Date.now();
-      const ms = now - startTime;
+      const ms = Date.now() - startTime;
       setElapsed(ms);
-      if (ms >= TIME_LIMIT_MS) {
+      if (ms >= TIME_LIMIT_MS && firedFor.current !== startTime) {
+        firedFor.current = startTime;
         onTimeout();
       }
     }, 100);
@@ -28,43 +36,44 @@ export function Timer({ startTime, onTimeout, paused = false }: TimerProps) {
   const remaining = Math.max(0, TIME_LIMIT_MS - elapsed);
   const fraction = remaining / TIME_LIMIT_MS;
   const seconds = Math.ceil(remaining / 1000);
-
   const urgent = fraction <= 0.2;
-  const warning = fraction <= 0.5 && !urgent;
-
-  const barColor = urgent
-    ? "bg-rose-500"
-    : warning
-      ? "bg-amber-400"
-      : "bg-teal-400";
-
-  const glowColor = urgent
-    ? "shadow-rose-500/40"
-    : warning
-      ? "shadow-amber-400/30"
-      : "shadow-teal-400/20";
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-1.5">
+    <div className="shrink-0 text-right">
+      <div className="flex items-baseline justify-end gap-1.5">
         <span
-          className={`font-mono font-bold text-sm tracking-wider ${
+          className={`text-5xl font-semibold leading-none tabular ${
             urgent
-              ? "text-rose-400 animate-streak-fire"
-              : warning
-                ? "text-amber-300"
-                : "text-slate-300"
+              ? "text-[var(--color-alarm)] animate-alarm"
+              : "text-[var(--color-ink)]"
           }`}
         >
-          {seconds}s
+          {seconds}
         </span>
+        <span className="text-sm text-[var(--color-ink-soft)]">s</span>
       </div>
-      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${barColor} rounded-full transition-all duration-100 shadow-lg ${glowColor}`}
-          style={{ width: `${fraction * 100}%` }}
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        className="mt-1 ml-auto block h-[12px] w-28"
+      >
+        <rect
+          x="0"
+          y="5"
+          width="100%"
+          height="1.6"
+          fill="var(--color-paper-edge)"
+          filter="url(#ink-stroke)"
         />
-      </div>
+        <rect
+          x="0"
+          y="5"
+          width={`${fraction * 100}%`}
+          height="2.4"
+          fill={urgent ? "var(--color-alarm)" : "var(--color-ink)"}
+          filter="url(#ink-stroke)"
+        />
+      </svg>
     </div>
   );
 }

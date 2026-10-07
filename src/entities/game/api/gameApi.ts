@@ -20,10 +20,13 @@ type CreateGameResponse = {
 };
 
 export function createGame(
-  mode?: "classic" | "multiple_choice"
+  mode: "classic" | "multiple_choice" | undefined,
+  playerId: string
 ): Promise<CreateGameResponse> {
   const query = mode ? `?mode=${mode}` : "";
-  return apiFetch<CreateGameResponse>(`/game/new${query}`);
+  return apiFetch<CreateGameResponse>(`/game/new${query}`, {
+    headers: { "X-Player-Id": playerId },
+  });
 }
 
 export function getGameState(id: string): Promise<GameState> {
@@ -33,13 +36,12 @@ export function getGameState(id: string): Promise<GameState> {
 export function submitGuess(
   gameId: string,
   round: number,
-  countryCode: string,
-  timeMs: number,
-  hintsUsed: number = 0
+  countryCode: string
 ): Promise<GuessResponse> {
+  // Elapsed time and hints used are measured by the server, not sent from here.
   return apiFetch<GuessResponse>(`/game/${gameId}/guess`, {
     method: "POST",
-    body: JSON.stringify({ round, countryCode, timeMs, hintsUsed }),
+    body: JSON.stringify({ round, countryCode }),
   });
 }
 

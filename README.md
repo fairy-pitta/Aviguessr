@@ -1,0 +1,95 @@
+# AviGuessr
+
+A bird is on the page. Point at the country it lives in.
+
+AviGuessr is GeoGuessr for birds: five photographs, five guesses on a world
+map, scored by how close you land. It runs on Cloudflare Workers with the
+species list, the ranges and the photographs all drawn from open data.
+
+## Playing
+
+**Classic** — five rounds, drawn easy, easy, medium, medium, hard. Difficulty
+is range breadth: a bird found in a dozen countries is easy to place, a bird
+found in one is not.
+
+**Daily challenge** — the same five birds for everyone, with a leaderboard.
+One attempt per player per UTC day.
+
+**Scoring** — `5000 × e^(−km / 2000)` for the guess, so a neighbouring country
+still scores well and a wrong continent does not, plus up to 1000 for
+answering inside the 30-second limit.
+
+**Hints** are opt-in and priced before you commit: continents for 15% of the
+round, subregions for 30%. There is deliberately no hint that names a
+country, because the country is the answer.
+
+## Running it
+
+```bash
+npm install
+npm run dev          # Vite on :5173, proxying /api to :8787
+npm run dev:worker   # wrangler dev on :8787
+npm test
+```
+
+The worker needs a D1 database (`aviguessr-db`) and an R2 bucket
+(`aviguessr-images`), both named in `wrangler.jsonc`. To build a local
+database from scratch:
+
+```bash
+./node_modules/.bin/wrangler d1 execute aviguessr-db --local --file=worker/db/schema.sql
+for m in worker/db/migration-*.sql; do
+  ./node_modules/.bin/wrangler d1 execute aviguessr-db --local --file="$m"
+done
+npm run build:species-sql && npm run import:species -- --local
+```
+
+## Architecture
+
+```
+src/          React 19 + React Router, feature-sliced (app/pages/widgets/features/entities/shared)
+worker/       Hono on Cloudflare Workers
+  routes/     /api/game, /api/birds, /api/daily
+  services/   game, daily, birds, hints — all the rules live here
+  db/         schema.sql plus numbered migrations
+scripts/      the data pipeline (see below)
+data/         caches and generated SQL, committed so the pipeline is resumable
+```
+
+The server is the authority on score, elapsed time and which hints were taken.
+The client sends a country code and nothing else; it cannot claim a time bonus
+or hide that it bought a hint.
+
+Photographs are served through `/api/birds/:id/image` out of R2 rather than hot
+-linked, so iNaturalist is not serving our traffic.
+
+## The data pipeline
+
+Every step checkpoints to `data/_cache_*.json` and can be re-run after an
+interruption; nothing re-fetches what it already has.
+
+| Step | Command | What it does |
+|---|---|---|
+| 1 | `npm run build:species-sql` | eBird taxonomy + per-country lists → 10,982 guessable species |
+| 2 | `npm run import:species` | loads that into D1, in chunks D1 will accept |
+| 3 | `npm run collect:curated` | finds each species' iNaturalist taxon page |
+| 4 | `npm run collect:photo-candidates` | collects permissively licensed candidate photos |
+| 5 | `npm run build:screen-sheets` | lays candidates out on contact sheets, 20 to a sheet |
+| 6 | `npm run apply:screen-verdicts` | records which photographs passed the visual screen |
+| 7 | `npm run upload:photos` | re-encodes to WebP, uploads to R2, marks species playable |
+| 8 | `npm run populate:fun-facts` | first sentence of each Wikipedia summary |
+
+Step 5 and 6 exist because the screen has to be a visual one. An audit of the
+original Wikimedia Commons images found 62% of them showed no living bird —
+distribution maps, hand-coloured plates, museum study skins — and the cheap
+sharpness metrics ranked a flock of sparrows and a bird beside a human foot as
+the best pictures in a sample. A species with no usable photograph is left out
+of rounds rather than shown the wrong picture.
+
+## Data sources
+
+- **Taxonomy and ranges** — [eBird](https://ebird.org) / Cornell Lab of Ornithology
+- **Photographs** — [iNaturalist](https://www.inaturalist.org) research-grade
+  observations under CC0, CC BY and CC BY-NC. Licence and photographer travel
+  with each image and are shown on the round-end page.
+- **Facts** — English Wikipedia page summaries (CC BY-SA)

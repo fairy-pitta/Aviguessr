@@ -56,12 +56,14 @@ dailyRoutes.post("/score", async (c) => {
     return c.json({ error: "X-Player-Id header required" }, 400);
   }
 
-  const body = await c.req.json<{
-    totalScore: number;
-    roundsJson: string;
-  }>();
-
+  // No body: the score and the round list come from the game the server
+  // scored, so neither can be self-reported.
   const date = getTodayUTC();
-  await submitDailyScore(c.env.DB, date, playerId, body.totalScore, body.roundsJson);
-  return c.json({ success: true });
+  const result = await submitDailyScore(c.env.DB, date, playerId);
+
+  if (!result) {
+    return c.json({ error: "No finished daily game for this player today" }, 400);
+  }
+
+  return c.json({ success: true, totalScore: result.totalScore });
 });

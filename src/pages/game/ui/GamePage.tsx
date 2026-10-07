@@ -3,11 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
-import { GameBoard } from "@/widgets/game-board";
-import { ChoiceBoard } from "@/widgets/choice-board";
-import { RoundResult } from "@/widgets/round-result";
+import { RoundSpread } from "@/widgets/round-spread";
 import { GameSummary } from "@/widgets/game-summary";
-import { TIME_LIMIT_MS } from "@/shared/config/constants";
 import type { GameRound } from "@/entities/game";
 import { useEffect } from "react";
 
@@ -17,10 +14,9 @@ export function GamePage() {
   const navigate = useNavigate();
   const game = useGame();
   const { guess, loading: guessLoading } = useGuess(id ?? null);
-  const { hints, hintsUsed, loading: hintsLoading } = useHints(
+  const { hints, revealHint, loading: hintsLoading } = useHints(
     id ?? null,
-    game.currentRound,
-    game.roundStartTime
+    game.currentRound
   );
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
@@ -39,32 +35,30 @@ export function GamePage() {
 
   const handleChoiceSelect = useCallback(
     async (countryCode: string) => {
-      const timeMs = Date.now() - game.roundStartTime;
-      const result = await guess(game.currentRound, countryCode, timeMs, 0);
+      const result = await guess(game.currentRound, countryCode);
       if (result) {
         setSelectedCountry(countryCode);
         game.showResult(result);
       }
     },
-    [game.roundStartTime, game.currentRound, guess, game.showResult]
+    [game.currentRound, guess, game.showResult]
   );
 
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
-    const timeMs = Date.now() - game.roundStartTime;
-    const result = await guess(game.currentRound, selectedCountry, timeMs, hintsUsed);
+    const result = await guess(game.currentRound, selectedCountry);
     if (result) {
       game.showResult(result);
     }
-  }, [selectedCountry, game.roundStartTime, game.currentRound, guess, game.showResult, hintsUsed]);
+  }, [selectedCountry, game.currentRound, guess, game.showResult]);
 
   const handleTimeout = useCallback(async () => {
     // Auto-submit with no country on timeout
-    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__", TIME_LIMIT_MS, hintsUsed);
+    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__");
     if (result) {
       game.showResult(result);
     }
-  }, [game.currentRound, selectedCountry, guess, game.showResult, hintsUsed]);
+  }, [game.currentRound, selectedCountry, guess, game.showResult]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);
@@ -83,51 +77,34 @@ export function GamePage() {
   if (game.phase === "idle") {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Loading game...</p>
+        <p className="text-[var(--color-ink-soft)]">Loading game</p>
       </div>
     );
   }
 
-  if (game.phase === "playing" && game.currentBird) {
-    if (game.mode === "multiple_choice" && game.currentChoices) {
-      return (
-        <ChoiceBoard
-          bird={game.currentBird}
-          currentRound={game.currentRound}
-          totalScore={game.totalScore}
-          choices={game.currentChoices}
-          roundStartTime={game.roundStartTime}
-          guessLoading={guessLoading}
-          onChoiceSelect={handleChoiceSelect}
-          onTimeout={handleTimeout}
-        />
-      );
-    }
+  const bird = game.currentBird;
+  const result = game.phase === "showingResult" ? game.lastResult : null;
 
+  if ((game.phase === "playing" || game.phase === "showingResult") && bird) {
     return (
-      <GameBoard
-        bird={game.currentBird}
+      <RoundSpread
+        bird={bird}
+        mode={game.mode}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
         currentStreak={game.currentStreak}
-        selectedCountry={selectedCountry}
+        choices={game.currentChoices}
         roundStartTime={game.roundStartTime}
+        result={result}
+        selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
         hintsLoading={hintsLoading}
+        onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
+        onChoiceSelect={handleChoiceSelect}
         onTimeout={handleTimeout}
-      />
-    );
-  }
-
-  if (game.phase === "showingResult" && game.lastResult && game.currentBird) {
-    return (
-      <RoundResult
-        result={game.lastResult}
-        guessedCountry={selectedCountry ?? ""}
-        bird={game.currentBird}
         onNext={handleNext}
       />
     );

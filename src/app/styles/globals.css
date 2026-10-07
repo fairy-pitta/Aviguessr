@@ -1,131 +1,388 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* The typefaces are linked from index.html; see the note there. */
+
+/*
+ * AviGuessr — a field guide you read backwards.
+ *
+ * A guide gives you the plate and the range map together. This game hands you
+ * the plate and keeps the range map blank until you fill it in, so the screen
+ * is built as a guide spread: the photograph is the left page, the map and the
+ * species account share the right.
+ *
+ * The palette is borrowed from range-map printing rather than from paper
+ * nostalgia: cool grey-green stock, a desaturated ink, and the two washes a
+ * printed distribution map uses to separate where a bird is from where it
+ * is not.
+ */
 
 @theme inline {
-  --color-surface: #0c1222;
-  --color-surface-raised: #151d30;
-  --color-surface-glass: rgba(21, 29, 48, 0.75);
-  --color-border-glass: rgba(255, 255, 255, 0.08);
-  --color-accent: #14b8a6;
-  --color-accent-glow: rgba(20, 184, 166, 0.3);
-  --color-hot: #f43f5e;
-  --color-hot-glow: rgba(244, 63, 94, 0.3);
-  --color-gold: #f59e0b;
-  --color-gold-glow: rgba(245, 158, 11, 0.3);
-  --color-streak: #fb923c;
-  --font-display: 'Outfit', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Stock: green-dominant and cool, deliberately not a warm cream */
+  --color-paper: #edefea;
+  --color-paper-deep: #e1e5dd;
+  --color-paper-edge: #cfd6cc;
+  /* Drawn ruling sits a shade darker than a CSS hairline needed to */
+  --color-rule: #bcc7ba;
+
+  /* Ink, never pure black */
+  --color-ink: #1b2a28;
+  --color-ink-soft: #566460;
+  --color-ink-faint: #7b8a85;
+
+  /* The two washes of a printed range map */
+  --color-range: #5e7a2e;
+  --color-range-wash: rgba(94, 122, 46, 0.28);
+  --color-miss: #7d3b4f;
+  --color-miss-wash: rgba(125, 59, 79, 0.22);
+
+  /* The surface the notebook is lying on */
+  --color-desk: #b4bdb0;
+
+  /* Time running out */
+  --color-alarm: #9a4a1f;
+
+  /* Faint graph ruling, the stock a field notebook is actually printed on */
+  --color-grid: rgba(27, 42, 40, 0.05);
+
+  --font-display: 'Instrument Sans', system-ui, sans-serif;
+  --font-binomial: 'Newsreader', Georgia, serif;
+  --font-hand: 'Architects Daughter', 'Bradley Hand', cursive;
 }
 
 :root {
-  --background: #0c1222;
-  --foreground: #e2e8f0;
+  color-scheme: light;
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  color: var(--color-ink);
   font-family: var(--font-display);
   margin: 0;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Leaflet fix */
+/*
+ * The one rule the whole interface follows: the guide is printed, and
+ * anything the player puts on the page is handwritten. The chosen country,
+ * the hints they paid for, their own line on the leaderboard — those are in
+ * the hand. Everything that was already in the book stays set in type, so
+ * nothing anyone has to read in a hurry is written by hand.
+ */
+.handwritten {
+  font-family: var(--font-hand);
+  letter-spacing: 0.01em;
+}
+
+/*
+ * Binomials are italic by scientific convention, so the one italic serif on
+ * the page carries information rather than decoration.
+ */
+.binomial {
+  font-family: var(--font-binomial);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* Figures that do not shift width as they count */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* A guide's hairline, used for structure instead of boxes */
+.rule {
+  border-color: var(--color-paper-edge);
+}
+
 .leaflet-container {
   z-index: 0;
+  background: var(--color-paper-deep);
+  font-family: var(--font-display);
 }
 
-/* Glass panel base */
-.glass {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border-glass);
+/* The map is a range map: no imagery, no attribution furniture to fight */
+.leaflet-control-container {
+  display: none;
 }
 
-/* Glow effects */
-.glow-accent {
-  box-shadow: 0 0 20px var(--color-accent-glow), 0 0 60px rgba(20, 184, 166, 0.1);
-}
-.glow-hot {
-  box-shadow: 0 0 20px var(--color-hot-glow), 0 0 60px rgba(244, 63, 94, 0.1);
-}
-.glow-gold {
-  box-shadow: 0 0 20px var(--color-gold-glow), 0 0 60px rgba(245, 158, 11, 0.1);
+/* Coastlines drawn with the same pen as the rest of the interface */
+.leaflet-overlay-pane svg {
+  filter: url(#ink-coast);
 }
 
-/* Animations */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px var(--color-accent-glow); }
-  50% { box-shadow: 0 0 24px var(--color-accent-glow), 0 0 48px rgba(20, 184, 166, 0.15); }
-}
-@keyframes score-pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-@keyframes streak-fire {
-  0%, 100% { text-shadow: 0 0 8px rgba(251, 146, 60, 0.5); }
-  50% { text-shadow: 0 0 16px rgba(251, 146, 60, 0.8), 0 0 32px rgba(251, 146, 60, 0.3); }
+/*
+ * The ocean is the page. Leaving the map container transparent puts the
+ * coastlines straight onto the graph ruling, so the map reads as drawn on the
+ * notebook rather than as a panel laid over it.
+ */
+.leaflet-container {
+  background: transparent;
 }
 
-.animate-fade-up {
-  animation: fade-up 0.5s ease-out both;
-}
-.animate-fade-in {
-  animation: fade-in 0.4s ease-out both;
-}
-.animate-slide-in-right {
-  animation: slide-in-right 0.4s ease-out both;
-}
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-.animate-score-pop {
-  animation: score-pop 0.4s ease-out;
-}
-.animate-shake {
-  animation: shake 0.4s ease-out;
-}
-.animate-streak-fire {
-  animation: streak-fire 1.5s ease-in-out infinite;
+/*
+ * One orchestrated moment: the species account arriving over the plate when
+ * the round resolves. Nothing else animates on entry.
+ */
+@keyframes account-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Stagger children */
-.stagger > *:nth-child(1) { animation-delay: 0ms; }
-.stagger > *:nth-child(2) { animation-delay: 80ms; }
-.stagger > *:nth-child(3) { animation-delay: 160ms; }
-.stagger > *:nth-child(4) { animation-delay: 240ms; }
-.stagger > *:nth-child(5) { animation-delay: 320ms; }
-.stagger > *:nth-child(6) { animation-delay: 400ms; }
-
-/* Gradient text utility */
-.text-gradient-accent {
-  background: linear-gradient(135deg, #14b8a6, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.animate-account {
+  animation: account-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
-.text-gradient-gold {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+
+@keyframes tick-alarm {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.animate-alarm {
+  animation: tick-alarm 1s steps(2, end) infinite;
+}
+
+/* Focus that is visible on paper */
+:where(button, a, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-account,
+  .animate-alarm {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * The open notebook.
+ *
+ * Every screen of the game is set inside one, so the book is a layout
+ * primitive rather than decoration: the two pages are exactly half each,
+ * which is what lets the turning leaf land on the opposite page without
+ * anything shifting.
+ * ------------------------------------------------------------------------ */
+
+.book {
+  min-height: 100vh;
+  background: var(--color-desk);
+  display: flex;
+  justify-content: center;
+}
+
+.book__block {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  perspective: 2400px;
+}
+
+.book__page {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stacked, the plate is a fixed band and the rest of the page takes the slack */
+.book__page--left {
+  height: 46vh;
+  flex: none;
+}
+
+.book__page--right {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .book {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .book__block {
+    flex-direction: row;
+    height: calc(100vh - 40px);
+    max-width: 1480px;
+    /* The block of pages under the open spread, then the cast shadow */
+    box-shadow:
+      3px 4px 0 0 var(--color-paper-deep),
+      4px 5px 0 1px var(--color-paper-edge),
+      -3px 4px 0 0 var(--color-paper-deep),
+      -4px 5px 0 1px var(--color-paper-edge),
+      0 24px 50px -26px rgba(20, 30, 28, 0.6);
+  }
+
+  .book__page {
+    width: 50%;
+    height: 100%;
+  }
+
+  .book__page--left {
+    height: 100%;
+    flex: none;
+  }
+
+  /* Paper curving down into the gutter, which is what reads as "open book" */
+  .book__page--left::after,
+  .book__page--right::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 54px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .book__page--left::after {
+    right: 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(27, 42, 40, 0.11)
+    );
+  }
+
+  .book__page--right::after {
+    left: 0;
+    background: linear-gradient(to left, transparent, rgba(27, 42, 40, 0.11));
+  }
+}
+
+/* The sewn binding, down the fold */
+.book__stitch {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .book__stitch {
+    display: block;
+    position: absolute;
+    top: 26px;
+    bottom: 26px;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    z-index: 16;
+    opacity: 0.5;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-ink-faint) 0 9px,
+      transparent 9px 18px
+    );
+  }
+}
+
+/* A single leaf, for the screens that are not a spread */
+.book__block--single {
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  .book__block--single {
+    flex-direction: column;
+    max-width: 860px;
+    height: auto;
+    min-height: calc(100vh - 40px);
+  }
+}
+
+/*
+ * The leaf. It is the right page seen from the front at rest, and the next
+ * spread's left page seen from the back once it has gone past upright.
+ */
+.book__leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  z-index: 30;
+  pointer-events: none;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation-name: leaf-turn;
+  animation-timing-function: cubic-bezier(0.46, 0.04, 0.26, 1);
+  animation-fill-mode: forwards;
+}
+
+@media (min-width: 1024px) {
+  .book__leaf {
+    width: 50%;
+  }
+}
+
+@keyframes leaf-turn {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+.book__leaf-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/*
+ * The front fades up over the outgoing page as the leaf starts to lift, so
+ * the swap underneath happens behind an opaque sheet.
+ */
+.book__leaf-face--front {
+  animation-name: leaf-front-in;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  box-shadow: inset -40px 0 44px -34px rgba(20, 30, 28, 0.55);
+}
+
+@keyframes leaf-front-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.book__leaf-face--back {
+  transform: rotateY(180deg);
+  box-shadow: inset 40px 0 44px -34px rgba(20, 30, 28, 0.5);
 }
