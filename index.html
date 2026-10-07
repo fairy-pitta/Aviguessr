@@ -4,9 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AviGuessr</title>
+    <meta
+      name="description"
+      content="A bird is on the page. Point at the country it lives in."
+    />
+    <!--
+      The typefaces are linked here rather than @import-ed from the stylesheet:
+      an @import after Tailwind's own is dropped from the production bundle, so
+      the built game fell back to system fonts and lost the hand-drawn look.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap"
     />
   </head>
   <body>
