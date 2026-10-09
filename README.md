@@ -96,6 +96,12 @@ The queue for step 5 is ordered by observations, because the visual pass is
 the bottleneck and had been working taxonomically: that is how the game came
 to hold a Gray Antwren but no Mallard, House Sparrow or Canada Goose.
 
+Step 6 is also the one step worth running in parallel. `sheetRanges` splits
+the sheets into one contiguous span per worker; each worker judges its own
+sheets and writes its own `NNNN.verdict.json`, and nothing is shared until
+`apply:screen-verdicts` merges them. The merge itself cannot be fanned out —
+every worker would be rewriting the same cache and the last one would win.
+
 Step 5 and 6 exist because the screen has to be a visual one. An audit of the
 original Wikimedia Commons images found 62% of them showed no living bird —
 distribution maps, hand-coloured plates, museum study skins — and the cheap

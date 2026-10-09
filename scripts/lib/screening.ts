@@ -111,3 +111,36 @@ export function screeningQueue(
     .sort((a, b) => b.total - a.total)
     .map(({ code, candidate }) => ({ code, candidate }));
 }
+
+/**
+ * Contiguous sheet ranges, one per worker, for screening the sheets in
+ * parallel.
+ *
+ * The pass is the pipeline's bottleneck and it needs eyes, so it is the one
+ * step worth fanning out: each worker judges its own sheets and writes its
+ * own NNNN.verdict.json, and nothing is shared until the verdicts are merged
+ * centrally afterwards. Merging cannot be fanned out alongside it — every
+ * worker would be rewriting the same cache and the last one would win.
+ *
+ * Ranges are contiguous rather than interleaved so a worker that fails can be
+ * re-run over a span, and the remainder goes to the earliest workers so none
+ * is left idle while another carries two extra sheets.
+ */
+export function sheetRanges(
+  sheets: number,
+  workers: number
+): [number, number][] {
+  const ranges: [number, number][] = [];
+  const base = Math.floor(sheets / workers);
+  const extra = sheets % workers;
+
+  let start = 1;
+  for (let i = 0; i < workers && start <= sheets; i++) {
+    const size = base + (i < extra ? 1 : 0);
+    if (size === 0) break;
+    ranges.push([start, start + size - 1]);
+    start += size;
+  }
+
+  return ranges;
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mergeVerdicts, chosenPhotos, screeningQueue } from "../lib/screening";
+import { mergeVerdicts, chosenPhotos, screeningQueue, sheetRanges } from "../lib/screening";
 import type { Candidate } from "../lib/photo-quality";
 
 const manifest = [
@@ -146,5 +146,29 @@ describe("screeningQueue", () => {
       {}
     );
     expect(queue.map((q) => q.code)).toEqual(["counted", "unanswered"]);
+  });
+});
+
+describe("sheetRanges", () => {
+  it("test_sheet_ranges_splits_the_sheets_evenly_across_workers", () => {
+    expect(sheetRanges(10, 5)).toEqual([
+      [1, 2], [3, 4], [5, 6], [7, 8], [9, 10],
+    ]);
+  });
+
+  it("test_sheet_ranges_gives_the_remainder_to_the_earliest_workers", () => {
+    // 7 sheets over 3 workers is 3, 2, 2 — never a worker with nothing
+    expect(sheetRanges(7, 3)).toEqual([[1, 3], [4, 5], [6, 7]]);
+  });
+
+  it("test_sheet_ranges_with_fewer_sheets_than_workers_drops_the_idle_ones", () => {
+    expect(sheetRanges(2, 5)).toEqual([[1, 1], [2, 2]]);
+  });
+
+  it("test_sheet_ranges_covers_every_sheet_exactly_once", () => {
+    const covered = sheetRanges(363, 20).flatMap(([a, b]) =>
+      Array.from({ length: b - a + 1 }, (_, i) => a + i)
+    );
+    expect(covered).toEqual(Array.from({ length: 363 }, (_, i) => i + 1));
   });
 });
