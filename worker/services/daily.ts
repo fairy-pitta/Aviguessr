@@ -1,7 +1,5 @@
-import { getRandomBirdsByDifficulty } from "./birds";
+import { getRandomBirdsByFame, ROUND_FAME } from "./birds";
 import { questionName } from "./species-name";
-
-const DAILY_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -20,7 +18,7 @@ export async function getOrCreateDailyChallenge(
     return JSON.parse(existing.bird_ids) as number[];
   }
 
-  const birds = await getRandomBirdsByDifficulty(db, DAILY_DIFFICULTIES);
+  const birds = await getRandomBirdsByFame(db, ROUND_FAME);
   if (birds.length < 5) {
     throw new Error("Not enough birds in database for daily challenge");
   }

@@ -1,10 +1,12 @@
 import { CENTROIDS } from "../data/centroids";
 import { REGIONS } from "../data/regions";
-import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
+import {
+  getRandomBirdsByFame,
+  getBirdWithCountries,
+  ROUND_FAME,
+} from "./birds";
 import { describeRange } from "./range";
 import { questionName } from "./species-name";
-
-const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -145,7 +147,7 @@ export async function createGame(
   playerId: string | null = null
 ) {
   const gameId = generateId();
-  const birds = await getRandomBirdsByDifficulty(db, ROUND_DIFFICULTIES);
+  const birds = await getRandomBirdsByFame(db, ROUND_FAME);
 
   if (birds.length < 5) {
     throw new Error("Not enough birds in database");
