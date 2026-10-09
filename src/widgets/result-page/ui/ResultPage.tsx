@@ -1,5 +1,7 @@
 import { WorldMap, COUNTRY_NAMES } from "@/entities/country";
 import { Button, HandRule } from "@/shared/ui";
+import { useCountUp } from "@/shared/lib/countUp";
+import { VerdictStamp } from "./VerdictStamp";
 import type { GuessResponse } from "@/entities/game";
 import type { Bird } from "@/entities/bird";
 
@@ -55,9 +57,15 @@ export function ResultPage({ result, guessedCountry, onNext }: ResultPageProps) 
   const shown = range.slice(0, 6);
   const rest = range.length - shown.length;
 
+  // The round's winnings land as a tally rather than as numbers already there
+  const distanceScore = useCountUp(result.score);
+  const speedScore = useCountUp(result.timeBonus);
+  const streakScore = useCountUp(result.streakBonus);
+  const total = useCountUp(result.totalScore, 900);
+
   return (
     <>
-      <header className="px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
+      <header className="animate-verdict px-5 lg:px-8 pt-5 lg:pt-6 pb-4">
         <p
           className="text-lg font-semibold"
           style={{
@@ -77,13 +85,19 @@ export function ResultPage({ result, guessedCountry, onNext }: ResultPageProps) 
       </header>
       <HandRule />
 
-      <div className="h-[46vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0">
+      <div
+        className="animate-jolt relative h-[46vh] shrink-0 lg:h-auto lg:flex-1 lg:shrink lg:min-h-0"
+      >
         <WorldMap
           resultMode
           highlightCountries={{
             correct: result.correctCountries,
             incorrect: result.isCorrect ? undefined : guessedCountry,
           }}
+        />
+        <VerdictStamp
+          isCorrect={result.isCorrect}
+          distanceKm={result.distanceKm}
         />
       </div>
 
@@ -93,13 +107,13 @@ export function ResultPage({ result, guessedCountry, onNext }: ResultPageProps) 
           <div>
             <dt className="text-sm text-[var(--color-ink-soft)]">Distance</dt>
             <dd className="text-xl font-semibold tabular">
-              {result.score.toLocaleString()}
+              {distanceScore.toLocaleString()}
             </dd>
           </div>
           <div>
             <dt className="text-sm text-[var(--color-ink-soft)]">Speed</dt>
             <dd className="text-xl font-semibold tabular">
-              {result.timeBonus.toLocaleString()}
+              {speedScore.toLocaleString()}
             </dd>
           </div>
           {result.streakLength > 0 && (
@@ -108,14 +122,14 @@ export function ResultPage({ result, guessedCountry, onNext }: ResultPageProps) 
                 {result.streakLength} in a row
               </dt>
               <dd className="text-xl font-semibold tabular text-[var(--color-range)]">
-                {result.streakBonus.toLocaleString()}
+                {streakScore.toLocaleString()}
               </dd>
             </div>
           )}
           <div className="ml-auto text-right">
             <dt className="text-sm text-[var(--color-ink-soft)]">Total</dt>
             <dd className="text-3xl font-semibold tabular leading-none">
-              {result.totalScore.toLocaleString()}
+              {total.toLocaleString()}
             </dd>
           </div>
         </dl>

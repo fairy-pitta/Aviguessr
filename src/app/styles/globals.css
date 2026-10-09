@@ -144,6 +144,72 @@ body {
   animation: account-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 
+/*
+ * The verdict pressed onto the page.
+ *
+ * Answering used to change the page without anything happening: the one
+ * decision a player makes in a round resolved into a line of text that was
+ * simply already there. A field notebook gets marked, so the verdict lands
+ * like a stamp — overshooting, settling slightly crooked, as a stamp does.
+ */
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.2) rotate(-16deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.92) rotate(-5deg);
+  }
+  72% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(-7.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-6.5deg);
+  }
+}
+
+.animate-stamp {
+  animation: stamp-in 0.5s cubic-bezier(0.3, 1.2, 0.4, 1) both;
+}
+
+/* The page taking the blow, a beat after the stamp has travelled */
+@keyframes page-jolt {
+  0%,
+  38% {
+    transform: translateY(0);
+  }
+  46% {
+    transform: translateY(3px);
+  }
+  58% {
+    transform: translateY(-1.5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-jolt {
+  animation: page-jolt 0.6s ease-out both;
+}
+
+@keyframes verdict-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-verdict {
+  animation: verdict-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
 @keyframes tick-alarm {
   0%,
   100% {
@@ -166,8 +232,15 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-account,
-  .animate-alarm {
+  .animate-alarm,
+  .animate-jolt,
+  .animate-verdict {
     animation: none;
+  }
+  /* The stamp still has to arrive, it just arrives without travelling */
+  .animate-stamp {
+    animation: none;
+    transform: translate(-50%, -50%) rotate(-6.5deg);
   }
   * {
     transition-duration: 0.01ms !important;
