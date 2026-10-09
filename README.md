@@ -24,7 +24,9 @@ One attempt per player per UTC day.
 
 **Scoring** — `5000 × e^(−km / 2000)` for the guess, so a neighbouring country
 still scores well and a wrong continent does not, plus up to 1000 for
-answering inside the 30-second limit.
+answering inside the 30-second limit. The speed bonus is scaled by how close
+the answer was: clicking instantly on the wrong continent is worth almost
+nothing, so thinking is never the expensive option.
 
 **Hints** are opt-in and priced before you commit: continents for 15% of the
 round, subregions for 30%. There is deliberately no hint that names a
@@ -84,11 +86,15 @@ interruption; nothing re-fetches what it already has.
 | 2 | `npm run import:species` | loads that into D1, in chunks D1 will accept |
 | 3 | `npm run collect:curated` | finds each species' iNaturalist taxon page |
 | 4 | `npm run collect:photo-candidates` | collects permissively licensed candidate photos |
-| 5 | `npm run build:screen-sheets` | lays candidates out on contact sheets, 20 to a sheet |
+| 5 | `npm run build:screen-sheets` | lays candidates out on contact sheets, 20 to a sheet, best-known species first |
 | 6 | `npm run apply:screen-verdicts` | records which photographs passed the visual screen |
 | 7 | `npm run upload:photos` | re-encodes to WebP, uploads to R2, marks species playable |
 | 8 | `npm run populate:fun-facts` | first sentence of each Wikipedia summary |
 | 9 | `npm run build:observations-sql` + `npm run import:observations` | the observation counts the round ladder is drawn by |
+
+The queue for step 5 is ordered by observations, because the visual pass is
+the bottleneck and had been working taxonomically: that is how the game came
+to hold a Gray Antwren but no Mallard, House Sparrow or Canada Goose.
 
 Step 5 and 6 exist because the screen has to be a visual one. An audit of the
 original Wikimedia Commons images found 62% of them showed no living bird —

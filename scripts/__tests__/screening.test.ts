@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mergeVerdicts, chosenPhotos } from "../lib/screening";
+import { mergeVerdicts, chosenPhotos, screeningQueue } from "../lib/screening";
 import type { Candidate } from "../lib/photo-quality";
 
 const manifest = [
@@ -84,5 +84,67 @@ describe("chosenPhotos", () => {
     const [c] = chosenPhotos({ b: [{ url: "https://e/2/large.jpg", ok: true }] }, candidates);
     expect(c.license).toBe("CC BY-NC");
     expect(c.commercial).toBe(false);
+  });
+});
+
+describe("screeningQueue", () => {
+  const photo = (url: string): Candidate =>
+    ({ url, license: "CC0", artist: "a", commercial: true }) as Candidate;
+
+  it("test_screening_queue_offers_the_first_candidate_of_an_unjudged_species", () => {
+    const queue = screeningQueue(
+      { mallar3: { total: 10, candidates: [photo("a.jpg"), photo("b.jpg")] } },
+      {}
+    );
+    expect(queue).toEqual([{ code: "mallar3", candidate: photo("a.jpg") }]);
+  });
+
+  it("test_screening_queue_skips_a_species_that_already_has_a_photograph", () => {
+    const queue = screeningQueue(
+      { mallar3: { total: 10, candidates: [photo("a.jpg")] } },
+      { mallar3: [{ url: "a.jpg", ok: true }] }
+    );
+    expect(queue).toEqual([]);
+  });
+
+  it("test_screening_queue_moves_a_rejected_species_on_to_its_next_candidate", () => {
+    const queue = screeningQueue(
+      { mallar3: { total: 10, candidates: [photo("a.jpg"), photo("b.jpg")] } },
+      { mallar3: [{ url: "a.jpg", ok: false, reason: "no bird" }] }
+    );
+    expect(queue).toEqual([{ code: "mallar3", candidate: photo("b.jpg") }]);
+  });
+
+  it("test_screening_queue_drops_a_species_whose_candidates_are_all_rejected", () => {
+    const queue = screeningQueue(
+      { mallar3: { total: 10, candidates: [photo("a.jpg")] } },
+      { mallar3: [{ url: "a.jpg", ok: false }] }
+    );
+    expect(queue).toEqual([]);
+  });
+
+  it("test_screening_queue_puts_the_best_known_birds_first", () => {
+    // Screening is the bottleneck, so the hours spent on it should buy the
+    // birds a player might actually recognise
+    const queue = screeningQueue(
+      {
+        obscure: { total: 6, candidates: [photo("o.jpg")] },
+        mallar3: { total: 738727, candidates: [photo("m.jpg")] },
+        middling: { total: 4000, candidates: [photo("x.jpg")] },
+      },
+      {}
+    );
+    expect(queue.map((q) => q.code)).toEqual(["mallar3", "middling", "obscure"]);
+  });
+
+  it("test_screening_queue_puts_a_species_with_no_count_last", () => {
+    const queue = screeningQueue(
+      {
+        unanswered: { total: -1, candidates: [photo("u.jpg")] },
+        counted: { total: 1, candidates: [photo("c.jpg")] },
+      },
+      {}
+    );
+    expect(queue.map((q) => q.code)).toEqual(["counted", "unanswered"]);
   });
 });

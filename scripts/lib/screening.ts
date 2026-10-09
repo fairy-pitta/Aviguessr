@@ -74,3 +74,40 @@ export function chosenPhotos(
 
   return out;
 }
+
+/** A species' collected candidates, with the observation count beside them. */
+export type CandidateEntry = { total: number; candidates: Candidate[] };
+
+/**
+ * The species still waiting on a photograph, each with the next candidate to
+ * judge, best known first.
+ *
+ * The visual pass is the pipeline's bottleneck — it needs eyes, twenty
+ * photographs at a time — and it had been working in taxonomic order, which
+ * is why the game could show a Gray Antwren but not a Mallard, a House
+ * Sparrow, a Canada Goose or a Northern Cardinal. Ordering by observations
+ * spends the screening on the birds a player might recognise.
+ *
+ * A species with an accepted photograph is done. One whose candidates have
+ * all been rejected has nothing left to offer and drops out until the
+ * crawler finds more.
+ */
+export function screeningQueue(
+  entries: Record<string, CandidateEntry>,
+  verdicts: Verdicts
+): { code: string; candidate: Candidate }[] {
+  const queue: { code: string; candidate: Candidate; total: number }[] = [];
+
+  for (const [code, entry] of Object.entries(entries)) {
+    const judged = verdicts[code] ?? [];
+    if (judged.some((v) => v.ok)) continue;
+
+    const rejected = new Set(judged.map((v) => v.url));
+    const candidate = entry.candidates.find((c) => !rejected.has(c.url));
+    if (candidate) queue.push({ code, candidate, total: entry.total });
+  }
+
+  return queue
+    .sort((a, b) => b.total - a.total)
+    .map(({ code, candidate }) => ({ code, candidate }));
+}
