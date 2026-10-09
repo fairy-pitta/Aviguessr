@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { mergeVerdicts, chosenPhotos, screeningQueue, sheetRanges } from "../lib/screening";
+import {
+  mergeVerdicts,
+  chosenPhotos,
+  screeningQueue,
+  sheetRanges,
+  photoUpdates,
+} from "../lib/screening";
 import type { Candidate } from "../lib/photo-quality";
 
 const manifest = [
@@ -170,5 +176,35 @@ describe("sheetRanges", () => {
       Array.from({ length: b - a + 1 }, (_, i) => a + i)
     );
     expect(covered).toEqual(Array.from({ length: 363 }, (_, i) => i + 1));
+  });
+});
+
+describe("photoUpdates", () => {
+  const rec = {
+    comter: { key: "birds/comter.webp", license: "CC BY-NC", artist: "N Sharp" },
+  };
+
+  it("test_photo_updates_points_the_row_at_the_image_and_makes_it_playable", () => {
+    expect(photoUpdates(rec, ["comter"])).toEqual([
+      "UPDATE birds SET image_key = 'birds/comter.webp', image_license = 'CC BY-NC'," +
+        " image_artist = 'N Sharp', playable = 1 WHERE species_code = 'comter';",
+    ]);
+  });
+
+  it("test_photo_updates_writes_only_the_species_asked_for", () => {
+    // Re-emitting the whole cache to apply three new photographs is what
+    // burned a day's worth of D1 row writes
+    const many = { ...rec, mallar3: { key: "k", license: "l", artist: "a" } };
+    expect(photoUpdates(many, ["mallar3"])).toHaveLength(1);
+    expect(photoUpdates(many, [])).toEqual([]);
+  });
+
+  it("test_photo_updates_skips_a_species_with_no_uploaded_record", () => {
+    expect(photoUpdates(rec, ["nosuch"])).toEqual([]);
+  });
+
+  it("test_photo_updates_escapes_an_apostrophe_in_the_artist", () => {
+    const withQuote = { x: { key: "k", license: "l", artist: "O'Brien" } };
+    expect(photoUpdates(withQuote, ["x"])[0]).toContain("'O''Brien'");
   });
 });

@@ -144,3 +144,39 @@ export function sheetRanges(
 
   return ranges;
 }
+
+/** What the uploader records once a photograph is in the bucket. */
+export type UploadedPhoto = { key: string; license: string; artist: string };
+
+function sqlQuote(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
+}
+
+/**
+ * The UPDATE statements pointing `species` at the photographs uploaded for
+ * them.
+ *
+ * Only the species named are written. The uploader used to emit the whole
+ * record every run, so applying three new photographs meant 9,518 updates
+ * and 38,072 row writes — which is how a day's worth of D1's write allowance
+ * went on rewriting rows that already held the right values.
+ */
+export function photoUpdates(
+  uploaded: Record<string, UploadedPhoto>,
+  species: string[]
+): string[] {
+  const out: string[] = [];
+
+  for (const code of species) {
+    const photo = uploaded[code];
+    if (!photo) continue;
+    out.push(
+      `UPDATE birds SET image_key = ${sqlQuote(photo.key)},` +
+        ` image_license = ${sqlQuote(photo.license)},` +
+        ` image_artist = ${sqlQuote(photo.artist)},` +
+        ` playable = 1 WHERE species_code = ${sqlQuote(code)};`
+    );
+  }
+
+  return out;
+}
