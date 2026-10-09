@@ -3,7 +3,6 @@ import type { Bird } from "../../bird/model/types";
 export type GameRound = {
   round: number;
   bird: Bird;
-  choices?: string[];
   result: RoundResult | null;
 };
 
@@ -20,7 +19,6 @@ export type GameState = {
   totalScore: number;
   currentRound: number;
   status: "playing" | "finished";
-  mode?: "classic" | "multiple_choice";
   rounds: GameRound[];
 };
 
@@ -34,6 +32,8 @@ export type GuessResponse = {
   streakBonus: number;
   totalScore: number;
   gameFinished: boolean;
+  /** The whole name, including any place the question had inked out. */
+  speciesName?: string;
   rangeDescription?: string;
   funFact?: string;
 };

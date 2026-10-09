@@ -1,18 +1,15 @@
 import { PlatePage } from "@/entities/bird";
 import { BookSpread } from "@/shared/ui";
 import { GuessPage } from "@/widgets/guess-page";
-import { ChoicePage } from "@/widgets/choice-page";
 import { ResultPage, BirdAccount } from "@/widgets/result-page";
 import type { Bird } from "@/entities/bird";
 import type { GuessResponse } from "@/entities/game";
 
 type RoundSpreadProps = {
   bird: Bird;
-  mode: "classic" | "multiple_choice";
   currentRound: number;
   totalScore: number;
   currentStreak: number;
-  choices: string[] | null;
   roundStartTime: number;
   /** Present once the round is answered, which fills the spread in. */
   result: (GuessResponse & { round: number }) | null;
@@ -23,8 +20,6 @@ type RoundSpreadProps = {
   onRevealHint: (level: number) => void;
   onCountrySelect: (code: string) => void;
   onGuess: () => void;
-  /** Absent where the mode cannot occur, as on the daily. */
-  onChoiceSelect?: (code: string) => void;
   onTimeout: () => void;
   onNext: () => void;
 };
@@ -40,11 +35,9 @@ type RoundSpreadProps = {
  */
 export function RoundSpread({
   bird,
-  mode,
   currentRound,
   totalScore,
   currentStreak,
-  choices,
   roundStartTime,
   result,
   selectedCountry,
@@ -54,7 +47,6 @@ export function RoundSpread({
   onRevealHint,
   onCountrySelect,
   onGuess,
-  onChoiceSelect,
   onTimeout,
   onNext,
 }: RoundSpreadProps) {
@@ -75,16 +67,6 @@ export function RoundSpread({
             result={result}
             guessedCountry={selectedCountry ?? ""}
             onNext={onNext}
-          />
-        ) : mode === "multiple_choice" && choices && onChoiceSelect ? (
-          <ChoicePage
-            currentRound={currentRound}
-            totalScore={totalScore}
-            choices={choices}
-            roundStartTime={roundStartTime}
-            guessLoading={guessLoading}
-            onChoiceSelect={onChoiceSelect}
-            onTimeout={onTimeout}
           />
         ) : (
           <GuessPage

@@ -8,9 +8,16 @@ species list, the ranges and the photographs all drawn from open data.
 
 ## Playing
 
-**Classic** — five rounds, drawn easy, easy, medium, medium, hard. Difficulty
-is range breadth: a bird found in a dozen countries is easy to place, a bird
-found in one is not.
+**Five rounds**, opening on two birds people know and ending on one they do
+not. The ladder is how well observed a species is on iNaturalist — a Eurasian
+Magpie has 1.3 million records, a White-throated Greenbul has six — which is
+the closest thing the data has to whether a player will recognise the bird.
+
+The species is named while the question is open. Two quetzals are the same
+photograph to anyone but a specialist and live a continent apart, so without
+the name a player who knew exactly what they were looking at was marked
+wrong. Where the name would give the answer away — a Tibetan Bunting lives in
+China and nowhere else — the place is inked out.
 
 **Daily challenge** — the same five birds for everyone, with a leaderboard.
 One attempt per player per UTC day.
@@ -22,6 +29,9 @@ answering inside the 30-second limit.
 **Hints** are opt-in and priced before you commit: continents for 15% of the
 round, subregions for 30%. There is deliberately no hint that names a
 country, because the country is the answer.
+
+**Scoring feedback** lands as a stamp on the range map, and the round's
+winnings count up rather than appearing.
 
 ## Running it
 
@@ -78,6 +88,7 @@ interruption; nothing re-fetches what it already has.
 | 6 | `npm run apply:screen-verdicts` | records which photographs passed the visual screen |
 | 7 | `npm run upload:photos` | re-encodes to WebP, uploads to R2, marks species playable |
 | 8 | `npm run populate:fun-facts` | first sentence of each Wikipedia summary |
+| 9 | `npm run build:observations-sql` + `npm run import:observations` | the observation counts the round ladder is drawn by |
 
 Step 5 and 6 exist because the screen has to be a visual one. An audit of the
 original Wikimedia Commons images found 62% of them showed no living bird —

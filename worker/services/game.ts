@@ -1,9 +1,12 @@
 import { CENTROIDS } from "../data/centroids";
 import { REGIONS } from "../data/regions";
-import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
+import {
+  getRandomBirdsByFame,
+  getBirdWithCountries,
+  ROUND_FAME,
+} from "./birds";
 import { describeRange } from "./range";
-
-const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
+import { questionName } from "./species-name";
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -139,99 +142,32 @@ function getMinDistanceToCorrectCountry(
   return { distance: minDistance === Infinity ? 20000 : minDistance, isCorrect: false };
 }
 
-export type GameMode = "classic" | "multiple_choice";
-
-function generateChoices(correctCodes: string[]): string[] {
-  const correctCode = correctCodes[0];
-  const correctRegion = REGIONS[correctCode];
-  const allCodes = Object.keys(REGIONS);
-
-  // Gather same-continent candidates (excluding correct countries)
-  const sameContinentCodes = correctRegion
-    ? allCodes.filter(
-        (code) =>
-          REGIONS[code].continent === correctRegion.continent &&
-          !correctCodes.includes(code)
-      )
-    : [];
-
-  // Gather other candidates
-  const otherCodes = correctRegion
-    ? allCodes.filter(
-        (code) =>
-          REGIONS[code].continent !== correctRegion.continent &&
-          !correctCodes.includes(code)
-      )
-    : allCodes.filter((code) => !correctCodes.includes(code));
-
-  const distractors: string[] = [];
-  const used = new Set(correctCodes);
-
-  // Prefer same continent
-  const shuffledSame = sameContinentCodes.sort(() => Math.random() - 0.5);
-  for (const code of shuffledSame) {
-    if (distractors.length >= 3) break;
-    if (!used.has(code)) {
-      distractors.push(code);
-      used.add(code);
-    }
-  }
-
-  // Fill rest randomly from other continents
-  const shuffledOther = otherCodes.sort(() => Math.random() - 0.5);
-  for (const code of shuffledOther) {
-    if (distractors.length >= 3) break;
-    if (!used.has(code)) {
-      distractors.push(code);
-      used.add(code);
-    }
-  }
-
-  // Shuffle correct + distractors
-  const choices = [correctCode, ...distractors];
-  return choices.sort(() => Math.random() - 0.5);
-}
-
 export async function createGame(
   db: D1Database,
-  mode: GameMode = "classic",
   playerId: string | null = null
 ) {
   const gameId = generateId();
-  const birds = await getRandomBirdsByDifficulty(db, ROUND_DIFFICULTIES);
+  const birds = await getRandomBirdsByFame(db, ROUND_FAME);
 
   if (birds.length < 5) {
     throw new Error("Not enough birds in database");
   }
 
   await db
-    .prepare("INSERT INTO games (id, mode, player_id) VALUES (?, ?, ?)")
-    .bind(gameId, mode, playerId)
+    .prepare("INSERT INTO games (id, mode, player_id) VALUES (?, 'classic', ?)")
+    .bind(gameId, playerId)
     .run();
-
-  // For multiple choice, we need country data per bird to generate choices
-  let roundChoices: (string[] | null)[] = birds.map(() => null);
-  if (mode === "multiple_choice") {
-    roundChoices = await Promise.all(
-      birds.map(async (bird) => {
-        const birdData = await getBirdWithCountries(db, bird.id);
-        if (!birdData || birdData.countries.length === 0) return null;
-        return generateChoices(birdData.countries);
-      })
-    );
-  }
 
   const stmts = birds.map((bird, i) =>
     db
       .prepare(
-        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, choices, started_at) VALUES (?, ?, ?, ?, ?, ?)"
+        "INSERT INTO game_rounds (game_id, round, bird_id, difficulty, started_at) VALUES (?, ?, ?, ?, ?)"
       )
       .bind(
         gameId,
         i + 1,
         bird.id,
         bird.difficulty,
-        roundChoices[i] ? JSON.stringify(roundChoices[i]) : null,
         // Round 1 is on screen as soon as the game is handed over
         i === 0 ? new Date().toISOString() : null
       )
@@ -240,19 +176,19 @@ export async function createGame(
 
   return {
     gameId,
-    mode,
     rounds: birds.map((bird, i) => ({
       round: i + 1,
       bird: {
         id: bird.id,
-        name: bird.name,
+        // The name settles which of two look-alike species this is, without
+        // handing over a range narrow enough for the name to be the answer
+        name: questionName(bird.name, bird.range_size),
         family: bird.family,
         difficulty: bird.difficulty,
         habitat: bird.habitat,
         biome: bird.biome,
         imageUrl: `/api/birds/${bird.id}/image`,
       },
-      ...(roundChoices[i] ? { choices: roundChoices[i] } : {}),
     })),
   };
 }
@@ -275,8 +211,8 @@ export async function getGameState(db: D1Database, gameId: string) {
     .prepare(
       `SELECT gr.round, gr.bird_id, gr.difficulty, gr.guessed_country,
               gr.is_correct, gr.distance_km, gr.score, gr.time_ms,
-              gr.choices,
-              b.name, b.family, b.image_key, b.habitat, b.biome, b.range_description
+              b.name, b.family, b.image_key, b.habitat, b.biome,
+              b.range_description, b.range_size
        FROM game_rounds gr
        JOIN birds b ON b.id = gr.bird_id
        WHERE gr.game_id = ?
@@ -295,7 +231,10 @@ export async function getGameState(db: D1Database, gameId: string) {
       round: r.round as number,
       bird: {
         id: r.bird_id as number,
-        name: r.name as string,
+        // An answered round has nothing left to give away
+        name: r.guessed_country
+          ? (r.name as string)
+          : questionName(r.name as string, r.range_size as number),
         family: r.family as string | null,
         difficulty: r.difficulty as string,
         habitat: r.habitat as string | null,
@@ -303,9 +242,6 @@ export async function getGameState(db: D1Database, gameId: string) {
         rangeDescription: r.range_description as string | null,
         imageUrl: `/api/birds/${r.bird_id}/image`,
       },
-      ...(r.choices
-        ? { choices: JSON.parse(r.choices as string) as string[] }
-        : {}),
       result: r.guessed_country
         ? {
             guessedCountry: r.guessed_country as string,
@@ -349,21 +285,15 @@ export async function submitGuess(
   const birdData = await getBirdWithCountries(db, roundRow.bird_id);
   if (!birdData) return null;
 
-  const isMultipleChoice = game.mode === "multiple_choice";
   const { distance, isCorrect } = getMinDistanceToCorrectCountry(
     countryCode,
     birdData.countries
   );
 
-  let score: number;
-  if (isMultipleChoice) {
-    score = isCorrect ? 5000 : 0;
-  } else {
-    const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
-    const maxDistanceScore = Math.round(5000 * hintPenalty);
-    const rawScore = isCorrect ? 5000 : calculateScore(distance);
-    score = Math.min(rawScore, maxDistanceScore);
-  }
+  const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
+  const maxDistanceScore = Math.round(5000 * hintPenalty);
+  const rawScore = isCorrect ? 5000 : calculateScore(distance);
+  const score = Math.min(rawScore, maxDistanceScore);
   const timeBonus = calculateTimeBonus(timeMs);
 
   // Calculate streak from previous consecutive correct answers
@@ -438,6 +368,7 @@ export async function submitGuess(
     streakBonus,
     totalScore: newTotalScore,
     gameFinished: isLastRound,
+    speciesName: birdData.bird.name,
     rangeDescription: describeRange(birdData.countries),
     funFact: birdData.bird.fun_fact ?? null,
   };

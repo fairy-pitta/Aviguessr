@@ -9,15 +9,13 @@ import {
   HINT_PENALTIES,
   parseGuessBody,
 } from "../services/game";
-import type { GameMode } from "../services/game";
 import { getHintsForBird } from "../services/hints";
 
 export const gameRoutes = new Hono<{ Bindings: Bindings }>();
 
 gameRoutes.get("/new", async (c) => {
-  const mode = (c.req.query("mode") ?? "classic") as GameMode;
   const playerId = c.req.header("X-Player-Id") ?? null;
-  const result = await createGame(c.env.DB, mode, playerId);
+  const result = await createGame(c.env.DB, playerId);
   return c.json(result);
 });
 

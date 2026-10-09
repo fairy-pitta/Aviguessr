@@ -1,6 +1,5 @@
-import { getRandomBirdsByDifficulty } from "./birds";
-
-const DAILY_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
+import { getRandomBirdsByFame, ROUND_FAME } from "./birds";
+import { questionName } from "./species-name";
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -19,7 +18,7 @@ export async function getOrCreateDailyChallenge(
     return JSON.parse(existing.bird_ids) as number[];
   }
 
-  const birds = await getRandomBirdsByDifficulty(db, DAILY_DIFFICULTIES);
+  const birds = await getRandomBirdsByFame(db, ROUND_FAME);
   if (birds.length < 5) {
     throw new Error("Not enough birds in database for daily challenge");
   }
@@ -72,7 +71,9 @@ export async function createDailyGame(
   const birds = [];
   for (const birdId of birdIds) {
     const bird = await db
-      .prepare("SELECT id, name, family, difficulty, habitat, biome FROM birds WHERE id = ?")
+      .prepare(
+        "SELECT id, name, family, difficulty, habitat, biome, range_size FROM birds WHERE id = ?"
+      )
       .bind(birdId)
       .first<{
         id: number;
@@ -81,6 +82,7 @@ export async function createDailyGame(
         difficulty: string;
         habitat: string | null;
         biome: string | null;
+        range_size: number;
       }>();
     if (bird) {
       birds.push(bird);
@@ -120,7 +122,7 @@ export async function createDailyGame(
       round: i + 1,
       bird: {
         id: bird.id,
-        name: bird.name,
+        name: questionName(bird.name, bird.range_size),
         family: bird.family,
         difficulty: bird.difficulty,
         habitat: bird.habitat,

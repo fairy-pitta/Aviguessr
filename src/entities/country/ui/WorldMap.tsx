@@ -1,5 +1,6 @@
 import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import { useEffect, useState, useCallback, useRef } from "react";
+import { DomEvent } from "leaflet";
 import type { Layer, PathOptions } from "leaflet";
 import type {
   Feature,
@@ -97,6 +98,63 @@ function Fitter() {
   return null;
 }
 
+
+/**
+ * Zoom, and a way back to the whole world.
+ *
+ * The map shipped with no controls at all, so on a trackpad the only way to
+ * change the view was a pinch, and once the player had moved it there was no
+ * way back: the fitter stops refitting after the first gesture on purpose, so
+ * that a resize cannot undo a deliberate move. That makes an explicit way
+ * back the player's only one.
+ */
+function MapControls() {
+  const map = useMap();
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Otherwise a press on a button also lands on the country underneath it
+    if (ref.current) DomEvent.disableClickPropagation(ref.current);
+  }, []);
+
+  const button =
+    "w-9 h-9 grid place-items-center text-[var(--color-ink)] " +
+    "bg-[var(--color-paper)] hover:bg-[var(--color-paper-deep)] " +
+    "cursor-pointer select-none leading-none transition-colors duration-150";
+
+  return (
+    <div
+      ref={ref}
+      className="absolute top-3 right-3 z-[500] flex flex-col divide-y divide-[var(--color-paper-edge)] border border-[var(--color-paper-edge)]"
+    >
+      <button
+        type="button"
+        aria-label="Zoom in"
+        className={`${button} text-xl`}
+        onClick={() => map.zoomIn()}
+      >
+        +
+      </button>
+      <button
+        type="button"
+        aria-label="Zoom out"
+        className={`${button} text-xl`}
+        onClick={() => map.zoomOut()}
+      >
+        −
+      </button>
+      <button
+        type="button"
+        aria-label="Show the whole world"
+        className={`${button} text-xs font-display font-semibold`}
+        onClick={() => map.fitBounds(WORLD)}
+      >
+        ALL
+      </button>
+    </div>
+  );
+}
+
 export function WorldMap({
   onCountrySelect,
   selectedCountry,
@@ -185,11 +243,15 @@ export function WorldMap({
       minZoom={0}
       maxZoom={6}
       zoomSnap={0}
+      // Half the default wheel speed: a notch used to cross a whole zoom level
+      wheelPxPerZoomLevel={120}
+      // Leaflet's own control is replaced by one drawn like the rest of the page
       zoomControl={false}
       attributionControl={false}
       style={{ height: "100%", width: "100%" }}
     >
       <Fitter />
+      <MapControls />
       {geoData && (
         <GeoJSON
           ref={geoJsonRef as React.Ref<L.GeoJSON>}

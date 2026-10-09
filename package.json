@@ -16,6 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:species-sql": "npx tsx scripts/build-species-sql.ts",
+    "build:observations-sql": "npx tsx scripts/build-observations-sql.ts",
+    "import:observations": "./scripts/import-observations.sh",
     "import:species": "./scripts/import-species.sh",
     "collect:photo-candidates": "npx tsx scripts/collect-photo-candidates.ts",
     "collect:curated-photos": "npx tsx scripts/collect-curated-photos.ts",
