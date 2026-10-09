@@ -7,23 +7,18 @@ export function useStartGame() {
   const [loading, setLoading] = useState(false);
 
   const start = useCallback(
-    async (
-      mode?: "classic" | "multiple_choice"
-    ): Promise<{
+    async (): Promise<{
       gameId: string;
-      mode: "classic" | "multiple_choice";
       rounds: GameRound[];
     } | null> => {
       setLoading(true);
       try {
-        const data = await createGame(mode, getOrCreatePlayerId());
+        const data = await createGame(getOrCreatePlayerId());
         return {
           gameId: data.gameId,
-          mode: data.mode,
           rounds: data.rounds.map((r) => ({
             round: r.round,
             bird: r.bird,
-            choices: r.choices,
             result: null,
           })),
         };

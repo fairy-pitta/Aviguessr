@@ -207,11 +207,9 @@ export function DailyPage() {
     return (
       <RoundSpread
         bird={bird}
-        mode={game.mode}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
         currentStreak={game.currentStreak}
-        choices={game.currentChoices}
         roundStartTime={game.roundStartTime}
         result={result}
         selectedCountry={selectedCountry}

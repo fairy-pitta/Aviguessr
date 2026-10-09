@@ -12,12 +12,10 @@ export function HomePage() {
   const navigate = useNavigate();
   const { start, loading } = useStartGame();
 
-  const begin = async (mode: "classic" | "multiple_choice") => {
-    const result = await start(mode);
+  const begin = async () => {
+    const result = await start();
     if (result) {
-      navigate(`/game/${result.gameId}`, {
-        state: { rounds: result.rounds, mode: result.mode },
-      });
+      navigate(`/game/${result.gameId}`, { state: { rounds: result.rounds } });
     }
   };
 
@@ -42,7 +40,7 @@ export function HomePage() {
             <button
               type="button"
               disabled={loading}
-              onClick={() => begin("classic")}
+              onClick={begin}
               className="w-full text-left py-4 disabled:opacity-50"
             >
               <span className="flex items-baseline justify-between gap-4">
@@ -53,24 +51,6 @@ export function HomePage() {
               </span>
               <span className="mt-1 block text-base text-[var(--color-ink-soft)]">
                 Pick the country on the map. Closer guesses still score.
-              </span>
-            </button>
-            <HandRule />
-
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => begin("multiple_choice")}
-              className="w-full text-left py-4 disabled:opacity-50"
-            >
-              <span className="flex items-baseline justify-between gap-4">
-                <span className="text-2xl font-medium">Four choices</span>
-                <span className="text-base text-[var(--color-ink-soft)] shrink-0">
-                  quicker
-                </span>
-              </span>
-              <span className="mt-1 block text-base text-[var(--color-ink-soft)]">
-                One country out of four. No partial credit.
               </span>
             </button>
             <HandRule />

@@ -23,26 +23,12 @@ export function GamePage() {
   // Initialize game from navigation state
   useEffect(() => {
     if (id && game.phase === "idle") {
-      const state = location.state as {
-        rounds?: GameRound[];
-        mode?: "classic" | "multiple_choice";
-      } | null;
+      const state = location.state as { rounds?: GameRound[] } | null;
       if (state?.rounds) {
-        game.startGame(id, state.rounds, state.mode ?? "classic");
+        game.startGame(id, state.rounds);
       }
     }
   }, [id, game.phase, location.state, game.startGame]);
-
-  const handleChoiceSelect = useCallback(
-    async (countryCode: string) => {
-      const result = await guess(game.currentRound, countryCode);
-      if (result) {
-        setSelectedCountry(countryCode);
-        game.showResult(result);
-      }
-    },
-    [game.currentRound, guess, game.showResult]
-  );
 
   const handleGuess = useCallback(async () => {
     if (!selectedCountry) return;
@@ -89,11 +75,9 @@ export function GamePage() {
     return (
       <RoundSpread
         bird={bird}
-        mode={game.mode}
         currentRound={game.currentRound}
         totalScore={game.totalScore}
         currentStreak={game.currentStreak}
-        choices={game.currentChoices}
         roundStartTime={game.roundStartTime}
         result={result}
         selectedCountry={selectedCountry}
@@ -103,7 +87,6 @@ export function GamePage() {
         onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
         onGuess={handleGuess}
-        onChoiceSelect={handleChoiceSelect}
         onTimeout={handleTimeout}
         onNext={handleNext}
       />

@@ -8,7 +8,6 @@ import type {
 type GameHookState = {
   gameId: string | null;
   phase: GamePhase;
-  mode: "classic" | "multiple_choice";
   rounds: GameRound[];
   currentRound: number;
   totalScore: number;
@@ -20,7 +19,6 @@ type GameHookState = {
 const initialState: GameHookState = {
   gameId: null,
   phase: "idle",
-  mode: "classic",
   rounds: [],
   currentRound: 1,
   totalScore: 0,
@@ -33,15 +31,10 @@ export function useGame() {
   const [state, setState] = useState<GameHookState>(initialState);
 
   const startGame = useCallback(
-    (
-      gameId: string,
-      rounds: GameRound[],
-      mode: "classic" | "multiple_choice" = "classic"
-    ) => {
+    (gameId: string, rounds: GameRound[]) => {
       setState({
         gameId,
         phase: "playing",
-        mode,
         rounds,
         currentRound: 1,
         totalScore: 0,
@@ -83,12 +76,10 @@ export function useGame() {
       : null;
 
   const currentBird = currentRoundData?.bird ?? null;
-  const currentChoices = currentRoundData?.choices ?? null;
 
   return {
     ...state,
     currentBird,
-    currentChoices,
     startGame,
     showResult,
     nextRound,
