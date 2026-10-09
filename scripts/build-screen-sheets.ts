@@ -11,9 +11,16 @@
  *
  * Thumbnails come from iNaturalist's 240px rendition, which is a tenth of the
  * bandwidth of the full-size file and plenty to judge composition by.
+ *
+ * The queue is ordered by how well observed the species is, because the pass
+ * is the bottleneck and had been working taxonomically: that is how the game
+ * came to hold a Gray Antwren but no Mallard, House Sparrow or Canada Goose.
+ *
+ *   npm run build:screen-sheets -- --limit=400   the 400 best known first
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import sharp from "sharp";
+import { screeningQueue, type Verdicts } from "./lib/screening";
 import type { Candidate } from "./lib/photo-quality";
 
 const CANDIDATES = "data/_cache_photo_candidates.json";
@@ -28,29 +35,21 @@ const LABEL_H = 22;
 const CONCURRENCY = 8;
 
 type Entry = { taxonId: number | null; candidates: Candidate[]; total: number };
-/** Per species, the photo urls already judged and what was decided. */
-type Verdicts = Record<string, { url: string; ok: boolean; reason?: string }[]>;
 
 const entries: Record<string, Entry> = JSON.parse(readFileSync(CANDIDATES, "utf8"));
 const verdicts: Verdicts = existsSync(VERDICTS)
   ? JSON.parse(readFileSync(VERDICTS, "utf8"))
   : {};
 
-/** The next candidate for a species: unjudged, and only if none was accepted. */
-function nextCandidate(code: string, entry: Entry): Candidate | null {
-  const judged = verdicts[code] ?? [];
-  if (judged.some((v) => v.ok)) return null;
-  const rejected = new Set(judged.map((v) => v.url));
-  return entry.candidates.find((c) => !rejected.has(c.url)) ?? null;
-}
+const limitArg = process.argv.find((a) => a.startsWith("--limit="));
+const limit = limitArg ? Number(limitArg.split("=")[1]) : Infinity;
 
-const queue: { code: string; candidate: Candidate }[] = [];
-for (const [code, entry] of Object.entries(entries)) {
-  const candidate = nextCandidate(code, entry);
-  if (candidate) queue.push({ code, candidate });
-}
+const waiting = screeningQueue(entries, verdicts);
+const queue = Number.isFinite(limit) ? waiting.slice(0, limit) : waiting;
 
-console.log(`${queue.length} species need a photograph screened`);
+console.log(
+  `${waiting.length} species need a photograph screened; building sheets for ${queue.length}`
+);
 if (queue.length === 0) process.exit(0);
 
 rmSync(OUT_DIR, { recursive: true, force: true });
