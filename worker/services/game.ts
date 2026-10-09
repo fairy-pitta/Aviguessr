@@ -29,8 +29,11 @@ function haversineDistance(
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+/** What a perfect answer is worth before speed, hints and streak. */
+export const MAX_ROUND_SCORE = 5000;
+
 function calculateScore(distanceKm: number): number {
-  return Math.round(5000 * Math.exp(-distanceKm / 2000));
+  return Math.round(MAX_ROUND_SCORE * Math.exp(-distanceKm / 2000));
 }
 
 /** What a guess may carry. Everything else about a round the server decides. */
@@ -56,6 +59,26 @@ const TIME_LIMIT_MS = 30000;
 
 export function calculateTimeBonus(timeMs: number): number {
   return Math.max(0, Math.round(1000 * (1 - timeMs / TIME_LIMIT_MS)));
+}
+
+/**
+ * The speed bonus actually earned, which is the full bonus scaled by how
+ * close the answer was.
+ *
+ * It used to be paid whether or not the guess was any good: a guess 7,886 km
+ * out, clicked instantly, took 97 points for the answer and 997 for the
+ * speed. Deliberating for the full thirty seconds costs around 4,150 points
+ * across a game, which can be more than accuracy is worth — in a game whose
+ * whole point is working out where a bird lives.
+ *
+ * Scaling rather than withholding keeps it a slope instead of a cliff: there
+ * is no moment where one kilometre of error wipes the bonus out. The scale
+ * is the distance score before the hint penalty, so buying a hint is charged
+ * once, where it is priced, and not again here.
+ */
+export function earnedTimeBonus(timeMs: number, rawScore: number): number {
+  const accuracy = Math.min(1, Math.max(0, rawScore / MAX_ROUND_SCORE));
+  return Math.round(calculateTimeBonus(timeMs) * accuracy);
 }
 
 /**
@@ -291,10 +314,10 @@ export async function submitGuess(
   );
 
   const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
-  const maxDistanceScore = Math.round(5000 * hintPenalty);
-  const rawScore = isCorrect ? 5000 : calculateScore(distance);
+  const maxDistanceScore = Math.round(MAX_ROUND_SCORE * hintPenalty);
+  const rawScore = isCorrect ? MAX_ROUND_SCORE : calculateScore(distance);
   const score = Math.min(rawScore, maxDistanceScore);
-  const timeBonus = calculateTimeBonus(timeMs);
+  const timeBonus = earnedTimeBonus(timeMs, rawScore);
 
   // Calculate streak from previous consecutive correct answers
   const prevRounds = await db

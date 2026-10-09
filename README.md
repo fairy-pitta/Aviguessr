@@ -24,7 +24,9 @@ One attempt per player per UTC day.
 
 **Scoring** — `5000 × e^(−km / 2000)` for the guess, so a neighbouring country
 still scores well and a wrong continent does not, plus up to 1000 for
-answering inside the 30-second limit.
+answering inside the 30-second limit. The speed bonus is scaled by how close
+the answer was: clicking instantly on the wrong continent is worth almost
+nothing, so thinking is never the expensive option.
 
 **Hints** are opt-in and priced before you commit: continents for 15% of the
 round, subregions for 30%. There is deliberately no hint that names a
