@@ -32,6 +32,8 @@ export type GuessResponse = {
   streakBonus: number;
   totalScore: number;
   gameFinished: boolean;
+  /** The whole name, including any place the question had inked out. */
+  speciesName?: string;
   rangeDescription?: string;
   funFact?: string;
 };

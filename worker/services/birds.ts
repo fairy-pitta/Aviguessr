@@ -5,6 +5,7 @@ type BirdRow = {
   scientific_name: string;
   family: string | null;
   difficulty: string;
+  range_size: number;
   image_key: string;
   image_license: string | null;
   image_artist: string | null;

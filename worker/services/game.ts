@@ -2,6 +2,7 @@ import { CENTROIDS } from "../data/centroids";
 import { REGIONS } from "../data/regions";
 import { getRandomBirdsByDifficulty, getBirdWithCountries } from "./birds";
 import { describeRange } from "./range";
+import { questionName } from "./species-name";
 
 const ROUND_DIFFICULTIES = ["easy", "easy", "medium", "medium", "hard"];
 
@@ -177,7 +178,9 @@ export async function createGame(
       round: i + 1,
       bird: {
         id: bird.id,
-        name: bird.name,
+        // The name settles which of two look-alike species this is, without
+        // handing over a range narrow enough for the name to be the answer
+        name: questionName(bird.name, bird.range_size),
         family: bird.family,
         difficulty: bird.difficulty,
         habitat: bird.habitat,
@@ -206,7 +209,8 @@ export async function getGameState(db: D1Database, gameId: string) {
     .prepare(
       `SELECT gr.round, gr.bird_id, gr.difficulty, gr.guessed_country,
               gr.is_correct, gr.distance_km, gr.score, gr.time_ms,
-              b.name, b.family, b.image_key, b.habitat, b.biome, b.range_description
+              b.name, b.family, b.image_key, b.habitat, b.biome,
+              b.range_description, b.range_size
        FROM game_rounds gr
        JOIN birds b ON b.id = gr.bird_id
        WHERE gr.game_id = ?
@@ -225,7 +229,10 @@ export async function getGameState(db: D1Database, gameId: string) {
       round: r.round as number,
       bird: {
         id: r.bird_id as number,
-        name: r.name as string,
+        // An answered round has nothing left to give away
+        name: r.guessed_country
+          ? (r.name as string)
+          : questionName(r.name as string, r.range_size as number),
         family: r.family as string | null,
         difficulty: r.difficulty as string,
         habitat: r.habitat as string | null,
@@ -359,6 +366,7 @@ export async function submitGuess(
     streakBonus,
     totalScore: newTotalScore,
     gameFinished: isLastRound,
+    speciesName: birdData.bird.name,
     rangeDescription: describeRange(birdData.countries),
     funFact: birdData.bird.fun_fact ?? null,
   };

@@ -21,7 +21,7 @@ export function BirdAccount({
   return (
     <div className="animate-account">
       <h2 className="text-2xl lg:text-3xl font-semibold leading-tight">
-        {bird.name}
+        {result.speciesName ?? bird.name}
       </h2>
       {bird.family && (
         <p className="mt-1 text-base text-[#cfd6cc]">{bird.family}</p>

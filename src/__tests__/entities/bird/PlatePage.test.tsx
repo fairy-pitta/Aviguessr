@@ -14,25 +14,18 @@ describe("PlatePage", () => {
   };
 
   describe("while the question is open", () => {
-    it("test_render_without_account_hides_the_bird_name", () => {
-      // Common names often name the place ("Tibetan Partridge"), which is the
-      // answer to the question being asked
+    it("test_render_without_account_names_the_species", () => {
+      // Two quetzals are the same photograph to anyone but a specialist and
+      // live a continent apart, so the name is what makes the round fair.
+      // Where a name would give the answer away the server inks the place
+      // out before it ever reaches here.
       render(<PlatePage bird={mockBird} />);
-      expect(screen.queryByText("Jerdon's Minivet")).not.toBeInTheDocument();
+      expect(screen.getByText("Jerdon's Minivet")).toBeInTheDocument();
     });
 
     it("test_render_without_account_hides_the_family", () => {
       render(<PlatePage bird={mockBird} />);
       expect(screen.queryByText("Cuckooshrikes")).not.toBeInTheDocument();
-    });
-
-    it("test_render_without_account_keeps_the_name_out_of_the_alt_text", () => {
-      render(<PlatePage bird={mockBird} />);
-      expect(screen.queryByAltText("Jerdon's Minivet")).not.toBeInTheDocument();
-      expect(screen.getByAltText("Bird to identify")).toHaveAttribute(
-        "src",
-        "/api/birds/1/image"
-      );
     });
 
     it("test_render_without_account_asks_the_question", () => {

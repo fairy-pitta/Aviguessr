@@ -26,9 +26,9 @@ function Corner({ className }: { className: string }) {
 type PlatePageProps = {
   bird: Bird;
   /**
-   * The species account, shown only once the round is over. Common names
-   * frequently name the place the bird lives, so nothing identifying appears
-   * while the question is open.
+   * The species account, shown only once the round is over. The name is on
+   * the plate from the start — it is what separates two species a photograph
+   * cannot — but the family, the range and the fact wait for the answer.
    */
   account?: ReactNode;
 };
@@ -43,7 +43,7 @@ export function PlatePage({ bird, account }: PlatePageProps) {
       <figure className="relative h-full w-full m-0 bg-[var(--color-paper-deep)] overflow-hidden">
         <img
           src={bird.imageUrl}
-          alt={account ? bird.name : "Bird to identify"}
+          alt={bird.name}
           className="h-full w-full object-cover"
         />
 
@@ -58,11 +58,14 @@ export function PlatePage({ bird, account }: PlatePageProps) {
         <figcaption className="absolute inset-x-0 bottom-0 p-5 lg:p-8 text-[#edefea]">
           {account ?? (
             <>
-              <p className="text-xl lg:text-2xl font-semibold leading-snug max-w-[22ch]">
+              <h2 className="text-2xl lg:text-3xl font-semibold leading-tight">
+                {bird.name}
+              </h2>
+              <p className="mt-2 text-base lg:text-lg text-[#cfd6cc]">
                 Where does this bird live?
               </p>
               {bird.habitat && (
-                <p className="mt-2 text-base text-[#cfd6cc]">{bird.habitat}</p>
+                <p className="mt-1 text-base text-[#cfd6cc]">{bird.habitat}</p>
               )}
             </>
           )}
