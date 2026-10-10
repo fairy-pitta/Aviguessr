@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { mergeVerdicts, chosenPhotos, screeningQueue } from "../lib/screening";
+import {
+  mergeVerdicts,
+  chosenPhotos,
+  screeningQueue,
+  sheetRanges,
+  photoUpdates,
+} from "../lib/screening";
 import type { Candidate } from "../lib/photo-quality";
 
 const manifest = [
@@ -146,5 +152,59 @@ describe("screeningQueue", () => {
       {}
     );
     expect(queue.map((q) => q.code)).toEqual(["counted", "unanswered"]);
+  });
+});
+
+describe("sheetRanges", () => {
+  it("test_sheet_ranges_splits_the_sheets_evenly_across_workers", () => {
+    expect(sheetRanges(10, 5)).toEqual([
+      [1, 2], [3, 4], [5, 6], [7, 8], [9, 10],
+    ]);
+  });
+
+  it("test_sheet_ranges_gives_the_remainder_to_the_earliest_workers", () => {
+    // 7 sheets over 3 workers is 3, 2, 2 — never a worker with nothing
+    expect(sheetRanges(7, 3)).toEqual([[1, 3], [4, 5], [6, 7]]);
+  });
+
+  it("test_sheet_ranges_with_fewer_sheets_than_workers_drops_the_idle_ones", () => {
+    expect(sheetRanges(2, 5)).toEqual([[1, 1], [2, 2]]);
+  });
+
+  it("test_sheet_ranges_covers_every_sheet_exactly_once", () => {
+    const covered = sheetRanges(363, 20).flatMap(([a, b]) =>
+      Array.from({ length: b - a + 1 }, (_, i) => a + i)
+    );
+    expect(covered).toEqual(Array.from({ length: 363 }, (_, i) => i + 1));
+  });
+});
+
+describe("photoUpdates", () => {
+  const rec = {
+    comter: { key: "birds/comter.webp", license: "CC BY-NC", artist: "N Sharp" },
+  };
+
+  it("test_photo_updates_points_the_row_at_the_image_and_makes_it_playable", () => {
+    expect(photoUpdates(rec, ["comter"])).toEqual([
+      "UPDATE birds SET image_key = 'birds/comter.webp', image_license = 'CC BY-NC'," +
+        " image_artist = 'N Sharp', playable = 1 WHERE species_code = 'comter';",
+    ]);
+  });
+
+  it("test_photo_updates_writes_only_the_species_asked_for", () => {
+    // Re-emitting the whole cache to apply three new photographs is what
+    // burned a day's worth of D1 row writes
+    const many = { ...rec, mallar3: { key: "k", license: "l", artist: "a" } };
+    expect(photoUpdates(many, ["mallar3"])).toHaveLength(1);
+    expect(photoUpdates(many, [])).toEqual([]);
+  });
+
+  it("test_photo_updates_skips_a_species_with_no_uploaded_record", () => {
+    expect(photoUpdates(rec, ["nosuch"])).toEqual([]);
+  });
+
+  it("test_photo_updates_escapes_an_apostrophe_in_the_artist", () => {
+    const withQuote = { x: { key: "k", license: "l", artist: "O'Brien" } };
+    expect(photoUpdates(withQuote, ["x"])[0]).toContain("'O''Brien'");
   });
 });

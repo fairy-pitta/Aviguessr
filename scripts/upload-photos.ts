@@ -9,6 +9,11 @@
  *
  *   npm run upload:photos -- --dry-run   encode only, no R2, no auth needed
  *   npm run upload:photos                upload (needs `wrangler login`)
+ *   npm run upload:photos -- --all-sql   re-emit SQL for every photograph
+ *
+ * The SQL covers only what this run uploaded. Re-emitting the whole record
+ * to apply a handful of new photographs is how a day's worth of D1 row
+ * writes went on rewriting rows that already held the right values.
  */
 import { execFile } from "node:child_process";
 import {
@@ -20,7 +25,7 @@ import {
 } from "node:fs";
 import { promisify } from "node:util";
 import sharp from "sharp";
-import { chosenPhotos, type Verdicts } from "./lib/screening";
+import { chosenPhotos, photoUpdates, type Verdicts } from "./lib/screening";
 import type { Candidate } from "./lib/photo-quality";
 
 const run = promisify(execFile);
@@ -37,6 +42,8 @@ const LONG_SIDE = 1024;
 const SAVE_EVERY = 20;
 
 const dryRun = process.argv.includes("--dry-run");
+/** Rebuild the SQL for every photograph, for a database being reloaded. */
+const allSql = process.argv.includes("--all-sql");
 
 const candidates: Record<string, { candidates: Candidate[] }> = JSON.parse(
   readFileSync(CANDIDATES, "utf8")
@@ -122,19 +129,14 @@ await Promise.all(
 );
 save();
 
-function quote(v: string): string {
-  return `'${v.replace(/'/g, "''")}'`;
-}
-
-const updates = Object.entries(uploaded).map(
-  ([code, u]) =>
-    `UPDATE birds SET image_key = ${quote(u.key)}, image_license = ${quote(u.license)},` +
-    ` image_artist = ${quote(u.artist)}, playable = 1 WHERE species_code = ${quote(code)};`
-);
-writeFileSync(SQL_OUT, updates.join("\n") + "\n");
+const written = allSql
+  ? Object.keys(uploaded)
+  : chosen.map((c) => c.speciesCode).filter((code) => code in uploaded);
+const updates = photoUpdates(uploaded, written);
+writeFileSync(SQL_OUT, updates.length ? updates.join("\n") + "\n" : "");
 
 const total = Object.values(uploaded).reduce((n, u) => n + u.bytes, 0);
 console.log(
   `${done} handled, ${failed} failed. ${Object.keys(uploaded).length} photographs, ` +
-    `${(total / 1e9).toFixed(2)} GB. SQL written to ${SQL_OUT}`
+    `${(total / 1e9).toFixed(2)} GB. ${updates.length} UPDATE(s) written to ${SQL_OUT}`
 );
