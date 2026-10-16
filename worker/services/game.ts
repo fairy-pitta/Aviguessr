@@ -16,6 +16,7 @@ import {
   familyHintCost,
   getFamilyHintCosts,
   getFamilyCountryCount,
+  FAMILY_HINT_LEVEL,
   HINT_PENALTIES,
   hintCostsForRound,
 } from "./hints";
@@ -404,8 +405,9 @@ export async function submitGuess(
 
   // The family hint is priced per bird, so the charge is recomputed from the
   // same family the price was quoted from rather than from a constant
+  const tookFamilyHint = (hintMask & (1 << (FAMILY_HINT_LEVEL - 1))) !== 0;
   const familyCost =
-    hintMask & 0b10 && birdData.bird.family
+    tookFamilyHint && birdData.bird.family
       ? familyHintCost(await getFamilyCountryCount(db, birdData.bird.family))
       : undefined;
 
