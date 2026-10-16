@@ -29,20 +29,37 @@ function monthOf(date: string): string {
   return date.slice(0, 7);
 }
 
+/** The UTC date one day on, which for a gap of two is the day missed. */
+function dayAfter(date: string): string {
+  return new Date(Date.parse(`${date}T00:00:00Z`) + MS_PER_DAY)
+    .toISOString()
+    .slice(0, 10);
+}
+
 /** Where the streak stands after a daily completed on `today`. */
 export function advanceStreak(state: StreakState, today: string): StreakState {
   if (state.lastDate === today) return state;
 
-  const gap = state.lastDate === null ? Infinity : daysBetween(state.lastDate, today);
-  const month = monthOf(today);
+  const gap =
+    state.lastDate === null ? Infinity : daysBetween(state.lastDate, today);
 
   if (gap === 1) {
     return { streak: state.streak + 1, lastDate: today, absenceMonth: state.absenceMonth };
   }
 
-  // Exactly one day missed, and this month's absence is still unspent
-  if (gap === 2 && state.absenceMonth !== month) {
-    return { streak: state.streak + 1, lastDate: today, absenceMonth: month };
+  // Exactly one day missed, and the absence for the month that day fell in
+  // is still unspent. It is charged to that month rather than to today's: a
+  // Hallowe'en missed between two days of play is October's absence, and
+  // spending November's on it would take a day the player never used.
+  if (gap === 2) {
+    const missed = monthOf(dayAfter(state.lastDate!));
+    if (state.absenceMonth !== missed) {
+      return {
+        streak: state.streak + 1,
+        lastDate: today,
+        absenceMonth: missed,
+      };
+    }
   }
 
   return { streak: 1, lastDate: today, absenceMonth: state.absenceMonth };

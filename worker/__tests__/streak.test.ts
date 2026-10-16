@@ -70,6 +70,30 @@ describe("advanceStreak", () => {
     ).toEqual({ streak: 10, lastDate: "2026-11-02", absenceMonth: "2026-11" });
   });
 
+  it("test_advance_streak_charges_the_absence_to_the_month_of_the_missed_day", () => {
+    // Played Oct 30, missed Oct 31, played Nov 1: that is October's absence,
+    // and spending November's on it would take a day never used
+    expect(
+      advanceStreak(state(9, "2026-10-30", null), "2026-11-01").absenceMonth
+    ).toBe("2026-10");
+  });
+
+  it("test_advance_streak_still_forgives_a_day_in_november_after_one_in_october", () => {
+    const afterHalloween = advanceStreak(state(9, "2026-10-30", null), "2026-11-01");
+    // Played Nov 1, missed Nov 2, played Nov 3 — November's own absence
+    expect(advanceStreak(afterHalloween, "2026-11-03")).toEqual({
+      streak: 11,
+      lastDate: "2026-11-03",
+      absenceMonth: "2026-11",
+    });
+  });
+
+  it("test_advance_streak_refuses_a_second_absence_in_the_month_it_was_spent", () => {
+    // The October absence was spent on Oct 31; missing Nov 5 is not October's
+    const spent = state(9, "2026-11-04", "2026-11");
+    expect(advanceStreak(spent, "2026-11-06").streak).toBe(1);
+  });
+
   it("test_advance_streak_after_two_missed_days_restarts_even_when_unspent", () => {
     // The absence forgives one day, and this is two
     expect(advanceStreak(state(40, "2026-10-13"), "2026-10-17")).toEqual({
