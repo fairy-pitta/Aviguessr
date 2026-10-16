@@ -3,8 +3,26 @@ import { REGIONS } from "../data/regions";
 import {
   getRandomBirdsByFame,
   getBirdWithCountries,
-  ROUND_FAME,
+  getBirdById,
+  drawnFames,
+  withReunion,
 } from "./birds";
+import {
+  getBogeyCandidates,
+  pickReunionBird,
+  recordEncounter,
+} from "./life-list";
+import {
+  familyHintCost,
+  getFamilyHintCosts,
+  getFamilyCountryCount,
+  HINT_PENALTIES,
+  hintCostsForRound,
+} from "./hints";
+
+// Hint pricing lives with the hints themselves; re-exported because the
+// route and the tests have always reached it through here.
+export { HINT_PENALTIES, hintCostsForRound } from "./hints";
 import { describeRange } from "./range";
 import { questionName } from "./species-name";
 import {
@@ -107,12 +125,6 @@ export function elapsedMs(startedAt: string | null, nowIso: string): number {
   return Math.min(TIME_LIMIT_MS, Math.max(0, now - start));
 }
 
-/**
- * Fraction of the round's score each hint costs, by level.
- * Hints are opt-in, so the price is shown before the player commits.
- */
-export const HINT_PENALTIES = [0.15, 0.3];
-
 /** Which hints were taken, as a bit per level (bit 0 = level 1). */
 export function maskWithLevel(mask: number, level: number): number {
   return mask | (1 << (level - 1));
@@ -123,10 +135,14 @@ export function maskWithLevel(mask: number, level: number): number {
  * are opt-in: taking only the second one should cost its own price, not the
  * price of working up to it.
  */
-export function hintPenaltyFromMask(mask: number): number {
+export function hintPenaltyFromMask(
+  mask: number,
+  /** This round's prices; the defaults are what a median family costs. */
+  costs: number[] = HINT_PENALTIES
+): number {
   let penalty = 0;
   for (let i = 0; i < HINT_PENALTIES.length; i++) {
-    if (mask & (1 << i)) penalty += HINT_PENALTIES[i];
+    if (mask & (1 << i)) penalty += costs[i] ?? HINT_PENALTIES[i];
   }
   return Math.min(1, penalty);
 }
@@ -170,16 +186,47 @@ function getMinDistanceToCorrectCountry(
   return { distance: minDistance === Infinity ? 20000 : minDistance, isCorrect: false };
 }
 
+/**
+ * The five birds of a game, with round four given over to a bird the player
+ * has met and never named — when they have one.
+ *
+ * The reunion bird is chosen first and excluded from the draw, so a game
+ * never shows the same species twice. With no bogeys on the list the slot
+ * falls back to the band it has always drawn from, which is also what a
+ * brand-new player gets.
+ */
+async function composeRounds(db: D1Database, playerId: string | null) {
+  const reunionId = playerId
+    ? pickReunionBird(await getBogeyCandidates(db, playerId), Math.random())
+    : null;
+  const reunion = reunionId ? await getBirdById(db, reunionId) : null;
+
+  const drawn = await getRandomBirdsByFame(
+    db,
+    drawnFames(reunion !== null),
+    reunion ? [reunion.id] : []
+  );
+
+  return {
+    birds: withReunion(drawn, reunion),
+    reunionBirdId: reunion?.id ?? null,
+  };
+}
+
 export async function createGame(
   db: D1Database,
   playerId: string | null = null
 ) {
   const gameId = generateId();
-  const birds = await getRandomBirdsByFame(db, ROUND_FAME);
+  const { birds } = await composeRounds(db, playerId);
 
   if (birds.length < 5) {
     throw new Error("Not enough birds in database");
   }
+
+  // Every price before round one is on screen: a hint is priced before the
+  // player commits, and the family hint's price moves with the family
+  const familyCosts = await getFamilyHintCosts(db, birds.map((b) => b.family));
 
   await db
     .prepare("INSERT INTO games (id, mode, player_id) VALUES (?, 'classic', ?)")
@@ -215,12 +262,16 @@ export async function createGame(
         // The name settles which of two look-alike species this is, without
         // handing over a range narrow enough for the name to be the answer
         name: questionName(bird.name, bird.range_size),
-        family: bird.family,
+        // The family is the answer to the hint that costs the most, so it
+        // cannot travel with the question
         difficulty: bird.difficulty,
         habitat: bird.habitat,
         biome: bird.biome,
         imageUrl: `/api/birds/${bird.id}/image`,
       },
+      hintCosts: hintCostsForRound(
+        bird.family ? familyCosts.get(bird.family) : undefined
+      ),
     })),
   };
 }
@@ -267,7 +318,9 @@ export async function getGameState(db: D1Database, gameId: string) {
         name: r.guessed_country
           ? (r.name as string)
           : questionName(r.name as string, r.range_size as number),
-        family: r.family as string | null,
+        // The family is what the level-two hint sells, so it reaches the
+        // client only once the round can no longer be helped by it
+        family: r.guessed_country ? (r.family as string | null) : null,
         difficulty: r.difficulty as string,
         habitat: r.habitat as string | null,
         biome: r.biome as string | null,
@@ -296,7 +349,13 @@ export async function submitGuess(
   const game = await db
     .prepare("SELECT * FROM games WHERE id = ? AND status = 'playing'")
     .bind(gameId)
-    .first<{ id: string; current_round: number; total_score: number; mode: string }>();
+    .first<{
+      id: string;
+      current_round: number;
+      total_score: number;
+      mode: string;
+      player_id: string | null;
+    }>();
 
   if (!game || game.current_round !== round) return null;
 
@@ -317,6 +376,17 @@ export async function submitGuess(
   const birdData = await getBirdWithCountries(db, roundRow.bird_id);
   if (!birdData) return null;
 
+  // Read before the upsert below folds this guess in, so "you said Brazil
+  // last time" means last time and not this one
+  const previous = game.player_id
+    ? await db
+        .prepare(
+          "SELECT encounters, correct, last_guess FROM life_list WHERE player_id = ? AND bird_id = ?"
+        )
+        .bind(game.player_id, roundRow.bird_id)
+        .first<{ encounters: number; correct: number; last_guess: string | null }>()
+    : null;
+
   const { distance, isCorrect } = getMinDistanceToCorrectCountry(
     countryCode,
     birdData.countries
@@ -332,7 +402,17 @@ export async function submitGuess(
   const weight = rangeWeight(birdData.countries.length);
   const roundMax = roundMaximum(birdData.countries.length);
 
-  const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
+  // The family hint is priced per bird, so the charge is recomputed from the
+  // same family the price was quoted from rather than from a constant
+  const familyCost =
+    hintMask & 0b10 && birdData.bird.family
+      ? familyHintCost(await getFamilyCountryCount(db, birdData.bird.family))
+      : undefined;
+
+  const hintPenalty = Math.max(
+    0,
+    1 - hintPenaltyFromMask(hintMask, hintCostsForRound(familyCost))
+  );
   const rawScore = Math.round(accuracyScore * weight);
   const score = Math.min(rawScore, Math.round(roundMax * hintPenalty));
   const timeBonus = earnedTimeBonus(timeMs, accuracyScore);
@@ -397,6 +477,17 @@ export async function submitGuess(
         "UPDATE game_rounds SET started_at = datetime('now') WHERE game_id = ? AND round = ?"
       )
       .bind(gameId, round + 1),
+    // The bird joins the player's life list whether or not they placed it:
+    // the list records what you met, and whether you named it is a column
+    ...(game.player_id
+      ? [
+          recordEncounter(db, game.player_id, roundRow.bird_id, {
+            isCorrect,
+            score: totalRoundScore,
+            guessedCountry: countryCode,
+          }),
+        ]
+      : []),
   ]);
 
   return {
@@ -410,6 +501,25 @@ export async function submitGuess(
     totalScore: newTotalScore,
     gameFinished: isLastRound,
     speciesName: birdData.bird.name,
+    /** The family, which the question withheld because the hint sells it. */
+    family: birdData.bird.family,
+    /**
+     * What the player's history with this bird was before this round.
+     *
+     * Round four is drawn from the birds they have never named, and a
+     * re-encounter is only worth anything if they are told it was one — but
+     * told afterwards. Knowing during the round that a bird is one you have
+     * seen before narrows it to your own list, which is a substantial hint
+     * handed over for free.
+     */
+    encounter:
+      previous && previous.encounters > 0
+        ? {
+            count: previous.encounters,
+            previousGuess: previous.last_guess,
+            everNamed: previous.correct > 0,
+          }
+        : null,
     /** What this bird's range made the round worth, for the result page. */
     rangeWeight: weight,
     roundMax,

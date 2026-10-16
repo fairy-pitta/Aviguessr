@@ -76,6 +76,22 @@ export async function getHintsForBird(
  */
 export const FAMILY_HINT_LEVEL = 2;
 
+/**
+ * Fraction of the round's score each hint costs, by level.
+ * Hints are opt-in, so the price is shown before the player commits.
+ *
+ * Level two is the family hint, whose price moves with how much the family
+ * narrows the world — "Hawks and Eagles" is worth far less than a family
+ * confined to one island. The entry here is what the median family costs,
+ * which is also the fallback for a bird with no family recorded.
+ */
+export const HINT_PENALTIES = [0.15, 0.3];
+
+/** The two prices for one round, level two priced by the bird's family. */
+export function hintCostsForRound(familyCost: number | undefined): number[] {
+  return [HINT_PENALTIES[0], familyCost ?? HINT_PENALTIES[1]];
+}
+
 /** The median family occupies this many countries, across all 251 of them. */
 export const FAMILY_HINT_MEDIAN_RANGE = 32;
 
@@ -211,4 +227,85 @@ export async function getFamilyCountries(
     .all<{ country_code: string }>();
 
   return rows.results.map((r) => r.country_code);
+}
+
+/**
+ * What the family hint costs for each of several birds, in one query.
+ *
+ * A game needs all five prices before the player sees round one, because a
+ * hint is priced before they commit to buying it.
+ */
+export async function getFamilyHintCosts(
+  db: D1Database,
+  families: (string | null)[]
+): Promise<Map<string, number>> {
+  const wanted = [...new Set(families.filter((f): f is string => !!f))];
+  if (wanted.length === 0) return new Map();
+
+  const rows = await db
+    .prepare(
+      `SELECT b.family AS family, COUNT(DISTINCT bc.country_code) AS countries
+         FROM birds b
+         JOIN bird_countries bc ON bc.bird_id = b.id
+        WHERE b.family IN (${wanted.map(() => "?").join(", ")})
+        GROUP BY b.family`
+    )
+    .bind(...wanted)
+    .all<{ family: string; countries: number }>();
+
+  return new Map(rows.results.map((r) => [r.family, familyHintCost(r.countries)]));
+}
+
+/** How many countries one family occupies, for pricing a hint already taken. */
+export async function getFamilyCountryCount(
+  db: D1Database,
+  family: string
+): Promise<number> {
+  const row = await db
+    .prepare(
+      `SELECT COUNT(DISTINCT bc.country_code) AS countries
+         FROM birds b
+         JOIN bird_countries bc ON bc.bird_id = b.id
+        WHERE b.family = ?`
+    )
+    .bind(family)
+    .first<{ countries: number }>();
+
+  return row?.countries ?? 0;
+}
+
+/**
+ * A hint and what it costs, which the route needs together: the family hint
+ * is priced per bird, so the price cannot be read off a constant.
+ */
+export async function getHintWithCost(
+  db: D1Database,
+  birdId: number,
+  level: number
+): Promise<{ hint: string; penalty: number }> {
+  if (level !== FAMILY_HINT_LEVEL) {
+    return {
+      hint: await getHintsForBird(db, birdId, level),
+      penalty: HINT_PENALTIES[level - 1],
+    };
+  }
+
+  const bird = await db
+    .prepare("SELECT family, family_sci FROM birds WHERE id = ?")
+    .bind(birdId)
+    .first<{ family: string | null; family_sci: string | null }>();
+
+  // No family recorded falls back to the subregion hint at its old flat price
+  if (!bird?.family) {
+    return {
+      hint: await getHintsForBird(db, birdId, level),
+      penalty: HINT_PENALTIES[level - 1],
+    };
+  }
+
+  const countries = await getFamilyCountries(db, bird.family);
+  return {
+    hint: formatFamilyHint(bird.family, bird.family_sci, countries),
+    penalty: familyHintCost(countries.length),
+  };
 }

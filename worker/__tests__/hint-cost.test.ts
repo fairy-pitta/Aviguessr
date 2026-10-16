@@ -75,3 +75,37 @@ describe("maskWithLevel", () => {
     expect(maskWithLevel(L1, 2)).toBe(L1 | L2);
   });
 });
+
+describe("hintPenaltyFromMask with a round's own prices", () => {
+  const BOTH = maskWithLevel(maskWithLevel(0, 1), 2);
+
+  it("test_hint_penalty_charges_the_price_the_round_quoted", () => {
+    // The family hint is priced per bird, so the charge cannot read a
+    // constant: it must be the price the player was shown
+    expect(hintPenaltyFromMask(maskWithLevel(0, 2), [0.15, 0.41])).toBeCloseTo(
+      0.41,
+      5
+    );
+  });
+
+  it("test_hint_penalty_for_a_cosmopolitan_family_is_cheaper_than_the_default", () => {
+    expect(hintPenaltyFromMask(maskWithLevel(0, 2), [0.15, 0.17])).toBeLessThan(
+      hintPenaltyFromMask(maskWithLevel(0, 2))
+    );
+  });
+
+  it("test_hint_penalty_with_both_hints_adds_the_round_prices", () => {
+    expect(hintPenaltyFromMask(BOTH, [0.15, 0.41])).toBeCloseTo(0.56, 5);
+  });
+
+  it("test_hint_penalty_with_no_prices_given_falls_back_to_the_defaults", () => {
+    expect(hintPenaltyFromMask(BOTH)).toBeCloseTo(
+      HINT_PENALTIES[0] + HINT_PENALTIES[1],
+      5
+    );
+  });
+
+  it("test_hint_penalty_never_takes_the_whole_round", () => {
+    expect(hintPenaltyFromMask(BOTH, [0.9, 0.9])).toBe(1);
+  });
+});

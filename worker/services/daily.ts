@@ -1,6 +1,10 @@
 import { getRandomBirdsByFame, ROUND_FAME } from "./birds";
 import { gameMaximum } from "./range-weight";
 import { questionName } from "./species-name";
+import { hintCostsForRound } from "./game";
+import { getFamilyHintCosts } from "./hints";
+import { advanceStreak } from "./streak";
+import { getPlayer, insertPlayer } from "./player";
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -47,12 +51,13 @@ export async function createDailyGame(
     bird: {
       id: number;
       name: string;
-      family: string | null;
       difficulty: string;
       habitat: string | null;
       biome: string | null;
       imageUrl: string;
     };
+    /** The two hint prices, level two priced by the bird's family. */
+    hintCosts: number[];
   }[];
 } | null> {
   // Check if player already played today
@@ -118,6 +123,8 @@ export async function createDailyGame(
   );
   await db.batch(stmts);
 
+  const familyCosts = await getFamilyHintCosts(db, birds.map((b) => b.family));
+
   return {
     gameId,
     maxScore: gameMaximum(birds.map((b) => b.range_size)),
@@ -126,12 +133,16 @@ export async function createDailyGame(
       bird: {
         id: bird.id,
         name: questionName(bird.name, bird.range_size),
-        family: bird.family,
+        // The family is what the level-two hint sells, so the question
+        // cannot carry it
         difficulty: bird.difficulty,
         habitat: bird.habitat,
         biome: bird.biome,
         imageUrl: `/api/birds/${bird.id}/image`,
       },
+      hintCosts: hintCostsForRound(
+        bird.family ? familyCosts.get(bird.family) : undefined
+      ),
     })),
   };
 }
@@ -190,7 +201,7 @@ export async function submitDailyScore(
   db: D1Database,
   date: string,
   playerId: string
-): Promise<{ totalScore: number } | null> {
+): Promise<{ totalScore: number; streakDays: number } | null> {
   const game = await db
     .prepare(
       `SELECT id, total_score FROM games
@@ -229,7 +240,44 @@ export async function submitDailyScore(
     )
     .run();
 
-  return { totalScore: game.total_score };
+  return {
+    totalScore: game.total_score,
+    streakDays: await recordDailyStreak(db, playerId, date),
+  };
+}
+
+/**
+ * Moves the player's streak on for a daily finished today.
+ *
+ * The rule itself is `advanceStreak`, which is a pure function of where the
+ * player stood — including the case where this is a second submission for
+ * the same day, which must leave the count alone rather than inflate it.
+ */
+export async function recordDailyStreak(
+  db: D1Database,
+  playerId: string,
+  date: string
+): Promise<number> {
+  await insertPlayer(db, playerId);
+  const player = await getPlayer(db, playerId);
+
+  const next = advanceStreak(
+    {
+      streak: player?.streak_days ?? 0,
+      lastDate: player?.last_daily_date ?? null,
+      absenceMonth: player?.absence_month ?? null,
+    },
+    date
+  );
+
+  await db
+    .prepare(
+      "UPDATE players SET streak_days = ?, last_daily_date = ?, absence_month = ? WHERE id = ?"
+    )
+    .bind(next.streak, next.lastDate, next.absenceMonth, playerId)
+    .run();
+
+  return next.streak;
 }
 
 export async function getDailyLeaderboard(

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import type { Bindings } from "../types";
+import type { Env } from "../types";
 import {
   createDailyGame,
   submitDailyScore,
@@ -11,14 +11,11 @@ function getTodayUTC(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export const dailyRoutes = new Hono<{ Bindings: Bindings }>();
+export const dailyRoutes = new Hono<Env>();
 
 // GET /api/daily — Returns today's challenge, creates a game for the player
 dailyRoutes.get("/", async (c) => {
-  const playerId = c.req.header("X-Player-Id");
-  if (!playerId) {
-    return c.json({ error: "X-Player-Id header required" }, 400);
-  }
+  const playerId = c.get("playerId");
 
   const date = getTodayUTC();
   const result = await createDailyGame(c.env.DB, date, playerId);
@@ -39,10 +36,7 @@ dailyRoutes.get("/leaderboard", async (c) => {
 
 // GET /api/daily/status — Returns whether player has completed today
 dailyRoutes.get("/status", async (c) => {
-  const playerId = c.req.header("X-Player-Id");
-  if (!playerId) {
-    return c.json({ error: "X-Player-Id header required" }, 400);
-  }
+  const playerId = c.get("playerId");
 
   const date = getTodayUTC();
   const status = await getDailyStatus(c.env.DB, date, playerId);
@@ -51,10 +45,7 @@ dailyRoutes.get("/status", async (c) => {
 
 // POST /api/daily/score — Submit daily score
 dailyRoutes.post("/score", async (c) => {
-  const playerId = c.req.header("X-Player-Id");
-  if (!playerId) {
-    return c.json({ error: "X-Player-Id header required" }, 400);
-  }
+  const playerId = c.get("playerId");
 
   // No body: the score and the round list come from the game the server
   // scored, so neither can be self-reported.
