@@ -28,6 +28,11 @@ answering inside the 30-second limit. The speed bonus is scaled by how close
 the answer was: clicking instantly on the wrong continent is worth almost
 nothing, so thinking is never the expensive option.
 
+**Answering** is by typing the country's name or by pointing at it on the
+map. The map alone meant zooming to the country first, which is hopeless at
+speed for Luxembourg or Singapore; the map is still the range map you are
+filling in, it just is not the only way in.
+
 **Hints** are opt-in and priced before you commit: continents for 15% of the
 round, subregions for 30%. There is deliberately no hint that names a
 country, because the country is the answer.

@@ -1,4 +1,4 @@
-import { WorldMap } from "@/entities/country";
+import { WorldMap, CountrySearch } from "@/entities/country";
 import { ScorePanel } from "@/entities/game";
 import { Timer, HandRule } from "@/shared/ui";
 import { GuessButton } from "@/features/guess-country";
@@ -57,6 +57,12 @@ export function GuessPage({
       </div>
 
       <HandRule />
+      <div className="px-5 lg:px-8 pt-3">
+        <CountrySearch
+          selectedCountry={selectedCountry}
+          onCountrySelect={onCountrySelect}
+        />
+      </div>
       <div className="px-5 lg:px-8 py-3">
         <HintPanel
           hints={hints}
