@@ -1,31 +1,40 @@
 import { Hono } from "hono";
 import type { Env } from "../types";
-import { issuePlayerCookie } from "../middleware/player";
+import {
+  issuePlayerCookie,
+  requireSecret,
+  withPlayer,
+} from "../middleware/player";
 import {
   getPlayer,
   insertPlayer,
   issueRecoveryCode,
   playerForRecoveryCode,
-  playerSecret,
   signPlayerId,
 } from "../services/player";
-import { getLifeList, summarizeLifeList } from "../services/life-list";
+import { countLifeList } from "../services/life-list";
 
 export const playerRoutes = new Hono<Env>();
+
+// Everything here needs a player except restoring from a code, which is how
+// a device that has no player gets one. Minting a throwaway first would set
+// a second cookie on the same response and leave its row behind.
+playerRoutes.use("/", withPlayer);
+playerRoutes.use("/recovery-code", withPlayer);
 
 /** Who the player is to themselves: their streak and the size of their list. */
 playerRoutes.get("/", async (c) => {
   const playerId = c.get("playerId");
-  const [player, list] = await Promise.all([
+  const [player, lifeList] = await Promise.all([
     getPlayer(c.env.DB, playerId),
-    getLifeList(c.env.DB, playerId),
+    countLifeList(c.env.DB, playerId),
   ]);
 
   return c.json({
     streakDays: player?.streak_days ?? 0,
     lastDailyDate: player?.last_daily_date ?? null,
     hasRecoveryCode: Boolean(player?.recovery_hash),
-    lifeList: summarizeLifeList(list),
+    lifeList,
   });
 });
 
@@ -54,9 +63,6 @@ playerRoutes.post("/restore", async (c) => {
     return c.json({ error: "That code does not match a list" }, 404);
   }
 
-  issuePlayerCookie(
-    c,
-    await signPlayerId(owner, playerSecret(c.env.PLAYER_SECRET))
-  );
+  issuePlayerCookie(c, await signPlayerId(owner, requireSecret(c)));
   return c.json({ restored: true });
 });

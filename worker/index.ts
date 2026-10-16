@@ -11,7 +11,17 @@ import { lifeListRoutes } from "./routes/life-list";
 const app = new Hono<Env>();
 
 app.use("/api/*", cors());
-app.use("/api/*", withPlayer);
+
+// Only where a player is needed. Establishing one writes a row, so in front
+// of the health check and the image route an uptime monitor or a hotlinked
+// photograph would have written one on every call.
+// Both forms of each: "/x/*" does not match the bare "/x", and /api/daily
+// and /api/life-list are endpoints in their own right.
+app.use("/api/game/*", withPlayer);
+app.use("/api/daily", withPlayer);
+app.use("/api/daily/*", withPlayer);
+app.use("/api/life-list", withPlayer);
+app.use("/api/life-list/*", withPlayer);
 
 app.get("/api/health", (c) => c.json({ status: "ok" }));
 
