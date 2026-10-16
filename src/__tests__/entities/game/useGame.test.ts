@@ -68,7 +68,70 @@ describe("useGame", () => {
     };
 
     act(() => result.current.showResult(guessResult));
+    // The fifth answer used to jump straight to the tally, so the one round
+    // whose result a player most wants to see was the one never shown
+    expect(result.current.phase).toBe("showingResult");
+
+    act(() => result.current.finish());
     expect(result.current.phase).toBe("finished");
+  });
+
+  it("test_show_result_records_the_result_against_its_round", () => {
+    const { result } = renderHook(() => useGame());
+    act(() => result.current.startGame("game-123", mockRounds));
+
+    act(() =>
+      result.current.showResult(
+        {
+          isCorrect: true,
+          correctCountries: ["JP"],
+          distanceKm: 0,
+          score: 5000,
+          timeBonus: 800,
+          streakLength: 0,
+          streakBonus: 0,
+          totalScore: 5800,
+          gameFinished: false,
+        },
+        "JP"
+      )
+    );
+
+    // The tally reads these; nothing used to write them, so every game ended
+    // "0 of 5 within range" with no scores beside the birds
+    expect(result.current.rounds[0].result).toEqual({
+      guessedCountry: "JP",
+      isCorrect: true,
+      distanceKm: 0,
+      score: 5000,
+      timeMs: 0,
+    });
+    expect(result.current.rounds[1].result).toBeNull();
+  });
+
+  it("test_show_result_records_the_country_the_player_chose", () => {
+    const { result } = renderHook(() => useGame());
+    act(() => result.current.startGame("game-123", mockRounds));
+
+    act(() =>
+      result.current.showResult(
+        {
+          isCorrect: false,
+          correctCountries: ["BR"],
+          distanceKm: 5199,
+          score: 97,
+          timeBonus: 2,
+          streakLength: 0,
+          streakBonus: 0,
+          totalScore: 99,
+          gameFinished: false,
+        },
+        "JP"
+      )
+    );
+
+    expect(result.current.rounds[0].result?.guessedCountry).toBe("JP");
+    expect(result.current.rounds[0].result?.isCorrect).toBe(false);
   });
 
   it("test_next_round_increments_round_and_returns_to_playing", () => {

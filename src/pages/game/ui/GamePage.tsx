@@ -23,9 +23,12 @@ export function GamePage() {
   // Initialize game from navigation state
   useEffect(() => {
     if (id && game.phase === "idle") {
-      const state = location.state as { rounds?: GameRound[] } | null;
+      const state = location.state as {
+        rounds?: GameRound[];
+        maxScore?: number;
+      } | null;
       if (state?.rounds) {
-        game.startGame(id, state.rounds);
+        game.startGame(id, state.rounds, state.maxScore);
       }
     }
   }, [id, game.phase, location.state, game.startGame]);
@@ -34,26 +37,27 @@ export function GamePage() {
     if (!selectedCountry) return;
     const result = await guess(game.currentRound, selectedCountry);
     if (result) {
-      game.showResult(result);
+      game.showResult(result, selectedCountry);
     }
   }, [selectedCountry, game.currentRound, guess, game.showResult]);
 
   const handleTimeout = useCallback(async () => {
     // Auto-submit with no country on timeout
-    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__");
+    const country = selectedCountry ?? "__TIMEOUT__";
+    const result = await guess(game.currentRound, country);
     if (result) {
-      game.showResult(result);
+      game.showResult(result, country);
     }
   }, [game.currentRound, selectedCountry, guess, game.showResult]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);
     if (game.lastResult?.gameFinished) {
-      // Stay on finished phase
+      game.finish();
     } else {
       game.nextRound();
     }
-  }, [game.lastResult, game.nextRound]);
+  }, [game.lastResult, game.nextRound, game.finish]);
 
   const handlePlayAgain = useCallback(() => {
     game.reset();
@@ -98,6 +102,7 @@ export function GamePage() {
       <GameSummary
         rounds={game.rounds}
         totalScore={game.totalScore}
+        maxScore={game.maxScore}
         onPlayAgain={handlePlayAgain}
       />
     );

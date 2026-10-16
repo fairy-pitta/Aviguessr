@@ -5,7 +5,6 @@ import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
 import { RoundSpread } from "@/widgets/round-spread";
 import { getOrCreatePlayerId } from "@/shared/lib/playerId";
-import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 import { DailyResult } from "@/widgets/daily-result";
 import {
   getDailyChallenge,
@@ -25,6 +24,7 @@ type LeaderboardEntry = {
 function generateShareText(
   date: string,
   totalScore: number,
+  maxScore: number,
   rounds: GameRound[]
 ): string {
   const roundEmojis = rounds
@@ -37,7 +37,7 @@ function generateShareText(
     })
     .join("");
 
-  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/${MAX_TOTAL_SCORE.toLocaleString()}\n${roundEmojis}`;
+  return `AviGuessr Daily ${date} \u2014 ${totalScore.toLocaleString()}/${maxScore.toLocaleString()}\n${roundEmojis}`;
 }
 
 export function DailyPage() {
@@ -57,6 +57,8 @@ export function DailyPage() {
   const [completedRounds, setCompletedRounds] = useState<GameRound[] | null>(
     null
   );
+  /** A perfect game of the day's birds, which varies with their ranges. */
+  const [maxScore, setMaxScore] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [copied, setCopied] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
@@ -70,6 +72,7 @@ export function DailyPage() {
 
         if (status.completed) {
           setCompletedScore(status.totalScore);
+          setMaxScore(status.maxScore ?? 0);
           if (status.roundsJson) {
             setCompletedRounds(JSON.parse(status.roundsJson) as GameRound[]);
           }
@@ -82,7 +85,12 @@ export function DailyPage() {
         const challenge = await getDailyChallenge(playerId);
         setDailyDate(challenge.date);
         setGameId(challenge.gameId);
-        game.startGame(challenge.gameId, challenge.rounds as GameRound[]);
+        setMaxScore(challenge.maxScore);
+        game.startGame(
+          challenge.gameId,
+          challenge.rounds as GameRound[],
+          challenge.maxScore
+        );
         setLoading(false);
       } catch (err) {
         if (err instanceof Error && err.message.includes("409")) {
@@ -132,34 +140,42 @@ export function DailyPage() {
     if (!selectedCountry) return;
     const result = await guess(game.currentRound, selectedCountry);
     if (result) {
-      game.showResult(result);
+      game.showResult(result, selectedCountry);
     }
   }, [selectedCountry, game.currentRound, guess, game.showResult]);
 
   const handleTimeout = useCallback(async () => {
-    const result = await guess(game.currentRound, selectedCountry ?? "__TIMEOUT__");
+    const country = selectedCountry ?? "__TIMEOUT__";
+    const result = await guess(game.currentRound, country);
     if (result) {
-      game.showResult(result);
+      game.showResult(result, country);
     }
   }, [game.currentRound, selectedCountry, guess, game.showResult]);
 
   const handleNext = useCallback(() => {
     setSelectedCountry(null);
     if (game.lastResult?.gameFinished) {
-      // Stay on finished phase
+      game.finish();
     } else {
       game.nextRound();
     }
-  }, [game.lastResult, game.nextRound]);
+  }, [game.lastResult, game.nextRound, game.finish]);
 
   const handleShare = useCallback(async () => {
     const rounds = completedRounds ?? game.rounds;
     const score = completedScore ?? game.totalScore;
-    const text = generateShareText(dailyDate, score, rounds);
+    const text = generateShareText(dailyDate, score, maxScore, rounds);
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [completedRounds, completedScore, game.rounds, game.totalScore, dailyDate]);
+  }, [
+    completedRounds,
+    completedScore,
+    game.rounds,
+    game.totalScore,
+    dailyDate,
+    maxScore,
+  ]);
 
   const handleHome = useCallback(() => {
     game.reset();
@@ -189,6 +205,7 @@ export function DailyPage() {
       <DailyResult
         date={dailyDate}
         totalScore={completedScore}
+        maxScore={maxScore}
         rounds={completedRounds}
         leaderboard={leaderboard}
         playerId={getOrCreatePlayerId()}
@@ -230,6 +247,7 @@ export function DailyPage() {
       <DailyResult
         date={dailyDate}
         totalScore={game.totalScore}
+        maxScore={game.maxScore}
         rounds={game.rounds}
         leaderboard={leaderboard}
         playerId={getOrCreatePlayerId()}

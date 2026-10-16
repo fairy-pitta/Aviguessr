@@ -16,6 +16,7 @@ export type RoundResult = {
 
 export type GameState = {
   gameId: string;
+  maxScore?: number;
   totalScore: number;
   currentRound: number;
   status: "playing" | "finished";
@@ -34,6 +35,9 @@ export type GuessResponse = {
   gameFinished: boolean;
   /** The whole name, including any place the question had inked out. */
   speciesName?: string;
+  /** What the bird's range made this round worth, 1.0 being a median range. */
+  rangeWeight?: number;
+  roundMax?: number;
   rangeDescription?: string;
   funFact?: string;
 };

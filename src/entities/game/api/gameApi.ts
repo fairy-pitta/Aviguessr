@@ -3,6 +3,7 @@ import type { GameState, GuessResponse } from "../model/types";
 
 type CreateGameResponse = {
   gameId: string;
+  maxScore: number;
   rounds: {
     round: number;
     bird: {

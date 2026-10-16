@@ -1,11 +1,15 @@
 import { COUNTRY_NAMES } from "@/entities/country";
 import { Button, HandRule, BookPage } from "@/shared/ui";
 import type { GameRound } from "@/entities/game";
-import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 
 type GameSummaryProps = {
   rounds: GameRound[];
   totalScore: number;
+  /**
+   * A perfect game of these five birds. It varies: a round on a bird found
+   * in one country is worth more than one on a bird found in 150.
+   */
+  maxScore: number;
   onPlayAgain: () => void;
 };
 
@@ -20,6 +24,7 @@ function countryName(code: string): string {
 export function GameSummary({
   rounds,
   totalScore,
+  maxScore,
   onPlayAgain,
 }: GameSummaryProps) {
   const correct = rounds.filter((r) => r.result?.isCorrect).length;
@@ -36,9 +41,11 @@ export function GameSummary({
               <span className="text-6xl font-semibold tabular leading-none">
                 {totalScore.toLocaleString()}
               </span>
-              <span className="text-base text-[var(--color-ink-soft)] tabular">
-                of {MAX_TOTAL_SCORE.toLocaleString()}
-              </span>
+              {maxScore > 0 && (
+                <span className="text-base text-[var(--color-ink-soft)] tabular">
+                  of {maxScore.toLocaleString()}
+                </span>
+              )}
             </p>
           </header>
           <HandRule />

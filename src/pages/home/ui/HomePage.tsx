@@ -15,7 +15,9 @@ export function HomePage() {
   const begin = async () => {
     const result = await start();
     if (result) {
-      navigate(`/game/${result.gameId}`, { state: { rounds: result.rounds } });
+      navigate(`/game/${result.gameId}`, {
+        state: { rounds: result.rounds, maxScore: result.maxScore },
+      });
     }
   };
 

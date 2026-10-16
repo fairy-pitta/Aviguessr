@@ -1,5 +1,4 @@
 import { Button, HandRule, BookPage } from "@/shared/ui";
-import { MAX_TOTAL_SCORE } from "@/shared/config/constants";
 import type { GameRound } from "@/entities/game";
 
 export type LeaderboardEntry = {
@@ -11,6 +10,8 @@ export type LeaderboardEntry = {
 type DailyResultProps = {
   date: string;
   totalScore: number;
+  /** A perfect game of the day's five birds, which varies with their ranges. */
+  maxScore: number;
   rounds: GameRound[] | null;
   leaderboard: LeaderboardEntry[];
   playerId: string;
@@ -26,6 +27,7 @@ type DailyResultProps = {
 export function DailyResult({
   date,
   totalScore,
+  maxScore,
   rounds,
   leaderboard,
   playerId,
@@ -46,7 +48,7 @@ export function DailyResult({
                 {totalScore.toLocaleString()}
               </span>
               <span className="text-base text-[var(--color-ink-soft)] tabular">
-                of {MAX_TOTAL_SCORE.toLocaleString()}
+                of {maxScore.toLocaleString()}
               </span>
             </p>
           </header>

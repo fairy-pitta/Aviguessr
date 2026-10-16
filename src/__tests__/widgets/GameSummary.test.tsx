@@ -37,6 +37,7 @@ describe("GameSummary", () => {
       <GameSummary
         rounds={mockRounds}
         totalScore={21400}
+        maxScore={36000}
         onPlayAgain={vi.fn()}
       />
     );
@@ -49,6 +50,7 @@ describe("GameSummary", () => {
       <GameSummary
         rounds={mockRounds}
         totalScore={21400}
+        maxScore={36000}
         onPlayAgain={vi.fn()}
       />
     );
@@ -63,6 +65,7 @@ describe("GameSummary", () => {
       <GameSummary
         rounds={mockRounds}
         totalScore={21400}
+        maxScore={36000}
         onPlayAgain={onPlayAgain}
       />
     );

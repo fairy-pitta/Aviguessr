@@ -1,4 +1,5 @@
 import { getRandomBirdsByFame, ROUND_FAME } from "./birds";
+import { gameMaximum } from "./range-weight";
 import { questionName } from "./species-name";
 
 function generateId(): string {
@@ -40,6 +41,7 @@ export async function createDailyGame(
   playerId: string
 ): Promise<{
   gameId: string;
+  maxScore: number;
   rounds: {
     round: number;
     bird: {
@@ -118,6 +120,7 @@ export async function createDailyGame(
 
   return {
     gameId,
+    maxScore: gameMaximum(birds.map((b) => b.range_size)),
     rounds: birds.map((bird, i) => ({
       round: i + 1,
       bird: {
@@ -254,6 +257,7 @@ export async function getDailyStatus(
 ): Promise<{
   completed: boolean;
   totalScore: number | null;
+  maxScore: number | null;
   roundsJson: string | null;
 }> {
   const existing = await db
@@ -267,9 +271,38 @@ export async function getDailyStatus(
     return {
       completed: true,
       totalScore: existing.total_score,
+      // A player coming back to the day's result still needs to know what a
+      // perfect game of these five was worth; it is not a constant any more
+      maxScore: await dailyMaximum(db, date),
       roundsJson: existing.rounds_json,
     };
   }
 
-  return { completed: false, totalScore: null, roundsJson: null };
+  return {
+    completed: false,
+    totalScore: null,
+    maxScore: null,
+    roundsJson: null,
+  };
+}
+
+/** What a perfect game of the day's birds is worth. */
+async function dailyMaximum(db: D1Database, date: string): Promise<number> {
+  const challenge = await db
+    .prepare("SELECT bird_ids FROM daily_challenges WHERE date = ?")
+    .bind(date)
+    .first<{ bird_ids: string }>();
+  if (!challenge) return 0;
+
+  const ids = JSON.parse(challenge.bird_ids) as number[];
+  const sizes: number[] = [];
+  for (const id of ids) {
+    const row = await db
+      .prepare("SELECT range_size FROM birds WHERE id = ?")
+      .bind(id)
+      .first<{ range_size: number }>();
+    sizes.push(row?.range_size ?? 0);
+  }
+
+  return gameMaximum(sizes);
 }
