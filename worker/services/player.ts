@@ -10,6 +10,13 @@
  * The id now lives in a signed HttpOnly cookie the client never reads, which
  * is the same line the scoring already takes: the server is the authority and
  * the client sends as little as possible.
+ *
+ * Those old ids are not carried over. It would have been one header on one
+ * request — but the daily leaderboard used to return every player's id to
+ * every client, so they were published rather than secret, and honouring one
+ * would hand anybody who kept a copy of a leaderboard the player it belongs
+ * to. Nothing visible is lost: the life list is new and starts empty for
+ * everyone, and no screen shows a player their past days.
  */
 
 /** Crockford base32 — no I, L, O or U, so a code cannot be misread aloud. */
@@ -131,15 +138,23 @@ export async function hashRecoveryCode(code: string): Promise<string> {
 }
 
 /**
- * The secret the cookie is signed with.
+ * The secret the cookie is signed with, or null when there is none to use.
  *
- * `wrangler dev` has to work without ceremony, and this cookie authenticates
- * an anonymous player holding no personal data — the cost of a weak key in
- * development is that a developer can forge a player id on their own machine.
- * In production the secret is set and this never fires.
+ * `wrangler dev` has to work without ceremony, so a missing secret falls back
+ * to a development key on localhost, where the worst a forged cookie buys is
+ * a player id on the developer's own machine.
+ *
+ * Deployed it returns null instead. The fallback key is in a public
+ * repository: signing real cookies with it would let anyone forge one for any
+ * player and open their life list, and nothing in the deploy makes setting
+ * the secret mandatory, so the failure has to be loud at the first request.
  */
-export function playerSecret(configured: string | undefined): string {
+export function playerSecret(
+  configured: string | undefined,
+  local: boolean
+): string | null {
   if (configured) return configured;
+  if (!local) return null;
   console.warn(
     "PLAYER_SECRET is not set; signing player cookies with a development key"
   );
@@ -173,27 +188,6 @@ export async function insertPlayer(db: D1Database, id: string): Promise<void> {
     .prepare("INSERT OR IGNORE INTO players (id) VALUES (?)")
     .bind(id)
     .run();
-}
-
-/**
- * Whether an id from the old localStorage scheme can be taken over.
- *
- * It can if nothing has claimed it, which during the migration is every
- * such id: the games and daily scores already recorded against it then come
- * with it. Once a row exists the id is spoken for and a fresh one is minted
- * instead, so the window in which a guessed id could be claimed closes as
- * rows appear — and a v4 UUID is not guessable in the first place.
- */
-export async function adoptableLegacyId(
-  db: D1Database,
-  candidate: string | undefined | null
-): Promise<string | null> {
-  if (!candidate || !/^[0-9a-f-]{36}$/i.test(candidate)) return null;
-  const existing = await db
-    .prepare("SELECT 1 FROM players WHERE id = ?")
-    .bind(candidate)
-    .first();
-  return existing ? null : candidate;
 }
 
 /**

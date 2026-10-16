@@ -35,81 +35,42 @@ describe("apiFetch", () => {
   });
 });
 
-describe("carrying the old localStorage player over", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-    vi.resetModules();
-    localStorage.clear();
-  });
+describe("the player cookie", () => {
+  beforeEach(() => vi.restoreAllMocks());
 
   it("test_fetch_sends_the_cookie_with_every_request", async () => {
-    const { apiFetch: freshFetch } = await import("@/shared/api/client");
+    // The player is a signed cookie now. The old scheme sent an id from
+    // localStorage in a header, and the daily leaderboard returned every
+    // player's id to every client — so those ids were published rather than
+    // secret, and honouring one would have handed over the player it names.
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response("{}", { status: 200 })
     );
 
-    await freshFetch("/health");
+    await apiFetch("/health");
     expect(fetch).toHaveBeenCalledWith(
       "/api/health",
       expect.objectContaining({ credentials: "same-origin" })
     );
   });
 
-  it("test_fetch_with_a_stored_id_hands_it_over_before_the_request", async () => {
-    localStorage.setItem("aviguessr_player_id", "old-id");
-    const { apiFetch: freshFetch } = await import("@/shared/api/client");
-    const calls: string[] = [];
-    vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-      calls.push(String(url));
-      return new Response("{}", { status: 200 });
-    });
-
-    await freshFetch("/game/new");
-
-    expect(calls[0]).toBe("/api/player");
-    expect(calls[1]).toBe("/api/game/new");
-    // Handed over once and then forgotten
-    expect(localStorage.getItem("aviguessr_player_id")).toBeNull();
-  });
-
-  it("test_fetch_with_no_stored_id_makes_no_handover_request", async () => {
-    const { apiFetch: freshFetch } = await import("@/shared/api/client");
-    const calls: string[] = [];
-    vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-      calls.push(String(url));
-      return new Response("{}", { status: 200 });
-    });
-
-    await freshFetch("/game/new");
-    expect(calls).toEqual(["/api/game/new"]);
-  });
-
-  it("test_two_first_requests_hand_the_old_id_over_only_once", async () => {
-    // Racing handovers would make the second request find the row the first
-    // had just written, and mint a fresh player instead of adopting this one
-    localStorage.setItem("aviguessr_player_id", "old-id");
-    const { apiFetch: freshFetch } = await import("@/shared/api/client");
-    const calls: string[] = [];
-    vi.spyOn(globalThis, "fetch").mockImplementation(async (url) => {
-      calls.push(String(url));
-      return new Response("{}", { status: 200 });
-    });
-
-    await Promise.all([freshFetch("/daily/status"), freshFetch("/daily/leaderboard")]);
-
-    expect(calls.filter((u) => u === "/api/player")).toHaveLength(1);
-  });
-
-  it("test_a_failed_handover_leaves_the_old_id_for_the_next_load", async () => {
-    localStorage.setItem("aviguessr_player_id", "old-id");
-    const { apiFetch: freshFetch } = await import("@/shared/api/client");
-    vi.spyOn(globalThis, "fetch").mockImplementation(async (url) =>
-      String(url) === "/api/player"
-        ? Promise.reject(new Error("offline"))
-        : new Response("{}", { status: 200 })
+  it("test_fetch_sends_no_player_id_header", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response("{}", { status: 200 })
     );
 
-    await freshFetch("/game/new");
-    expect(localStorage.getItem("aviguessr_player_id")).toBe("old-id");
+    await apiFetch("/game/new");
+    const [, init] = vi.mocked(fetch).mock.calls[0];
+    expect(Object.keys(init?.headers ?? {})).not.toContain("X-Player-Id");
+  });
+
+  it("test_fetch_makes_exactly_one_request", async () => {
+    // Nothing is sent ahead of it: there is no handover to serialise on
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response("{}", { status: 200 })
+    );
+
+    await apiFetch("/game/new");
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });
