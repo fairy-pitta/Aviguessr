@@ -46,6 +46,34 @@ export const ROUND_FAME: Fame[] = [
 ];
 
 /**
+ * Which slot a bird the player has missed before comes back in, counting
+ * from zero.
+ *
+ * Two familiar birds open the game and an obscure one closes it, so round
+ * four is the only slot that can be spent without disturbing either end. A
+ * bogey can be of any fame, which skews the ladder slightly — and that is
+ * the point, because it is the player's own bird rather than a drawn one.
+ */
+export const REUNION_INDEX = 3;
+
+/** The bands still to be drawn, with the reunion slot left out when used. */
+export function drawnFames(hasReunion: boolean): Fame[] {
+  return hasReunion
+    ? ROUND_FAME.filter((_, i) => i !== REUNION_INDEX)
+    : ROUND_FAME;
+}
+
+/** The drawn birds with the reunion bird put back where it belongs. */
+export function withReunion<T>(drawn: T[], reunion: T | null): T[] {
+  if (!reunion) return drawn;
+  return [
+    ...drawn.slice(0, REUNION_INDEX),
+    reunion,
+    ...drawn.slice(REUNION_INDEX),
+  ];
+}
+
+/**
  * Random-pick SQL for one round, excluding `excludeCount` already-picked ids.
  *
  * `playable = 1` skips the species whose image could not be verified: the
@@ -80,12 +108,14 @@ export function distinctFrom(picked: { id: number }[]): number[] {
  */
 export async function getRandomBirdsByFame(
   db: D1Database,
-  fames: Fame[]
+  fames: Fame[],
+  /** Ids already spoken for — the reunion bird, so it is never drawn twice. */
+  excludeIds: number[] = []
 ): Promise<BirdRow[]> {
   const birds: BirdRow[] = [];
 
   for (const fame of fames) {
-    const exclude = distinctFrom(birds);
+    const exclude = [...excludeIds, ...distinctFrom(birds)];
     const band = FAME_BANDS[fame];
     const result =
       (await db
@@ -124,4 +154,12 @@ export async function getBirdWithCountries(
     bird,
     countries: countries.results.map((r: { country_code: string }) => r.country_code),
   };
+}
+
+/** One bird by id, for the reunion slot, which is chosen before it is drawn. */
+export async function getBirdById(
+  db: D1Database,
+  id: number
+): Promise<BirdRow | null> {
+  return db.prepare("SELECT * FROM birds WHERE id = ?").bind(id).first<BirdRow>();
 }
