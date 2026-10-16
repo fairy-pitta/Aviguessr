@@ -30,7 +30,7 @@ dailyRoutes.get("/", async (c) => {
 // GET /api/daily/leaderboard — Returns top scores for today
 dailyRoutes.get("/leaderboard", async (c) => {
   const date = getTodayUTC();
-  const leaderboard = await getDailyLeaderboard(c.env.DB, date);
+  const leaderboard = await getDailyLeaderboard(c.env.DB, date, c.get("playerId"));
   return c.json({ date, leaderboard });
 });
 
@@ -56,5 +56,9 @@ dailyRoutes.post("/score", async (c) => {
     return c.json({ error: "No finished daily game for this player today" }, 400);
   }
 
-  return c.json({ success: true, totalScore: result.totalScore });
+  return c.json({
+    success: true,
+    totalScore: result.totalScore,
+    streakDays: result.streakDays,
+  });
 });

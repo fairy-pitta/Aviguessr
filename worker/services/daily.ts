@@ -280,10 +280,18 @@ export async function recordDailyStreak(
   return next.streak;
 }
 
+/**
+ * Today's ten best.
+ *
+ * Which row is the player's own is marked here rather than compared in the
+ * client, which no longer knows its own id — and the ids of everyone else
+ * have no business leaving the server either.
+ */
 export async function getDailyLeaderboard(
   db: D1Database,
-  date: string
-): Promise<{ playerId: string; totalScore: number; completedAt: string }[]> {
+  date: string,
+  viewerId: string | null = null
+): Promise<{ isYou: boolean; totalScore: number; completedAt: string }[]> {
   const results = await db
     .prepare(
       "SELECT player_id, total_score, completed_at FROM daily_scores WHERE date = ? ORDER BY total_score DESC LIMIT 10"
@@ -292,7 +300,7 @@ export async function getDailyLeaderboard(
     .all<{ player_id: string; total_score: number; completed_at: string }>();
 
   return results.results.map((r) => ({
-    playerId: r.player_id,
+    isYou: viewerId !== null && r.player_id === viewerId,
     totalScore: r.total_score,
     completedAt: r.completed_at,
   }));
@@ -307,7 +315,11 @@ export async function getDailyStatus(
   totalScore: number | null;
   maxScore: number | null;
   roundsJson: string | null;
+  /** Days in a row, which the result page shows whenever it is reached. */
+  streakDays: number;
 }> {
+  const streakDays = (await getPlayer(db, playerId))?.streak_days ?? 0;
+
   const existing = await db
     .prepare(
       "SELECT total_score, rounds_json FROM daily_scores WHERE date = ? AND player_id = ?"
@@ -323,6 +335,7 @@ export async function getDailyStatus(
       // perfect game of these five was worth; it is not a constant any more
       maxScore: await dailyMaximum(db, date),
       roundsJson: existing.rounds_json,
+      streakDays,
     };
   }
 
@@ -331,6 +344,7 @@ export async function getDailyStatus(
     totalScore: null,
     maxScore: null,
     roundsJson: null,
+    streakDays,
   };
 }
 

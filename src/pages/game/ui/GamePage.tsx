@@ -87,6 +87,7 @@ export function GamePage() {
         selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
+        hintCosts={game.currentHintCosts}
         hintsLoading={hintsLoading}
         onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}

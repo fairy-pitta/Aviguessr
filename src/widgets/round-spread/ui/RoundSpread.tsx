@@ -16,6 +16,7 @@ type RoundSpreadProps = {
   selectedCountry: string | null;
   guessLoading: boolean;
   hints: string[];
+  hintCosts: number[];
   hintsLoading: number | null;
   onRevealHint: (level: number) => void;
   onCountrySelect: (code: string) => void;
@@ -43,6 +44,7 @@ export function RoundSpread({
   selectedCountry,
   guessLoading,
   hints,
+  hintCosts,
   hintsLoading,
   onRevealHint,
   onCountrySelect,
@@ -77,6 +79,7 @@ export function RoundSpread({
             roundStartTime={roundStartTime}
             guessLoading={guessLoading}
             hints={hints}
+            hintCosts={hintCosts}
             hintsLoading={hintsLoading}
             onRevealHint={onRevealHint}
             onCountrySelect={onCountrySelect}

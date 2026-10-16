@@ -2,7 +2,8 @@ import { Button, HandRule, BookPage } from "@/shared/ui";
 import type { GameRound } from "@/entities/game";
 
 export type LeaderboardEntry = {
-  playerId: string;
+  /** Marked by the server: the client no longer knows its own player id. */
+  isYou: boolean;
   totalScore: number;
   completedAt: string;
 };
@@ -14,7 +15,8 @@ type DailyResultProps = {
   maxScore: number;
   rounds: GameRound[] | null;
   leaderboard: LeaderboardEntry[];
-  playerId: string;
+  /** Days in a row, or null before the server has said. */
+  streakDays: number | null;
   copied: boolean;
   onShare: () => void;
   onHome: () => void;
@@ -30,7 +32,7 @@ export function DailyResult({
   maxScore,
   rounds,
   leaderboard,
-  playerId,
+  streakDays,
   copied,
   onShare,
   onHome,
@@ -40,8 +42,15 @@ export function DailyResult({
       <div className="flex-1 flex justify-center px-5 py-10 lg:py-16">
         <div className="w-full max-w-2xl">
           <header className="pb-5">
-            <p className="text-base text-[var(--color-ink-soft)] tabular">
-              {date}
+            <p className="flex items-baseline gap-3 text-base text-[var(--color-ink-soft)]">
+              <span className="tabular">{date}</span>
+              {streakDays !== null && streakDays > 0 && (
+                <span className="handwritten text-lg text-[var(--color-ink)]">
+                  {streakDays === 1
+                    ? "first day"
+                    : `${streakDays} days running`}
+                </span>
+              )}
             </p>
             <p className="mt-2 flex items-baseline gap-3">
               <span className="text-6xl font-semibold tabular leading-none">
@@ -90,9 +99,9 @@ export function DailyResult({
               <HandRule />
               <ol>
                 {leaderboard.map((entry, i) => {
-                  const isYou = entry.playerId === playerId;
+                  const isYou = entry.isYou;
                   return (
-                    <li key={entry.playerId}>
+                    <li key={`${i}-${entry.completedAt}`}>
                       <div className="flex items-baseline gap-4 py-2.5">
                         <span className="w-5 shrink-0 text-base text-[var(--color-ink-faint)] tabular">
                           {i + 1}

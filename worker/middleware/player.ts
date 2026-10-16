@@ -12,8 +12,13 @@ import {
 
 export const PLAYER_COOKIE = "avi_pid";
 
-/** Ten years. A life list is a long-lived thing; so is the cookie holding it. */
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 10;
+/**
+ * The longest a cookie may live: browsers cap Max-Age at 400 days and reject
+ * anything longer outright. Every request re-issues it, so a player who keeps
+ * playing never reaches the limit, and one who stops for over a year starts a
+ * new list — which a recovery code is there to prevent.
+ */
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 400;
 
 /**
  * Establishes which player a request belongs to, minting one if it is new.
@@ -30,6 +35,9 @@ export const withPlayer = createMiddleware<Env>(async (c, next) => {
   const signed = await verifyPlayerCookie(getCookie(c, PLAYER_COOKIE), secret);
 
   if (signed) {
+    // Re-issued on every request so the expiry slides forward: a player who
+    // keeps playing never reaches the 400-day cap the browser imposes
+    issuePlayerCookie(c, await signPlayerId(signed, secret));
     c.set("playerId", signed);
     return next();
   }

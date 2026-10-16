@@ -107,3 +107,20 @@ describe("formatFamilyHint", () => {
     );
   });
 });
+
+describe("formatFamilyHint across the New World", () => {
+  it("test_format_family_hint_for_a_new_world_family_reads_as_the_americas", () => {
+    // "North America and South America" is the clumsiest list in the set and
+    // the commonest two-continent range a bird family has
+    expect(formatFamilyHint("Tinamous", "Tinamidae", ["BR", "MX"])).toContain(
+      "the Americas"
+    );
+  });
+
+  it("test_format_family_hint_orders_continents_the_same_way_every_time", () => {
+    // The set comes out in whatever order the countries arrived in
+    const one = formatFamilyHint("Wrens", "Troglodytidae", ["GB", "BR", "CN"]);
+    const other = formatFamilyHint("Wrens", "Troglodytidae", ["CN", "GB", "BR"]);
+    expect(one).toBe(other);
+  });
+});

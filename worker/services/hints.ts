@@ -162,11 +162,31 @@ function placePhrase(countryCodes: string[]): string | null {
   if (subregions.length === 1) candidates.push(label(subregions[0]));
   if (continents.length === 1) candidates.push(label(continents[0]));
   if (continents.length > 1 && continents.length <= 3) {
-    candidates.push(listOf(continents.map(label)));
+    // Sorted, because the set comes out in whatever order the countries were
+    // listed in and the same family should read the same way twice
+    candidates.push(listOf([...continents].sort().map(label)));
   }
   if (continents.length > 3) candidates.push("most of the world");
 
+  const americas = collapseToAmericas(continents);
+  if (americas) candidates.unshift(americas);
+
   return candidates.find((phrase) => !namesACountry(phrase)) ?? null;
+}
+
+/**
+ * "the Americas" rather than "North America and South America".
+ *
+ * Worth the special case: it is the commonest two-continent range a bird
+ * family has, the clumsiest to read as a list, and it is what an
+ * ornithologist would actually say — a New World family.
+ */
+function collapseToAmericas(continents: string[]): string | null {
+  if (continents.length !== 2) return null;
+  const sorted = [...continents].sort();
+  return sorted[0] === "North America" && sorted[1] === "South America"
+    ? "the Americas"
+    : null;
 }
 
 /**

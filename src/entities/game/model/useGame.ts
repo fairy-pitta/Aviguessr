@@ -114,10 +114,13 @@ export function useGame() {
       : null;
 
   const currentBird = currentRoundData?.bird ?? null;
+  /** Priced per bird, so the panel cannot hold them as constants. */
+  const currentHintCosts = currentRoundData?.hintCosts ?? [];
 
   return {
     ...state,
     currentBird,
+    currentHintCosts,
     startGame,
     showResult,
     finish,

@@ -9,19 +9,22 @@ type CreateGameResponse = {
     bird: {
       id: number;
       name: string;
-      family: string | null;
       difficulty: string;
       habitat?: string;
       biome?: string;
       imageUrl: string;
     };
+    /**
+     * What each hint costs this round, as a fraction. The family hint is
+     * priced by the family, so it is not a constant the client can hold.
+     */
+    hintCosts: number[];
   }[];
 };
 
-export function createGame(playerId: string): Promise<CreateGameResponse> {
-  return apiFetch<CreateGameResponse>("/game/new", {
-    headers: { "X-Player-Id": playerId },
-  });
+export function createGame(): Promise<CreateGameResponse> {
+  // The player is a signed cookie the client never reads
+  return apiFetch<CreateGameResponse>("/game/new");
 }
 
 export function getGameState(id: string): Promise<GameState> {
@@ -43,6 +46,8 @@ export function submitGuess(
 type HintResponse = {
   level: number;
   hint: string;
+  /** What it actually cost, which for the family hint varies by bird. */
+  penalty: number;
 };
 
 export function getHint(

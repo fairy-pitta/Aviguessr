@@ -1,14 +1,22 @@
 type HintPanelProps = {
   hints: string[];
+  /**
+   * What each level costs this round, as a fraction.
+   *
+   * The family hint is priced by how much the family narrows the world, so
+   * it is not a constant the client can hold: "Hawks and Eagles" is worth
+   * far less than a family confined to one island. The server sends the
+   * prices with the round, before the player commits to any of them.
+   */
+  costs: number[];
   loading: number | null;
   onReveal: (level: number) => void;
 };
 
-/** Cost per level, matching HINT_PENALTIES on the server. */
-const HINT_LEVELS = [
-  { label: "Which continents", cost: 15 },
-  { label: "Which regions", cost: 30 },
-];
+const HINT_LABELS = ["Which continents", "Which family"];
+
+/** The prices the server quotes before any of them has arrived. */
+const FALLBACK_COSTS = [0.15, 0.3];
 
 /**
  * A strip in the margin rather than a panel over the map — a hint that named
@@ -17,16 +25,17 @@ const HINT_LEVELS = [
  * An unbought hint is printed as an offer. Once bought it becomes a note the
  * player wrote themselves, so it switches to the hand.
  */
-export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
+export function HintPanel({ hints, costs, loading, onReveal }: HintPanelProps) {
   return (
     <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
-      {HINT_LEVELS.map((level, i) => {
+      {HINT_LABELS.map((label, i) => {
         const hint = hints[i];
         const isLoading = loading === i + 1;
+        const cost = Math.round((costs[i] ?? FALLBACK_COSTS[i]) * 100);
 
         if (hint != null) {
           return (
-            <p key={level.label} className="relative pl-4">
+            <p key={label} className="relative pl-4">
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -50,7 +59,7 @@ export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
 
         return (
           <button
-            key={level.label}
+            key={label}
             type="button"
             disabled={isLoading}
             onClick={() => onReveal(i + 1)}
@@ -58,10 +67,10 @@ export function HintPanel({ hints, loading, onReveal }: HintPanelProps) {
           >
             <span className="flex items-baseline gap-2">
               <span className="text-sm font-medium text-[var(--color-ink)]">
-                {isLoading ? "Revealing" : level.label}
+                {isLoading ? "Revealing" : label}
               </span>
               <span className="text-sm text-[var(--color-ink-soft)] tabular">
-                costs {level.cost}%
+                costs {cost}%
               </span>
             </span>
             <span
