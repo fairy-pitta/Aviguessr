@@ -105,7 +105,20 @@ export function ResultPage({ result, guessedCountry, onNext }: ResultPageProps) 
       <footer className="px-5 lg:px-8 py-4">
         <dl className="flex items-baseline gap-6">
           <div>
-            <dt className="text-sm text-[var(--color-ink-soft)]">Distance</dt>
+            <dt className="text-sm text-[var(--color-ink-soft)]">
+              Distance
+              {/*
+                Why this round was worth what it was. Being right about a
+                bird found in one country says far more than being right
+                about one found in 150, so the round is worth more.
+              */}
+              {result.rangeWeight != null &&
+                Math.abs(result.rangeWeight - 1) >= 0.05 && (
+                  <span className="ml-1.5 text-[var(--color-ink-faint)] tabular">
+                    &times;{result.rangeWeight.toFixed(2)}
+                  </span>
+                )}
+            </dt>
             <dd className="text-xl font-semibold tabular">
               {distanceScore.toLocaleString()}
             </dd>

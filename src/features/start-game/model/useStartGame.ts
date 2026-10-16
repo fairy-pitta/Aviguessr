@@ -9,6 +9,7 @@ export function useStartGame() {
   const start = useCallback(
     async (): Promise<{
       gameId: string;
+      maxScore: number;
       rounds: GameRound[];
     } | null> => {
       setLoading(true);
@@ -16,6 +17,7 @@ export function useStartGame() {
         const data = await createGame(getOrCreatePlayerId());
         return {
           gameId: data.gameId,
+          maxScore: data.maxScore,
           rounds: data.rounds.map((r) => ({
             round: r.round,
             bird: r.bird,

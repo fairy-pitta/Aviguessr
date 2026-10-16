@@ -23,9 +23,12 @@ export function GamePage() {
   // Initialize game from navigation state
   useEffect(() => {
     if (id && game.phase === "idle") {
-      const state = location.state as { rounds?: GameRound[] } | null;
+      const state = location.state as {
+        rounds?: GameRound[];
+        maxScore?: number;
+      } | null;
       if (state?.rounds) {
-        game.startGame(id, state.rounds);
+        game.startGame(id, state.rounds, state.maxScore);
       }
     }
   }, [id, game.phase, location.state, game.startGame]);
@@ -99,6 +102,7 @@ export function GamePage() {
       <GameSummary
         rounds={game.rounds}
         totalScore={game.totalScore}
+        maxScore={game.maxScore}
         onPlayAgain={handlePlayAgain}
       />
     );

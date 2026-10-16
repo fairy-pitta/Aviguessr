@@ -28,6 +28,17 @@ answering inside the 30-second limit. The speed bonus is scaled by how close
 the answer was: clicking instantly on the wrong continent is worth almost
 nothing, so thinking is never the expensive option.
 
+A round is then worth more or less by how narrow the bird's range is. Being
+right about a bird recorded in 150 countries says almost nothing — there are
+150 right answers out of 185 — while a bird found in one country has exactly
+one. The weight runs from about ×1.23 for an endemic down towards ×0.70 for
+a cosmopolitan bird, anchored so that the median range of four countries is
+worth what it always was. It is a smooth curve, so no single country added to
+a range ever costs a step.
+
+That makes a perfect game worth a different amount every time, so the tally
+measures against this game's own maximum rather than a constant.
+
 **Answering** is by typing the country's name or by pointing at it on the
 map. The map alone meant zooming to the country first, which is hopeless at
 speed for Luxembourg or Singapore; the map is still the range map you are

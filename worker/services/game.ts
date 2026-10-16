@@ -7,6 +7,14 @@ import {
 } from "./birds";
 import { describeRange } from "./range";
 import { questionName } from "./species-name";
+import {
+  rangeWeight,
+  roundMaximum,
+  gameMaximum,
+  MAX_ROUND_SCORE,
+} from "./range-weight";
+
+export { MAX_ROUND_SCORE } from "./range-weight";
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -28,9 +36,6 @@ function haversineDistance(
       Math.sin(dLng / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-
-/** What a perfect answer is worth before speed, hints and streak. */
-export const MAX_ROUND_SCORE = 5000;
 
 function calculateScore(distanceKm: number): number {
   return Math.round(MAX_ROUND_SCORE * Math.exp(-distanceKm / 2000));
@@ -199,6 +204,10 @@ export async function createGame(
 
   return {
     gameId,
+    // What a perfect game of these five is worth: a game of narrow-ranging
+    // birds is worth more than one of cosmopolitan ones, so the tally cannot
+    // measure against a constant
+    maxScore: gameMaximum(birds.map((b) => b.range_size)),
     rounds: birds.map((bird, i) => ({
       round: i + 1,
       bird: {
@@ -313,11 +322,20 @@ export async function submitGuess(
     birdData.countries
   );
 
+  // How accurate the answer was, before the bird's range is taken into
+  // account. The speed bonus rides on this rather than on the weighted
+  // score, so a narrow range cannot buy a bigger bonus than the clock gave.
+  const accuracyScore = isCorrect ? MAX_ROUND_SCORE : calculateScore(distance);
+
+  // What the round is worth: being right about a bird found in one country
+  // says far more than being right about one found in 150.
+  const weight = rangeWeight(birdData.countries.length);
+  const roundMax = roundMaximum(birdData.countries.length);
+
   const hintPenalty = Math.max(0, 1 - hintPenaltyFromMask(hintMask));
-  const maxDistanceScore = Math.round(MAX_ROUND_SCORE * hintPenalty);
-  const rawScore = isCorrect ? MAX_ROUND_SCORE : calculateScore(distance);
-  const score = Math.min(rawScore, maxDistanceScore);
-  const timeBonus = earnedTimeBonus(timeMs, rawScore);
+  const rawScore = Math.round(accuracyScore * weight);
+  const score = Math.min(rawScore, Math.round(roundMax * hintPenalty));
+  const timeBonus = earnedTimeBonus(timeMs, accuracyScore);
 
   // Calculate streak from previous consecutive correct answers
   const prevRounds = await db
@@ -392,6 +410,9 @@ export async function submitGuess(
     totalScore: newTotalScore,
     gameFinished: isLastRound,
     speciesName: birdData.bird.name,
+    /** What this bird's range made the round worth, for the result page. */
+    rangeWeight: weight,
+    roundMax,
     rangeDescription: describeRange(birdData.countries),
     funFact: birdData.bird.fun_fact ?? null,
   };

@@ -7,6 +7,8 @@ import type {
 
 type GameHookState = {
   gameId: string | null;
+  /** A perfect game of these five birds, which varies with their ranges. */
+  maxScore: number;
   phase: GamePhase;
   rounds: GameRound[];
   currentRound: number;
@@ -18,6 +20,7 @@ type GameHookState = {
 
 const initialState: GameHookState = {
   gameId: null,
+  maxScore: 0,
   phase: "idle",
   rounds: [],
   currentRound: 1,
@@ -31,9 +34,10 @@ export function useGame() {
   const [state, setState] = useState<GameHookState>(initialState);
 
   const startGame = useCallback(
-    (gameId: string, rounds: GameRound[]) => {
+    (gameId: string, rounds: GameRound[], maxScore = 0) => {
       setState({
         gameId,
+        maxScore,
         phase: "playing",
         rounds,
         currentRound: 1,

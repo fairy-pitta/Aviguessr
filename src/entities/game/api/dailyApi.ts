@@ -1,6 +1,8 @@
 import { apiFetch } from "@/shared/api/client";
 
 type DailyChallengeResponse = {
+  /** A perfect game of the day's five birds, which varies with their ranges. */
+  maxScore: number;
   date: string;
   gameId: string;
   rounds: {
@@ -16,6 +18,7 @@ type DailyChallengeResponse = {
 };
 
 type DailyStatusResponse = {
+  maxScore: number | null;
   date: string;
   completed: boolean;
   totalScore: number | null;
