@@ -1,5 +1,4 @@
 import { CENTROIDS } from "../data/centroids";
-import { REGIONS } from "../data/regions";
 import {
   getRandomBirdsByFame,
   getBirdWithCountries,
