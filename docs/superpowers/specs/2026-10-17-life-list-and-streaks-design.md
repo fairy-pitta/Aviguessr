@@ -51,8 +51,11 @@ CREATE TABLE players (
 ```
 
 A Hono middleware on `/api/*` reads `avi_pid`, verifies it, and puts the id on
-the context. The cookie is `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age` ten
-years, and `Secure` outside local development. Its value is `<uuid>.<hmac>`,
+the context. The cookie is `HttpOnly`, `SameSite=Lax`, `Path=/`, `Secure`
+outside local development, and `Max-Age` 400 days — the longest a browser
+will accept, which is why it is re-issued on every request so the expiry
+slides forward and a player who keeps playing never reaches it. Its value is
+`<uuid>.<hmac>`,
 the HMAC being SHA-256 over the uuid keyed by `env.PLAYER_SECRET`. The client
 never learns the id and never sends it; this fits the server-is-the-authority
 line the scoring already takes.
@@ -106,7 +109,9 @@ costs one round trip. `submitGuess` reads the owning `games` row anyway, so
 the player id is in hand.
 
 `last_guess` exists for one sentence on the result page. It is worth a column:
-"you said Brazil last time" is the line that makes a re-encounter land.
+"you said Brazil last time" is the line that makes a re-encounter land. A
+round that ran out of time submits a placeholder rather than a country, and
+that is stored as null — there is no sentence for it.
 
 **The page** is `/list`, in the book's own language — ruled columns, grouped
 by family, no cards. Per row: the species, how many times it has come up, how
@@ -154,7 +159,9 @@ the next tanager unaided. Level one, the continents, is unchanged — it is the
 cheap, purely geographic option, and it should stay available as exactly that.
 
 **It never names a country.** The range half of the sentence is continent
-granularity, or subregion when the family sits inside one. The project's
+granularity, or subregion when the family sits inside one — and "the
+Americas" for the New World families, which are both the commonest
+two-continent range a bird family has and the clumsiest to read as a list. The project's
 existing rule is that no hint names a country because the country is the
 answer, and a family hint for the asities would otherwise read "only in
 Madagascar". A player who knows what an asity is still knows; that is
