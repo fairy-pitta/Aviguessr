@@ -46,14 +46,48 @@ export function useGame() {
     []
   );
 
-  const showResult = useCallback((result: GuessResponse) => {
-    setState((prev) => ({
-      ...prev,
-      phase: result.gameFinished ? "finished" : "showingResult",
-      totalScore: result.totalScore,
-      currentStreak: result.isCorrect ? result.streakLength + 1 : 0,
-      lastResult: { ...result, round: prev.currentRound },
-    }));
+  /**
+   * Records a round's answer.
+   *
+   * The result page is shown for every round including the last. It used to
+   * go straight to the tally once the server said the game was over, so the
+   * fifth bird was the one round whose range map, species account and verdict
+   * the player never saw — the round they most wanted them for.
+   *
+   * The result is also written against its round, because the tally reads
+   * those. Nothing wrote them, so every game ended "0 of 5 within range"
+   * with no score beside any bird.
+   */
+  const showResult = useCallback(
+    (result: GuessResponse, guessedCountry = "") => {
+      setState((prev) => ({
+        ...prev,
+        phase: "showingResult",
+        totalScore: result.totalScore,
+        currentStreak: result.isCorrect ? result.streakLength + 1 : 0,
+        lastResult: { ...result, round: prev.currentRound },
+        rounds: prev.rounds.map((round) =>
+          round.round === prev.currentRound
+            ? {
+                ...round,
+                result: {
+                  guessedCountry,
+                  isCorrect: result.isCorrect,
+                  distanceKm: result.distanceKm,
+                  score: result.score,
+                  timeMs: 0,
+                },
+              }
+            : round
+        ),
+      }));
+    },
+    []
+  );
+
+  /** Turn the last page: the tally, once the player has read the fifth result. */
+  const finish = useCallback(() => {
+    setState((prev) => ({ ...prev, phase: "finished" }));
   }, []);
 
   const nextRound = useCallback(() => {
@@ -82,6 +116,7 @@ export function useGame() {
     currentBird,
     startGame,
     showResult,
+    finish,
     nextRound,
     reset,
   };
