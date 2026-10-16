@@ -4,6 +4,7 @@ import {
   getBirdWithCountries,
   getBirdById,
   drawnFames,
+  reunionIndex,
   withReunion,
 } from "./birds";
 import {
@@ -191,24 +192,26 @@ function getMinDistanceToCorrectCountry(
  * has met and never named — when they have one.
  *
  * The reunion bird is chosen first and excluded from the draw, so a game
- * never shows the same species twice. With no bogeys on the list the slot
- * falls back to the band it has always drawn from, which is also what a
- * brand-new player gets.
+ * never shows the same species twice. Which of the two middle rounds it
+ * takes is drawn too, so its position does not announce it. With no bogeys
+ * on the list both rounds fall back to the band they have always drawn
+ * from, which is also what a brand-new player gets.
  */
 async function composeRounds(db: D1Database, playerId: string | null) {
   const reunionId = playerId
     ? pickReunionBird(await getBogeyCandidates(db, playerId), Math.random())
     : null;
   const reunion = reunionId ? await getBirdById(db, reunionId) : null;
+  const slot = reunion ? reunionIndex(Math.random()) : null;
 
   const drawn = await getRandomBirdsByFame(
     db,
-    drawnFames(reunion !== null),
+    drawnFames(slot),
     reunion ? [reunion.id] : []
   );
 
   return {
-    birds: withReunion(drawn, reunion),
+    birds: withReunion(drawn, reunion, slot ?? 0),
     reunionBirdId: reunion?.id ?? null,
   };
 }

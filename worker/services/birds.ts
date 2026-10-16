@@ -46,31 +46,42 @@ export const ROUND_FAME: Fame[] = [
 ];
 
 /**
- * Which slot a bird the player has missed before comes back in, counting
+ * The slots a bird the player has missed before can come back in, counting
  * from zero.
  *
- * Two familiar birds open the game and an obscure one closes it, so round
- * four is the only slot that can be spent without disturbing either end. A
- * bogey can be of any fame, which skews the ladder slightly — and that is
+ * Two familiar birds open the game and an obscure one closes it, so the two
+ * middle rounds are the ones that can be spent without disturbing either
+ * end. Both draw the same band, so using either leaves the ladder as it was.
+ *
+ * There are two of them rather than one because the round withholds that it
+ * is a re-encounter: knowing a bird is one you have met narrows it to your
+ * own list. A fixed slot would have given that away by its position alone,
+ * which makes the withholding theatre.
+ *
+ * A bogey can be of any fame, which skews the ladder slightly — and that is
  * the point, because it is the player's own bird rather than a drawn one.
  */
-export const REUNION_INDEX = 3;
+export const REUNION_SLOTS = [2, 3] as const;
+
+/** Which slot this game gives over, from a roll in [0, 1). */
+export function reunionIndex(roll: number): number {
+  const i = Math.floor(Math.min(Math.max(roll, 0), 0.999999) * REUNION_SLOTS.length);
+  return REUNION_SLOTS[i];
+}
 
 /** The bands still to be drawn, with the reunion slot left out when used. */
-export function drawnFames(hasReunion: boolean): Fame[] {
-  return hasReunion
-    ? ROUND_FAME.filter((_, i) => i !== REUNION_INDEX)
-    : ROUND_FAME;
+export function drawnFames(index: number | null): Fame[] {
+  return index === null ? ROUND_FAME : ROUND_FAME.filter((_, i) => i !== index);
 }
 
 /** The drawn birds with the reunion bird put back where it belongs. */
-export function withReunion<T>(drawn: T[], reunion: T | null): T[] {
+export function withReunion<T>(
+  drawn: T[],
+  reunion: T | null,
+  index: number
+): T[] {
   if (!reunion) return drawn;
-  return [
-    ...drawn.slice(0, REUNION_INDEX),
-    reunion,
-    ...drawn.slice(REUNION_INDEX),
-  ];
+  return [...drawn.slice(0, index), reunion, ...drawn.slice(index)];
 }
 
 /**
