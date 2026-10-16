@@ -28,11 +28,13 @@ end on a single busy Tuesday.
 shown, not when it is named — that is what a life list is — and each row
 records how often the bird has come up, how often it was placed, and the best
 the player has done on it. So the birds never placed are a query rather than
-a second list, and round four of a new game is drawn from them: a bird you
-have missed comes back, weighted so the one you have missed most comes back
-soonest. You are not told during the round. Knowing a bird is one you have
-seen narrows it to your own list, which is a substantial hint for nothing; it
-is said afterwards, where it is the payoff.
+a second list, and one of the middle rounds of a new game is drawn from
+them: a bird you have missed comes back, weighted so the one you have missed
+most comes back soonest. Which of the two it is varies from game to game,
+and you are not told during the round. Knowing a bird is one you have seen
+narrows it to your own list, which is a substantial hint for nothing — and a
+fixed round would have given it away by its position before the photograph
+had been looked at. It is said afterwards, where it is the payoff.
 
 The daily challenge has no reunion round. Everyone gets the same five birds.
 
@@ -100,11 +102,12 @@ player cookies with:
 wrangler secret put PLAYER_SECRET   # any long random string
 ```
 
-Local development falls back to a development key and warns, so `npm run
-dev:worker` needs nothing set. In production the fallback would mean anyone
-could forge a player id, and with it somebody else's life list.
- To build a local
-database from scratch:
+A request to localhost falls back to a development key and warns, so `npm
+run dev:worker` needs nothing set. A deployed request with no secret fails
+instead: the fallback key is in this repository, and signing real cookies
+with it would let anyone forge one for any player and open their life list.
+
+To build a local database from scratch:
 
 ```bash
 ./node_modules/.bin/wrangler d1 execute aviguessr-db --local --file=worker/db/schema.sql
@@ -119,7 +122,7 @@ npm run build:species-sql && npm run import:species -- --local
 ```
 src/          React 19 + React Router, feature-sliced (app/pages/widgets/features/entities/shared)
 worker/       Hono on Cloudflare Workers
-  middleware/ the signed player cookie, established before any route runs
+  middleware/ the signed player cookie, on the routes that need a player
   routes/     /api/game, /api/birds, /api/daily, /api/player, /api/life-list
   services/   game, daily, birds, hints, life-list, player, streak — the rules
   db/         schema.sql plus numbered migrations
@@ -136,9 +139,13 @@ kept in localStorage and put in a header, so one player could send another's
 id and clearing site data lost the account. Neither mattered for a single
 day's leaderboard row; a life list accumulates for months. The id now lives in
 an HttpOnly cookie signed with `PLAYER_SECRET`, which the client never reads.
-An old localStorage id is handed over once — in a request everything else
-waits on, because two racing handovers would mint a fresh player and lose the
-list the handover exists to save.
+
+Those old ids are not carried over. It would have been one header on one
+request, but the leaderboard used to return every player's id to every
+client — they were published rather than secret, and honouring one would
+hand anybody holding a copy of a leaderboard the player it belongs to.
+Nothing visible is lost: the life list is new and starts empty for everyone,
+and no screen shows a player their past days.
 
 There is no login. A recovery code — twelve characters of Crockford base32,
 shown once, stored only as a hash — carries a list to another device.

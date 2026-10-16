@@ -60,19 +60,28 @@ the HMAC being SHA-256 over the uuid keyed by `env.PLAYER_SECRET`. The client
 never learns the id and never sends it; this fits the server-is-the-authority
 line the scoring already takes.
 
-With no secret configured the middleware falls back to a development key and
-warns. Local `wrangler dev` has to work without ceremony, and the cookie
-authenticates an anonymous player holding no personal data — the cost of a
-weak key in development is that a developer could forge a player id on their
-own machine.
+With no secret configured a request to localhost falls back to a development
+key and warns, because `wrangler dev` has to work without ceremony and the
+worst a forged cookie buys there is a player id on the developer's own
+machine. A deployed request fails instead: the fallback key is in a public
+repository, nothing in the deploy makes setting the secret mandatory, and a
+warning in the logs is not a guard.
 
-**Adopting the old id.** On a request with no cookie, the client sends its
-localStorage UUID once in `X-Player-Id`. If no `players` row has that id, the
-server adopts it: inserts the row, sets the cookie, and the games and daily
-scores already recorded against that id come with it. Any id that has a row
-is refused and a fresh one minted. The window where a guessed UUID could be
-claimed closes as rows appear, and a v4 UUID is not guessable. The client
-clears localStorage once a cookie comes back.
+The middleware is mounted on the routes that need a player rather than on all
+of `/api/*`. Minting writes a row, and in front of `/api/health` and the
+image route that meant an uptime monitor or a hotlinked photograph wrote one
+on every call. `/player/restore` is exempt too — it is how a device with no
+player gets one, and minting a throwaway first would set a second cookie on
+the same response and leave its row behind.
+
+**The old ids are not carried over.** The first draft of this adopted a
+localStorage UUID sent once in `X-Player-Id`, on the reasoning that a v4 UUID
+is not guessable. That reasoning was wrong: `getDailyLeaderboard` returned
+`playerId` for every row of the daily top ten, so the ids were published to
+every client rather than secret, and anyone holding a copy of a leaderboard
+could have claimed the player it named. Nothing visible is lost by dropping
+it — the life list is new and starts empty for everyone, and no screen shows
+a player their past days.
 
 **The recovery code** is minted only when asked for. Twelve characters of
 Crockford base32 (no I, L, O or U) shown as `XXXX-XXXX-XXXX`, about 60 bits,
@@ -121,20 +130,24 @@ still outstanding.
 
 ## 3. The reunion slot
 
-`ROUND_FAME` stops being a constant and becomes a plan built per game. **Round
-four** is drawn from the player's bogeys; with no bogeys it falls back to the
-`known` band it has today.
+`ROUND_FAME` stops being a constant and becomes a plan built per game. **One
+of the two middle rounds**, drawn per game, is given to the player's bogeys;
+with no bogeys both fall back to the `known` band they have today.
 
-Round four because the shape of a game is deliberate — two familiar birds to
-open, an obscure one to close — and four is the only slot that can be spent
-without disturbing either end. A bogey can be of any fame, which skews the
+The middle because the shape of a game is deliberate — two familiar birds to
+open, an obscure one to close — and those are the slots that can be spent
+without disturbing either end. Both draw the same band, so which one is used
+leaves the ladder identical. Two rather than one because the round withholds
+that it is a re-encounter, and a fixed slot would give that away by position
+alone, which makes the withholding theatre. A bogey can be of any fame, which skews the
 ladder slightly, and that is fine: it is *your* bird, and that is the point.
 
 Among bogeys, the pick is weighted by how many times the bird has been missed,
 so a true nemesis comes back sooner than a bird missed once. Weighted, not
 sorted: a deterministic pick would show the same bird every game until it was
 finally named. The candidate list is fetched (at most twenty, worst first) and
-the weighted draw happens in TypeScript, where it can be tested.
+the weighted draw happens in TypeScript, where it can be tested. So is the
+choice of slot.
 
 The reunion bird is chosen first, then excluded from the other four, so a game
 never shows a species twice.
@@ -232,6 +245,18 @@ tested directly under the existing naming convention
 
 - `migration-007-players-and-life-list.sql` — both tables and their indexes
 - no migration for the family hint; it reads what is already there
+
+## What review changed
+
+A review of the finished branch found ten things. Four are recorded above
+because they changed the design rather than the code: the legacy handover was
+removed outright, the development secret now fails closed when deployed, the
+middleware moved off the routes that have no player, and the reunion slot
+stopped being a fixed round. The rest were local — the summary is counted in
+the database instead of by reading the whole list, the forgiven absence is
+charged to the month the day was missed in rather than the month of the
+return, a timed-out re-encounter no longer erases the stored previous guess,
+and a family with no range data is quoted the price it will be charged.
 
 ---
 
