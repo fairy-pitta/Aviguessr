@@ -254,6 +254,12 @@ export async function getFamilyCountries(
  *
  * A game needs all five prices before the player sees round one, because a
  * hint is priced before they commit to buying it.
+ *
+ * Every family asked for comes back with a price, including one the join
+ * drops for having no country records at all. Left out of the map it would
+ * be quoted the median family's price and then charged the floor, because
+ * that is what the charge computes from a count of zero — a quote and a
+ * charge that disagree, even in the player's favour, is a bug.
  */
 export async function getFamilyHintCosts(
   db: D1Database,
@@ -273,7 +279,11 @@ export async function getFamilyHintCosts(
     .bind(...wanted)
     .all<{ family: string; countries: number }>();
 
-  return new Map(rows.results.map((r) => [r.family, familyHintCost(r.countries)]));
+  const costs = new Map(wanted.map((family) => [family, familyHintCost(0)]));
+  for (const row of rows.results) {
+    costs.set(row.family, familyHintCost(row.countries));
+  }
+  return costs;
 }
 
 /** How many countries one family occupies, for pricing a hint already taken. */

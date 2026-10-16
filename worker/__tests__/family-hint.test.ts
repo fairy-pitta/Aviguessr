@@ -124,3 +124,12 @@ describe("formatFamilyHint across the New World", () => {
     expect(one).toBe(other);
   });
 });
+
+describe("the quoted price and the charged price", () => {
+  it("test_a_family_with_no_range_data_is_quoted_what_it_will_be_charged", () => {
+    // The quote comes from a join that drops such a family; the charge comes
+    // from a count of zero. Both must land on the floor, not one on each.
+    expect(familyHintCost(0)).toBe(familyHintCost(0));
+    expect(familyHintCost(0)).toBeLessThan(familyHintCost(FAMILY_HINT_MEDIAN_RANGE));
+  });
+});

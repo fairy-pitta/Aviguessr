@@ -37,7 +37,7 @@ ON CONFLICT(player_id, bird_id) DO UPDATE SET
   encounters   = encounters + 1,
   correct      = correct + excluded.correct,
   best_score   = MAX(best_score, excluded.best_score),
-  last_guess   = excluded.last_guess,
+  last_guess   = COALESCE(excluded.last_guess, last_guess),
   last_seen_at = datetime('now')`;
 
 export function recordEncounter(
@@ -89,7 +89,31 @@ export async function getLifeList(
   return rows.results;
 }
 
-/** The three numbers the home page and the list header both want. */
+/**
+ * The same three numbers counted in the database.
+ *
+ * The home page asks for them on every visit, and it has no use for the
+ * rows — reading the player's whole list to throw it away made the title
+ * page the most expensive screen in the app for the players furthest in.
+ */
+export async function countLifeList(
+  db: D1Database,
+  playerId: string
+): Promise<{ species: number; named: number; bogeys: number }> {
+  const row = await db
+    .prepare(
+      `SELECT COUNT(*) AS species, SUM(correct > 0) AS named
+         FROM life_list WHERE player_id = ?`
+    )
+    .bind(playerId)
+    .first<{ species: number; named: number | null }>();
+
+  const species = row?.species ?? 0;
+  const named = row?.named ?? 0;
+  return { species, named, bogeys: species - named };
+}
+
+/** The three numbers the list header wants, from rows it already has. */
 export function summarizeLifeList(rows: LifeListRow[]): {
   species: number;
   named: number;
