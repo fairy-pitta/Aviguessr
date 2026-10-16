@@ -8,6 +8,20 @@
  * a second table that could drift out of step with the first.
  */
 
+import { COUNTRY_NAMES } from "../data/countries";
+
+/**
+ * The guess worth remembering, or null.
+ *
+ * A round that runs out of time submits a placeholder rather than a country,
+ * and the result page turns the last guess into a sentence — "you said
+ * Brazil last time". There is no sentence for a placeholder, so it is not
+ * recorded as one.
+ */
+export function recordedGuess(countryCode: string): string | null {
+  return countryCode in COUNTRY_NAMES ? countryCode : null;
+}
+
 /**
  * One guess, folded into the player's row for that bird.
  *
@@ -39,7 +53,7 @@ export function recordEncounter(
       birdId,
       outcome.isCorrect ? 1 : 0,
       outcome.score,
-      outcome.guessedCountry
+      recordedGuess(outcome.guessedCountry)
     );
 }
 

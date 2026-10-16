@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   LIFE_LIST_UPSERT,
   pickReunionBird,
+  recordedGuess,
   summarizeLifeList,
   type BogeyCandidate,
   type LifeListRow,
@@ -105,5 +106,21 @@ describe("pickReunionBird", () => {
     // Weights of zero would make the interval empty; every candidate is a
     // bird the player has met and never named, so none is ineligible
     expect(pickReunionBird([bogey(1, 0), bogey(2, 0)], 0.6)).toBe(2);
+  });
+});
+
+describe("recordedGuess", () => {
+  it("test_recorded_guess_for_a_real_country_keeps_the_code", () => {
+    expect(recordedGuess("BR")).toBe("BR");
+  });
+
+  it("test_recorded_guess_for_a_timed_out_round_records_nothing", () => {
+    // A round that ran out of time submits a placeholder, not a country, and
+    // "you said __TIMEOUT__ last time" is not a sentence
+    expect(recordedGuess("__TIMEOUT__")).toBeNull();
+  });
+
+  it("test_recorded_guess_for_an_unknown_code_records_nothing", () => {
+    expect(recordedGuess("ZZ")).toBeNull();
   });
 });
