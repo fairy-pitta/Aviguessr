@@ -39,6 +39,7 @@ describe("GameSummary", () => {
         totalScore={21400}
         maxScore={36000}
         onPlayAgain={vi.fn()}
+        onSeeList={vi.fn()}
       />
     );
     expect(screen.getByText("21,400")).toBeInTheDocument();
@@ -52,6 +53,7 @@ describe("GameSummary", () => {
         totalScore={21400}
         maxScore={36000}
         onPlayAgain={vi.fn()}
+        onSeeList={vi.fn()}
       />
     );
     expect(screen.getByText("Sparrow")).toBeInTheDocument();
@@ -67,9 +69,42 @@ describe("GameSummary", () => {
         totalScore={21400}
         maxScore={36000}
         onPlayAgain={onPlayAgain}
+        onSeeList={vi.fn()}
       />
     );
     fireEvent.click(screen.getByText("Start a new round"));
     expect(onPlayAgain).toHaveBeenCalledOnce();
+  });
+});
+
+describe("GameSummary reaching the life list", () => {
+  it("test_render_offers_the_life_list_beside_a_new_game", () => {
+    // The five birds have just joined it and the player has just been told
+    // what they missed, which is when they most want to look
+    render(
+      <GameSummary
+        rounds={[]}
+        totalScore={0}
+        maxScore={0}
+        onPlayAgain={vi.fn()}
+        onSeeList={vi.fn()}
+      />
+    );
+    expect(screen.getByText("Your life list")).toBeInTheDocument();
+  });
+
+  it("test_clicking_the_life_list_calls_through", () => {
+    const onSeeList = vi.fn();
+    render(
+      <GameSummary
+        rounds={[]}
+        totalScore={0}
+        maxScore={0}
+        onPlayAgain={vi.fn()}
+        onSeeList={onSeeList}
+      />
+    );
+    fireEvent.click(screen.getByText("Your life list"));
+    expect(onSeeList).toHaveBeenCalledTimes(1);
   });
 });

@@ -178,6 +178,8 @@ export function DailyPage() {
     maxScore,
   ]);
 
+  const handleSeeList = useCallback(() => navigate("/list"), [navigate]);
+
   const handleHome = useCallback(() => {
     game.reset();
     navigate("/");
@@ -213,6 +215,7 @@ export function DailyPage() {
         copied={copied}
         onShare={handleShare}
         onHome={handleHome}
+        onSeeList={handleSeeList}
       />
     );
   }
@@ -256,6 +259,7 @@ export function DailyPage() {
         copied={copied}
         onShare={handleShare}
         onHome={handleHome}
+        onSeeList={handleSeeList}
       />
     );
   }

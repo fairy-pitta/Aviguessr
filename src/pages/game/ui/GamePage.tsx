@@ -59,6 +59,8 @@ export function GamePage() {
     }
   }, [game.lastResult, game.nextRound, game.finish]);
 
+  const handleSeeList = useCallback(() => navigate("/list"), [navigate]);
+
   const handlePlayAgain = useCallback(() => {
     game.reset();
     navigate("/");
@@ -105,6 +107,7 @@ export function GamePage() {
         totalScore={game.totalScore}
         maxScore={game.maxScore}
         onPlayAgain={handlePlayAgain}
+        onSeeList={handleSeeList}
       />
     );
   }

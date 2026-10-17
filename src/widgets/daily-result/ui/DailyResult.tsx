@@ -20,6 +20,8 @@ type DailyResultProps = {
   copied: boolean;
   onShare: () => void;
   onHome: () => void;
+  /** The list the day's five birds have just joined. */
+  onSeeList: () => void;
 };
 
 /**
@@ -36,6 +38,7 @@ export function DailyResult({
   copied,
   onShare,
   onHome,
+  onSeeList,
 }: DailyResultProps) {
   return (
     <BookPage>
@@ -130,6 +133,9 @@ export function DailyResult({
           <div className="mt-8 flex items-center gap-4">
             <Button onClick={onShare}>
               {copied ? "Copied" : "Copy your result"}
+            </Button>
+            <Button variant="ghost" onClick={onSeeList}>
+              Your life list
             </Button>
             <Button variant="ghost" onClick={onHome}>
               Back to the guide
