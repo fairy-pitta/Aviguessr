@@ -4,7 +4,6 @@ import { useGame } from "@/entities/game";
 import { useGuess } from "@/features/guess-country";
 import { useHints } from "@/features/hint-system";
 import { RoundSpread } from "@/widgets/round-spread";
-import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import { DailyResult } from "@/widgets/daily-result";
 import {
   getDailyChallenge,
@@ -16,7 +15,8 @@ import { Button } from "@/shared/ui";
 import type { GameRound } from "@/entities/game";
 
 type LeaderboardEntry = {
-  playerId: string;
+  /** Marked by the server: the client no longer knows its own player id. */
+  isYou: boolean;
   totalScore: number;
   completedAt: string;
 };
@@ -62,13 +62,15 @@ export function DailyPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [copied, setCopied] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
+  /** Days in a row, which only the server can count. */
+  const [streakDays, setStreakDays] = useState<number | null>(null);
 
   useEffect(() => {
     async function init() {
       try {
-        const playerId = getOrCreatePlayerId();
-        const status = await getDailyStatus(playerId);
+        const status = await getDailyStatus();
         setDailyDate(status.date);
+        setStreakDays(status.streakDays);
 
         if (status.completed) {
           setCompletedScore(status.totalScore);
@@ -82,7 +84,7 @@ export function DailyPage() {
           return;
         }
 
-        const challenge = await getDailyChallenge(playerId);
+        const challenge = await getDailyChallenge();
         setDailyDate(challenge.date);
         setGameId(challenge.gameId);
         setMaxScore(challenge.maxScore);
@@ -95,8 +97,7 @@ export function DailyPage() {
       } catch (err) {
         if (err instanceof Error && err.message.includes("409")) {
           // Already played - reload status
-          const playerId = getOrCreatePlayerId();
-          const status = await getDailyStatus(playerId);
+          const status = await getDailyStatus();
           setDailyDate(status.date);
           setCompletedScore(status.totalScore);
           if (status.roundsJson) {
@@ -120,12 +121,12 @@ export function DailyPage() {
   // Submit score when game finishes
   useEffect(() => {
     if (game.phase === "finished" && !scoreSubmitted && gameId) {
-      const playerId = getOrCreatePlayerId();
-      submitDailyScore(playerId)
+      submitDailyScore()
         .then(async (res) => {
           setScoreSubmitted(true);
           // The server's total is authoritative
           setCompletedScore(res.totalScore);
+          setStreakDays(res.streakDays);
           setCompletedRounds(game.rounds);
           const lb = await getDailyLeaderboard();
           setLeaderboard(lb.leaderboard);
@@ -177,6 +178,8 @@ export function DailyPage() {
     maxScore,
   ]);
 
+  const handleSeeList = useCallback(() => navigate("/list"), [navigate]);
+
   const handleHome = useCallback(() => {
     game.reset();
     navigate("/");
@@ -208,10 +211,11 @@ export function DailyPage() {
         maxScore={maxScore}
         rounds={completedRounds}
         leaderboard={leaderboard}
-        playerId={getOrCreatePlayerId()}
+        streakDays={streakDays}
         copied={copied}
         onShare={handleShare}
         onHome={handleHome}
+        onSeeList={handleSeeList}
       />
     );
   }
@@ -232,6 +236,7 @@ export function DailyPage() {
         selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
+        hintCosts={game.currentHintCosts}
         hintsLoading={hintsLoading}
         onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
@@ -250,10 +255,11 @@ export function DailyPage() {
         maxScore={game.maxScore}
         rounds={game.rounds}
         leaderboard={leaderboard}
-        playerId={getOrCreatePlayerId()}
+        streakDays={streakDays}
         copied={copied}
         onShare={handleShare}
         onHome={handleHome}
+        onSeeList={handleSeeList}
       />
     );
   }

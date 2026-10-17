@@ -13,3 +13,4 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   })) as typeof window.matchMedia;
 }
+

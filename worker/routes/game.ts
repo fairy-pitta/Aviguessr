@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import type { Bindings } from "../types";
+import type { Env } from "../types";
 import {
   createGame,
   getGameState,
@@ -9,13 +9,13 @@ import {
   HINT_PENALTIES,
   parseGuessBody,
 } from "../services/game";
-import { getHintsForBird } from "../services/hints";
+import { getHintWithCost } from "../services/hints";
 
-export const gameRoutes = new Hono<{ Bindings: Bindings }>();
+export const gameRoutes = new Hono<Env>();
 
 gameRoutes.get("/new", async (c) => {
-  const playerId = c.req.header("X-Player-Id") ?? null;
-  const result = await createGame(c.env.DB, playerId);
+  // Established by the player middleware from a signed cookie, not sent
+  const result = await createGame(c.env.DB, c.get("playerId"));
   return c.json(result);
 });
 
@@ -60,7 +60,12 @@ gameRoutes.get("/:id/hint", async (c) => {
     return c.json({ error: "Round already answered" }, 400);
   }
 
-  const hint = await getHintsForBird(c.env.DB, roundRow.bird_id, level);
+  // The family hint is priced per bird, so the price comes back with it
+  const { hint, penalty } = await getHintWithCost(
+    c.env.DB,
+    roundRow.bird_id,
+    level
+  );
 
   // Record that the hint was handed over, so the penalty cannot be waived by
   // simply not reporting it. The OR makes a repeat reveal free.
@@ -72,7 +77,7 @@ gameRoutes.get("/:id/hint", async (c) => {
     .bind(mask, hintCountFromMask(mask), gameId, round)
     .run();
 
-  return c.json({ level, hint, penalty: HINT_PENALTIES[level - 1] });
+  return c.json({ level, hint, penalty });
 });
 
 gameRoutes.post("/:id/guess", async (c) => {

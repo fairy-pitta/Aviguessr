@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStartGame } from "@/features/start-game";
 import { FieldKit, HandRule, BookPage } from "@/shared/ui";
+import { getPlayer } from "@/entities/player";
+import type { PlayerResponse } from "@/entities/player";
 
 /**
  * The title page of the guide — the one screen in the book that is centred.
@@ -11,6 +14,17 @@ import { FieldKit, HandRule, BookPage } from "@/shared/ui";
 export function HomePage() {
   const navigate = useNavigate();
   const { start, loading } = useStartGame();
+  // What the player has standing: the list is the reason to come back, so
+  // the title page says how big it is rather than hiding it behind a click
+  const [player, setPlayer] = useState<PlayerResponse | null>(null);
+
+  useEffect(() => {
+    getPlayer()
+      .then(setPlayer)
+      .catch(() => {
+        // A first visit, or an unreachable server: the page stands alone
+      });
+  }, []);
 
   const begin = async () => {
     const result = await start();
@@ -65,11 +79,32 @@ export function HomePage() {
               <span className="flex items-baseline justify-between gap-4">
                 <span className="text-2xl font-medium">Today's five</span>
                 <span className="text-base text-[var(--color-ink-soft)] shrink-0">
-                  once a day
+                  {player && player.streakDays > 0
+                    ? `${player.streakDays} days running`
+                    : "once a day"}
                 </span>
               </span>
               <span className="mt-1 block text-base text-[var(--color-ink-soft)]">
                 The same five birds for everyone, with a leaderboard.
+              </span>
+            </button>
+            <HandRule />
+
+            <button
+              type="button"
+              onClick={() => navigate("/list")}
+              className="w-full text-left py-4"
+            >
+              <span className="flex items-baseline justify-between gap-4">
+                <span className="text-2xl font-medium">Your life list</span>
+                <span className="text-base text-[var(--color-ink-soft)] shrink-0 tabular">
+                  {player ? `${player.lifeList.species} species` : "\u00A0"}
+                </span>
+              </span>
+              <span className="mt-1 block text-base text-[var(--color-ink-soft)]">
+                {player && player.lifeList.bogeys > 0
+                  ? `Every bird you have met. ${player.lifeList.bogeys} still unnamed.`
+                  : "Every bird you have met, and how you did on it."}
               </span>
             </button>
             <HandRule />

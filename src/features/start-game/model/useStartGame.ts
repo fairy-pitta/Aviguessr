@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { createGame } from "@/entities/game";
-import { getOrCreatePlayerId } from "@/shared/lib/playerId";
 import type { GameRound } from "@/entities/game";
 
 export function useStartGame() {
@@ -14,13 +13,14 @@ export function useStartGame() {
     } | null> => {
       setLoading(true);
       try {
-        const data = await createGame(getOrCreatePlayerId());
+        const data = await createGame();
         return {
           gameId: data.gameId,
           maxScore: data.maxScore,
           rounds: data.rounds.map((r) => ({
             round: r.round,
             bird: r.bird,
+            hintCosts: r.hintCosts,
             result: null,
           })),
         };

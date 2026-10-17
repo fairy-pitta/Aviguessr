@@ -20,14 +20,17 @@ export function BirdAccount({
   bird: Bird;
   result: GuessResponse;
 }) {
+  // The question withheld the family, because the family is what the
+  // level-two hint sells; it arrives with the result instead
+  const family = result.family ?? bird.family;
+
   return (
     <div className="animate-account">
       <h2 className="text-2xl lg:text-3xl font-semibold leading-tight">
         {result.speciesName ?? bird.name}
       </h2>
-      {bird.family && (
-        <p className="mt-1 text-base text-[#cfd6cc]">{bird.family}</p>
-      )}
+      {family && <p className="mt-1 text-base text-[#cfd6cc]">{family}</p>}
+      <Reunion encounter={result.encounter} isCorrect={result.isCorrect} />
       {result.rangeDescription && (
         <p className="mt-3 text-base text-[#e4e9e2] leading-relaxed max-w-[42ch]">
           {result.rangeDescription}
@@ -39,6 +42,41 @@ export function BirdAccount({
         </p>
       )}
     </div>
+  );
+}
+
+/**
+ * That this bird has come round again, said only now.
+ *
+ * Round four is drawn from the birds this player has met and never named,
+ * and being told so during the round would narrow it to their own list —
+ * which is a substantial hint handed over for free. Afterwards it is the
+ * payoff rather than a clue, and the bird they finally got is the one worth
+ * saying something about.
+ */
+function Reunion({
+  encounter,
+  isCorrect,
+}: {
+  encounter: GuessResponse["encounter"];
+  isCorrect: boolean;
+}) {
+  if (!encounter || encounter.count === 0) return null;
+
+  const previous = encounter.previousGuess
+    ? countryName(encounter.previousGuess)
+    : null;
+
+  const line = encounter.everNamed
+    ? `You have met this bird before${previous ? `, and said ${previous}` : ""}.`
+    : isCorrect
+      ? `Missed ${encounter.count === 1 ? "once" : `${encounter.count} times`} before${previous ? ` — last time you said ${previous}` : ""}. Named at last.`
+      : `Missed ${encounter.count === 1 ? "once" : `${encounter.count} times`} before${previous ? `, when you said ${previous}` : ""}. Still your bogey bird.`;
+
+  return (
+    <p className="mt-3 handwritten text-xl leading-snug text-[#e4e9e2]">
+      {line}
+    </p>
   );
 }
 

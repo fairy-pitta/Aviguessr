@@ -11,6 +11,13 @@ type GameSummaryProps = {
    */
   maxScore: number;
   onPlayAgain: () => void;
+  /**
+   * The list these five birds have just joined.
+   *
+   * This is the moment the player most wants it — they have just been told
+   * what they missed — and it used to be reachable only from the title page.
+   */
+  onSeeList: () => void;
 };
 
 function countryName(code: string): string {
@@ -26,6 +33,7 @@ export function GameSummary({
   totalScore,
   maxScore,
   onPlayAgain,
+  onSeeList,
 }: GameSummaryProps) {
   const correct = rounds.filter((r) => r.result?.isCorrect).length;
 
@@ -92,6 +100,9 @@ export function GameSummary({
 
           <div className="mt-8 flex items-center gap-4">
             <Button onClick={onPlayAgain}>Start a new round</Button>
+            <Button variant="ghost" onClick={onSeeList}>
+              Your life list
+            </Button>
           </div>
         </div>
       </div>
