@@ -1,6 +1,10 @@
 import { getRandomBirdsByFame, ROUND_FAME } from "./birds";
 import { gameMaximum } from "./range-weight";
 import { questionName } from "./species-name";
+import { hintCostsForRound } from "./game";
+import { getFamilyHintCosts } from "./hints";
+import { advanceStreak } from "./streak";
+import { getPlayer, insertPlayer } from "./player";
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -47,12 +51,13 @@ export async function createDailyGame(
     bird: {
       id: number;
       name: string;
-      family: string | null;
       difficulty: string;
       habitat: string | null;
       biome: string | null;
       imageUrl: string;
     };
+    /** The two hint prices, level two priced by the bird's family. */
+    hintCosts: number[];
   }[];
 } | null> {
   // Check if player already played today
@@ -118,6 +123,8 @@ export async function createDailyGame(
   );
   await db.batch(stmts);
 
+  const familyCosts = await getFamilyHintCosts(db, birds.map((b) => b.family));
+
   return {
     gameId,
     maxScore: gameMaximum(birds.map((b) => b.range_size)),
@@ -126,12 +133,16 @@ export async function createDailyGame(
       bird: {
         id: bird.id,
         name: questionName(bird.name, bird.range_size),
-        family: bird.family,
+        // The family is what the level-two hint sells, so the question
+        // cannot carry it
         difficulty: bird.difficulty,
         habitat: bird.habitat,
         biome: bird.biome,
         imageUrl: `/api/birds/${bird.id}/image`,
       },
+      hintCosts: hintCostsForRound(
+        bird.family ? familyCosts.get(bird.family) : undefined
+      ),
     })),
   };
 }
@@ -190,7 +201,7 @@ export async function submitDailyScore(
   db: D1Database,
   date: string,
   playerId: string
-): Promise<{ totalScore: number } | null> {
+): Promise<{ totalScore: number; streakDays: number } | null> {
   const game = await db
     .prepare(
       `SELECT id, total_score FROM games
@@ -229,13 +240,58 @@ export async function submitDailyScore(
     )
     .run();
 
-  return { totalScore: game.total_score };
+  return {
+    totalScore: game.total_score,
+    streakDays: await recordDailyStreak(db, playerId, date),
+  };
 }
 
+/**
+ * Moves the player's streak on for a daily finished today.
+ *
+ * The rule itself is `advanceStreak`, which is a pure function of where the
+ * player stood — including the case where this is a second submission for
+ * the same day, which must leave the count alone rather than inflate it.
+ */
+export async function recordDailyStreak(
+  db: D1Database,
+  playerId: string,
+  date: string
+): Promise<number> {
+  await insertPlayer(db, playerId);
+  const player = await getPlayer(db, playerId);
+
+  const next = advanceStreak(
+    {
+      streak: player?.streak_days ?? 0,
+      lastDate: player?.last_daily_date ?? null,
+      absenceMonth: player?.absence_month ?? null,
+    },
+    date
+  );
+
+  await db
+    .prepare(
+      "UPDATE players SET streak_days = ?, last_daily_date = ?, absence_month = ? WHERE id = ?"
+    )
+    .bind(next.streak, next.lastDate, next.absenceMonth, playerId)
+    .run();
+
+  return next.streak;
+}
+
+/**
+ * Today's ten best.
+ *
+ * Which row is the player's own is marked here rather than compared in the
+ * client, which no longer knows its own id — and the ids of everyone else
+ * have no business leaving the server either.
+ */
 export async function getDailyLeaderboard(
   db: D1Database,
-  date: string
-): Promise<{ playerId: string; totalScore: number; completedAt: string }[]> {
+  date: string,
+  viewerId: string | null = null
+): Promise<{ isYou: boolean; totalScore: number; completedAt: string }[]> {
   const results = await db
     .prepare(
       "SELECT player_id, total_score, completed_at FROM daily_scores WHERE date = ? ORDER BY total_score DESC LIMIT 10"
@@ -244,7 +300,7 @@ export async function getDailyLeaderboard(
     .all<{ player_id: string; total_score: number; completed_at: string }>();
 
   return results.results.map((r) => ({
-    playerId: r.player_id,
+    isYou: viewerId !== null && r.player_id === viewerId,
     totalScore: r.total_score,
     completedAt: r.completed_at,
   }));
@@ -259,7 +315,11 @@ export async function getDailyStatus(
   totalScore: number | null;
   maxScore: number | null;
   roundsJson: string | null;
+  /** Days in a row, which the result page shows whenever it is reached. */
+  streakDays: number;
 }> {
+  const streakDays = (await getPlayer(db, playerId))?.streak_days ?? 0;
+
   const existing = await db
     .prepare(
       "SELECT total_score, rounds_json FROM daily_scores WHERE date = ? AND player_id = ?"
@@ -275,6 +335,7 @@ export async function getDailyStatus(
       // perfect game of these five was worth; it is not a constant any more
       maxScore: await dailyMaximum(db, date),
       roundsJson: existing.rounds_json,
+      streakDays,
     };
   }
 
@@ -283,6 +344,7 @@ export async function getDailyStatus(
     totalScore: null,
     maxScore: null,
     roundsJson: null,
+    streakDays,
   };
 }
 

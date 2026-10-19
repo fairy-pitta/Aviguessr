@@ -6,6 +6,8 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...options,
+    // The player is a signed cookie the client never composes or reads
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,

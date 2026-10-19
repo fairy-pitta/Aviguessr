@@ -12,6 +12,8 @@ type GuessPageProps = {
   roundStartTime: number;
   guessLoading: boolean;
   hints: string[];
+  /** What each hint costs this round; the family hint is priced per bird. */
+  hintCosts: number[];
   hintsLoading: number | null;
   onRevealHint: (level: number) => void;
   onCountrySelect: (code: string) => void;
@@ -31,6 +33,7 @@ export function GuessPage({
   roundStartTime,
   guessLoading,
   hints,
+  hintCosts,
   hintsLoading,
   onRevealHint,
   onCountrySelect,
@@ -66,6 +69,7 @@ export function GuessPage({
       <div className="px-5 lg:px-8 py-3">
         <HintPanel
           hints={hints}
+          costs={hintCosts}
           loading={hintsLoading}
           onReveal={onRevealHint}
         />

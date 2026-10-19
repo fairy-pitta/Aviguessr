@@ -59,6 +59,8 @@ export function GamePage() {
     }
   }, [game.lastResult, game.nextRound, game.finish]);
 
+  const handleSeeList = useCallback(() => navigate("/list"), [navigate]);
+
   const handlePlayAgain = useCallback(() => {
     game.reset();
     navigate("/");
@@ -87,6 +89,7 @@ export function GamePage() {
         selectedCountry={selectedCountry}
         guessLoading={guessLoading}
         hints={hints}
+        hintCosts={game.currentHintCosts}
         hintsLoading={hintsLoading}
         onRevealHint={revealHint}
         onCountrySelect={setSelectedCountry}
@@ -104,6 +107,7 @@ export function GamePage() {
         totalScore={game.totalScore}
         maxScore={game.maxScore}
         onPlayAgain={handlePlayAgain}
+        onSeeList={handleSeeList}
       />
     );
   }

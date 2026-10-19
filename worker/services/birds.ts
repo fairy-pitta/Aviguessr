@@ -46,6 +46,45 @@ export const ROUND_FAME: Fame[] = [
 ];
 
 /**
+ * The slots a bird the player has missed before can come back in, counting
+ * from zero.
+ *
+ * Two familiar birds open the game and an obscure one closes it, so the two
+ * middle rounds are the ones that can be spent without disturbing either
+ * end. Both draw the same band, so using either leaves the ladder as it was.
+ *
+ * There are two of them rather than one because the round withholds that it
+ * is a re-encounter: knowing a bird is one you have met narrows it to your
+ * own list. A fixed slot would have given that away by its position alone,
+ * which makes the withholding theatre.
+ *
+ * A bogey can be of any fame, which skews the ladder slightly — and that is
+ * the point, because it is the player's own bird rather than a drawn one.
+ */
+export const REUNION_SLOTS = [2, 3] as const;
+
+/** Which slot this game gives over, from a roll in [0, 1). */
+export function reunionIndex(roll: number): number {
+  const i = Math.floor(Math.min(Math.max(roll, 0), 0.999999) * REUNION_SLOTS.length);
+  return REUNION_SLOTS[i];
+}
+
+/** The bands still to be drawn, with the reunion slot left out when used. */
+export function drawnFames(index: number | null): Fame[] {
+  return index === null ? ROUND_FAME : ROUND_FAME.filter((_, i) => i !== index);
+}
+
+/** The drawn birds with the reunion bird put back where it belongs. */
+export function withReunion<T>(
+  drawn: T[],
+  reunion: T | null,
+  index: number
+): T[] {
+  if (!reunion) return drawn;
+  return [...drawn.slice(0, index), reunion, ...drawn.slice(index)];
+}
+
+/**
  * Random-pick SQL for one round, excluding `excludeCount` already-picked ids.
  *
  * `playable = 1` skips the species whose image could not be verified: the
@@ -80,12 +119,14 @@ export function distinctFrom(picked: { id: number }[]): number[] {
  */
 export async function getRandomBirdsByFame(
   db: D1Database,
-  fames: Fame[]
+  fames: Fame[],
+  /** Ids already spoken for — the reunion bird, so it is never drawn twice. */
+  excludeIds: number[] = []
 ): Promise<BirdRow[]> {
   const birds: BirdRow[] = [];
 
   for (const fame of fames) {
-    const exclude = distinctFrom(birds);
+    const exclude = [...excludeIds, ...distinctFrom(birds)];
     const band = FAME_BANDS[fame];
     const result =
       (await db
@@ -124,4 +165,12 @@ export async function getBirdWithCountries(
     bird,
     countries: countries.results.map((r: { country_code: string }) => r.country_code),
   };
+}
+
+/** One bird by id, for the reunion slot, which is chosen before it is drawn. */
+export async function getBirdById(
+  db: D1Database,
+  id: number
+): Promise<BirdRow | null> {
+  return db.prepare("SELECT * FROM birds WHERE id = ?").bind(id).first<BirdRow>();
 }

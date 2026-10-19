@@ -10,10 +10,10 @@ type DailyChallengeResponse = {
     bird: {
       id: number;
       name: string;
-      family: string | null;
       difficulty: string;
       imageUrl: string;
     };
+    hintCosts: number[];
   }[];
 };
 
@@ -23,10 +23,12 @@ type DailyStatusResponse = {
   completed: boolean;
   totalScore: number | null;
   roundsJson: string | null;
+  streakDays: number;
 };
 
 type DailyLeaderboardEntry = {
-  playerId: string;
+  /** Marked by the server, which is the only side that knows who you are. */
+  isYou: boolean;
   totalScore: number;
   completedAt: string;
 };
@@ -36,32 +38,23 @@ type DailyLeaderboardResponse = {
   leaderboard: DailyLeaderboardEntry[];
 };
 
-export function getDailyChallenge(
-  playerId: string
-): Promise<DailyChallengeResponse> {
-  return apiFetch<DailyChallengeResponse>("/daily", {
-    headers: { "X-Player-Id": playerId },
-  });
+export function getDailyChallenge(): Promise<DailyChallengeResponse> {
+  return apiFetch<DailyChallengeResponse>("/daily");
 }
 
-export function getDailyStatus(
-  playerId: string
-): Promise<DailyStatusResponse> {
-  return apiFetch<DailyStatusResponse>("/daily/status", {
-    headers: { "X-Player-Id": playerId },
-  });
+export function getDailyStatus(): Promise<DailyStatusResponse> {
+  return apiFetch<DailyStatusResponse>("/daily/status");
 }
 
 export function getDailyLeaderboard(): Promise<DailyLeaderboardResponse> {
   return apiFetch<DailyLeaderboardResponse>("/daily/leaderboard");
 }
 
-export function submitDailyScore(
-  playerId: string
-): Promise<{ success: boolean; totalScore: number }> {
+export function submitDailyScore(): Promise<{
+  success: boolean;
+  totalScore: number;
+  streakDays: number;
+}> {
   // The score and round list come from the server's own record of the game.
-  return apiFetch<{ success: boolean; totalScore: number }>("/daily/score", {
-    method: "POST",
-    headers: { "X-Player-Id": playerId },
-  });
+  return apiFetch("/daily/score", { method: "POST" });
 }

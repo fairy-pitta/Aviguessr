@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import type { Bindings } from "../types";
+import type { Env } from "../types";
 
-export const birdRoutes = new Hono<{ Bindings: Bindings }>();
+export const birdRoutes = new Hono<Env>();
 
 birdRoutes.get("/:id/image", async (c) => {
   const birdId = c.req.param("id");
